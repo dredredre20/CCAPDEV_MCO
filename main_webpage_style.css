@@ -1,0 +1,135 @@
+:root{
+    --primary-green: #3ba140;
+    --beige-bg: #F9F5EB;
+    --text-color: black;
+}
+
+body{
+    background-color: var(--beige-bg);
+    color: var(--text-color);
+    font-family:'Times New Roman', Times, serif;
+    min-height: 100vh;
+}
+
+.hero-section{
+    background: linear-gradient(135deg, var(--primary-green) 0%, #219227 100%) ;
+    color: white;
+    display: flex;
+    justify-content:center;
+    padding: 10px;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    flex: 1;
+}
+
+.hero-content{
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.hero-title{
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 2.5rem;
+    text-shadow: 1px 1px rgb(230, 223, 223);
+}
+
+.hero-sub-info{
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+
+.side-panel{
+    background-color: var(--beige-bg);
+    min-height: 100vh;
+    padding: 2.5rem 1rem;
+    border-right: 2.5px var(--primary-green);
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.side-panel-title{
+    color: var(--primary-green);
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.user-account-buttons{
+    margin: auto;
+    width: 65%;
+    text-align: center;
+
+}
+
+/*buttons for side panel*/
+.btn-custom{
+    background-color: white;
+    border: 1.5px solid var(--primary-green);
+    border-radius: 5px;
+    color: var(--primary-green);
+    text-align: center;
+    border-width: 1px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.0s ease;
+}
+
+.btn-custom:hover{
+    background-color: var(--primary-green);
+    color: white;
+    border: 1px solid black;   
+}
+
+/*buttons for hero container*/
+.btn-custom-reserve{
+    background-color: var(--beige-bg);
+    border: 1px solid var(--beige-bg);
+    color: var(--primary-green);
+    text-align: center;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.0s ease;
+}
+
+.btn-custom-reserve:hover{
+    background-color: var(--beige-bg);
+    color: white;
+    border: 1px solid black;   
+}
+
+
+.nav-links{
+    list-style-type: none;
+    margin: auto;
+    padding: 0;
+}
+
+.nav-links li{
+    margin-bottom: 1.5rem;
+}
+
+.nav-links a{
+    color: var(--primary-green);
+    text-decoration: none;
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    border-radius: 5px;
+    transition: all 0.5 ease;
+    display: block;
+}
+
+.nav-links a:hover{
+    color: var(--beige-bg);
+    background-color: var(--primary-green);
+    transform: translateX(4px);
+}
+
+
+
+
+
+
