@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Reserve a Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      background-color: #fff8f0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .navbar {
+      background-color: #800000;
+      padding: 1rem 0;
+      text-align: center;
+    }
+
+    .navbar-brand {
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.5rem;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 1rem;
+      border: 1px solid #800000;
+      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.15);
+    }
+
+    h2 {
+      text-align: center;
+      color: #800000;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input[type="date"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-primary {
+      background-color: #b22222;
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      width: 100%;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #cc0000;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 1rem;
+      }
+
+      .card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="#">LabReserve</a>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h2>Reserve a Lab Slot</h2>
+      <form>
+        <div class="form-group">
+          <label for="lab">Laboratory</label>
+          <select id="lab">
+            <option>G302</option>
+            <option>G303</option>
+            <option>G304</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="date" id="date">
+        </div>
+
+        <div class="form-group">
+          <label for="time">Time Slot</label>
+          <select id="time">
+            <option>08:00 - 08:30</option>
+            <option>08:30 - 09:00</option>
+            <option>09:00 - 09:30</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="seat">Seat Number</label>
+          <input type="number" id="seat" min="1" max="35">
+        </div>
+
+        <div class="form-check">
+          <input type="checkbox" id="anonymous">
+          <label for="anonymous">Reserve anonymously</label>
+        </div>
+
+        <button type="submit" class="btn-primary">Submit Reservation</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

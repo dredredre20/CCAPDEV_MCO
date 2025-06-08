@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      background-color: #fff8f0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .navbar {
+      background-color: #800000;
+      padding: 1rem 0;
+      text-align: center;
+    }
+
+    .navbar-brand {
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.5rem;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 4rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 1rem;
+      border: 1px solid #800000;
+      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.15);
+    }
+
+    h3 {
+      text-align: center;
+      color: #800000;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      font-size: 1rem;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .btn-success {
+      background-color: #b22222;
+      color: white;
+      border: none;
+    }
+
+    .btn-success:hover {
+      background-color: #cc0000;
+    }
+
+    .btn-warning {
+      background-color: #ffd700;
+      color: #000;
+      border: none;
+      margin-top: 0.75rem;
+    }
+
+    .btn-warning:hover {
+      background-color: #e6c200;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 1rem;
+      }
+
+      .card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="#">LabReserve</a>
+  </nav>
+
+  <div class="container">
+    <div class="card">
+      <h3>Create an Account</h3>
+      <form action="login.html">
+        <div class="form-group">
+          <label for="email">DLSU Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="role">Account Type</label>
+          <select id="role">
+            <option>Student</option>
+            <option>Lab Technician</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-success">Register</button>
+        <a href="login.html" class="btn btn-warning">← Back to Login</a>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

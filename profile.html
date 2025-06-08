@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<head>
+  <title>User Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      background-color: #fff8f0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 4rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background-color: #fff;
+      border: 1px solid #800000;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.15);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background-color: #800000;
+      color: white;
+      padding: 1rem;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .profile img {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border: 3px solid #800000;
+    }
+
+    .profile-info h4 {
+      margin: 0 0 0.25rem;
+      color: #800000;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input[type="file"],
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      font-size: 1rem;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: #b22222;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #cc0000;
+    }
+
+    .list-group {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .list-group-item {
+      padding: 1rem;
+      border-top: 1px solid #eee;
+    }
+
+    .list-group-item:first-child {
+      border-top: none;
+    }
+
+    @media (max-width: 600px) {
+      .profile {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .profile img {
+        margin-bottom: 1rem;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Profile Info -->
+    <div class="card">
+      <div class="card-body profile">
+        <div class="profile-info">
+          <h4 id="userName">Juan Dela Cruz</h4>
+          <p id="userEmail">juan@dlsu.edu.ph</p>
+          <p id="userDescription">BS Computer Science Student at DLSU</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Form -->
+    <div class="card">
+      <div class="card-header">Edit Profile</div>
+      <div class="card-body">
+        <form>
+          <label for="description">Profile Description</label>
+          <textarea id="description" rows="3"></textarea>
+
+          <label for="profilePic">Upload Profile Picture</label>
+          <input type="file" id="profilePic">
+
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Reservation List -->
+    <div class="card">
+      <div class="card-header">Current Reservations</div>
+      <ul class="list-group">
+        <li class="list-group-item">G302 - Seat 12 - June 10, 09:00</li>
+        <li class="list-group-item">G303 - Seat 5 - June 12, 14:00</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
