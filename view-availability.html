@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab Slot Availability</title>
+  <style>
+    body {
+      background-color: #fffaf6;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .navbar {
+      background-color: #800000;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .navbar-brand {
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.8rem;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem 1rem;
+    }
+
+    h2 {
+      text-align: center;
+      color: #800000;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    select,
+    input[type="date"],
+    button {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #b22222;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      padding: 1rem 1rem;
+      margin-left: 20px;
+    }
+
+    button:hover {
+      background-color: #cc0000;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      align-items: flex-end;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .form-group:last-child {
+      flex: 0 0 auto;
+      align-self: flex-end;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .seat-card {
+      flex: 1 1 calc(14.28% - 1rem);
+      box-sizing: border-box;
+    }
+
+    .card {
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .seat-available {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    .seat-reserved {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    .seat-reserved a {
+      color: #ffe066;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .return-btn-container {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .return-btn {
+      background-color: #6c757d;
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      color: white;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .return-btn:hover {
+      background-color: #5a6268;
+    }
+
+    @media (max-width: 768px) {
+      .seat-card {
+        flex: 1 1 100%;
+      }
+
+      button {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .form-group:last-child button {
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="#">LabReserve</a>
+  </nav>
+
+  <div class="container">
+    <h2>View Lab Slot Availability</h2>
+    <form id="filterForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="lab">Laboratory</label>
+          <select id="lab">
+            <option value="G301">G301</option>
+            <option value="G302">G302</option>
+            <option value="G303">G303</option>
+            <option value="G304">G304</option>
+            <option value="G305">G305</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="date" id="date" />
+        </div>
+        <div class="form-group">
+          <button type="submit">View Availability</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="return-btn-container">
+      <a href="reserve.html" class="return-btn">Return to Reservation Page</a>
+    </div>
+
+    <div class="row" id="slotsContainer">
+      <!-- Slots rendered via JavaScript -->
+    </div>
+  </div>
+
+  <script>
+    const sampleData = {
+      G301: {
+        reserved: [
+          { slot: 1, user: 'Jesus Planta' },
+          { slot: 2, user: 'Luis Sebastian' },
+          { slot: 3, user: 'Andre Chu' },
+          { slot: 4, user: 'Joaquin Tin' },
+          { slot: 5, user: 'CCAPDEV Student' },
+        ],
+        totalSlots: 35
+      },
+      G302: {
+        reserved: [
+          { slot: 6, user: 'Joaquin Tin' },
+          { slot: 7, user: 'Luis Sebastian' },
+          { slot: 8, user: 'Andre Chu' },
+        ],
+        totalSlots: 35
+      },
+      G303: {
+        reserved: [
+          { slot: 10, user: 'Joaquin Tin' },
+          { slot: 11, user: 'Luis Sebastian' },
+          { slot: 12, user: 'Andre Chu' },
+        ],
+        totalSlots: 35
+      },
+      G304: {
+        reserved: [
+          { slot: 13, user: 'CCAPDEV Student' },
+          { slot: 14, user: 'Jesus Planta' },
+        ],
+        totalSlots: 35
+      },
+      G305: {
+        reserved: [
+          { slot: 16, user: 'CCAPDEV Student' },
+          { slot: 17, user: 'Andre Chu' },
+          { slot: 18, user: 'Jesus Planta' },
+        ],
+        totalSlots: 35
+      }
+    };
+
+    const form = document.getElementById('filterForm');
+    const slotsContainer = document.getElementById('slotsContainer');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const lab = document.getElementById('lab').value;
+      const data = sampleData[lab];
+      const reservedSlots = data.reserved.map(r => r.slot);
+      const totalSlots = data.totalSlots;
+
+      slotsContainer.innerHTML = '';
+
+      for (let i = 1; i <= totalSlots; i++) {
+        const card = document.createElement('div');
+        card.className = 'seat-card';
+
+        if (reservedSlots.includes(i)) {
+          const user = data.reserved.find(r => r.slot === i).user;
+          card.innerHTML = `<div class="card seat-reserved">Slot ${i}<br><small>Reserved by <a href="#">${user}</a></small></div>`;
+        } else {
+          card.innerHTML = `<div class="card seat-available">Slot ${i}<br><small>Available</small></div>`;
+        }
+
+        slotsContainer.appendChild(card);
+      }
+    });
+
+    form.dispatchEvent(new Event('submit'));
+  </script>
+</body>
+</html>
