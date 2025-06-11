@@ -172,6 +172,21 @@
         <li class="list-group-item">G303 - Seat 5 - June 12, 14:00</li>
       </ul>
     </div>
+
+    <!-- Logout -->
+    <div style="margin-top: 50px; text-align: center;">
+      <form action="/logout" method="POST">
+        <button type="submit" onclick="confirmLogout()" style="padding: 10px 20px; font-size: 16px;">Logout</button>
+      </form>
+    </div>
+
+    <script>
+      function confirmLogout() {
+        if(confirm("Confirm Logout?")) {
+          document.getElementById('logoutForm').submit();
+        }
+      }
+    </script>
   </div>
 </body>
 </html>
