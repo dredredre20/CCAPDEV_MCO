@@ -1,192 +1,86 @@
 <!DOCTYPE html>
-
+<html lang="en">
 <head>
-  <title>User Profile</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta charset="UTF-8">
+  <title>Profile</title>
   <style>
     body {
-      background-color: #fff8f0;
+      margin: 0;
+      padding: 0;
       font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      color: #333;
+      background: #f8f8f0;
     }
-
     .container {
-      max-width: 700px;
-      margin: 4rem auto;
-      padding: 1rem;
-    }
-
-    .card {
-      background-color: #fff;
-      border: 1px solid #800000;
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.15);
-      margin-bottom: 2rem;
-      overflow: hidden;
-    }
-
-    .card-header {
-      background-color: #800000;
-      color: white;
-      padding: 1rem;
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-
-    .card-body {
-      padding: 1.5rem;
-    }
-
-    .profile {
       display: flex;
-      align-items: center;
-      gap: 1.5rem;
+      height: 100vh;
     }
-
-    .profile img {
-      border-radius: 50%;
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border: 3px solid #800000;
+    .sidebar {
+      width: 260px;
+      background: #f8f8f0;
+      border-right: 2px solid #36b53d;
+      padding: 2rem;
     }
-
-    .profile-info h4 {
-      margin: 0 0 0.25rem;
-      color: #800000;
+    .sidebar h2 {
+      color: #36b53d;
+      margin-bottom: 2rem;
     }
-
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    input[type="file"],
-    textarea {
+    .sidebar button {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.8rem;
       margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      resize: vertical;
-    }
-
-    .btn {
-      display: inline-block;
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 0.5rem;
+      border: 2px solid #36b53d;
+      background: white;
+      color: #36b53d;
       font-weight: bold;
-      font-size: 1rem;
-      text-align: center;
-      text-decoration: none;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
-      border: none;
     }
-
-    .btn-primary {
-      background-color: #b22222;
+    .sidebar button:hover {
+      background: #36b53d;
       color: white;
     }
-
-    .btn-primary:hover {
-      background-color: #cc0000;
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #36b53d, #219227);
     }
-
-    .list-group {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+    .card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 450px;
     }
-
-    .list-group-item {
-      padding: 1rem;
-      border-top: 1px solid #eee;
+    .card h3 {
+      color: #36b53d;
+      margin-bottom: 1.5rem;
+      text-align: center;
     }
-
-    .list-group-item:first-child {
-      border-top: none;
-    }
-
-    @media (max-width: 600px) {
-      .profile {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .profile img {
-        margin-bottom: 1rem;
-      }
-
-      .btn {
-        width: 100%;
-      }
+    .card p {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #333;
     }
   </style>
 </head>
-
 <body>
   <div class="container">
-    <!-- Profile Info -->
-    <div class="card">
-      <div class="card-body profile">
-        <div class="profile-info">
-          <h4 id="userName">Juan Dela Cruz</h4>
-          <p id="userEmail">juan@dlsu.edu.ph</p>
-          <p id="userDescription">BS Computer Science Student at DLSU</p>
-        </div>
+    <div class="sidebar">
+      <h2>ReserveALab</h2>
+      <button onclick="location.href='home.html'">Home</button>
+      <button onclick="location.href='login.html'">Logout</button>
+      <button onclick="location.href='view-availability.html'">View Availability</button>
+    </div>
+
+    <div class="main">
+      <div class="card">
+        <h3>Profile Information</h3>
+        <p><strong>Username:</strong> sampleuser</p>
+        <p><strong>Role:</strong> student</p>
       </div>
     </div>
-
-    <!-- Edit Profile Form -->
-    <div class="card">
-      <div class="card-header">Edit Profile</div>
-      <div class="card-body">
-        <form>
-          <label for="description">Profile Description</label>
-          <textarea id="description" rows="3"></textarea>
-
-          <label for="profilePic">Upload Profile Picture</label>
-          <input type="file" id="profilePic">
-
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Reservation List -->
-    <div class="card">
-      <div class="card-header">Current Reservations</div>
-      <ul class="list-group">
-        <li class="list-group-item">G302 - Seat 12 - June 10, 09:00</li>
-        <li class="list-group-item">G303 - Seat 5 - June 12, 14:00</li>
-      </ul>
-    </div>
-
-    <!-- Logout -->
-    <div style="margin-top: 50px; text-align: center;">
-      <form action="/logout" method="POST">
-        <button type="submit" onclick="confirmLogout()" style="padding: 10px 20px; font-size: 16px;">Logout</button>
-      </form>
-    </div>
-
-    <script>
-      function confirmLogout() {
-        if(confirm("Confirm Logout?")) {
-          document.getElementById('logoutForm').submit();
-        }
-      }
-    </script>
   </div>
 </body>
 </html>

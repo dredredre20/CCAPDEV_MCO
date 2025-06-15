@@ -1,142 +1,108 @@
 <!DOCTYPE html>
-
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Register</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <style>
     body {
-      background-color: #fff8f0;
-      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f8f0;
     }
-
-    .navbar {
-      background-color: #800000;
-      padding: 1rem 0;
-      text-align: center;
-    }
-
-    .navbar-brand {
-      color: #fff;
-      font-weight: bold;
-      font-size: 1.5rem;
-      text-decoration: none;
-    }
-
     .container {
-      max-width: 500px;
-      margin: 4rem auto;
-      padding: 1rem;
+      display: flex;
+      height: 100vh;
     }
-
-    .card {
-      background-color: #fff;
+    .sidebar {
+      width: 260px;
+      background: #f8f8f0;
+      border-right: 2px solid #36b53d;
       padding: 2rem;
-      border-radius: 1rem;
-      border: 1px solid #800000;
-      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.15);
     }
-
-    h3 {
-      text-align: center;
-      color: #800000;
-      margin-bottom: 1.5rem;
+    .sidebar h2 {
+      color: #36b53d;
+      margin-bottom: 2rem;
     }
-
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    input[type="email"],
-    input[type="password"],
-    select {
+    .sidebar button {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 2px solid #36b53d;
+      background: white;
+      color: #36b53d;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .sidebar button:hover {
+      background: #36b53d;
+      color: white;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #36b53d, #219227);
+    }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 400px;
+    }
+    .card h3 {
+      color: #36b53d;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    input[type="text"], input[type="password"], select {
+      width: 100%;
+      padding: 0.7rem;
       margin-bottom: 1rem;
       border: 1px solid #ccc;
-      border-radius: 0.5rem;
-      font-size: 1rem;
+      border-radius: 4px;
     }
-
-    .btn {
-      display: block;
+    button[type="submit"] {
       width: 100%;
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-      font-weight: bold;
-      font-size: 1rem;
-      text-align: center;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      box-sizing: border-box;
-    }
-
-    .btn-success {
-      background-color: #b22222;
+      padding: 0.8rem;
+      background: #36b53d;
       color: white;
+      font-weight: bold;
       border: none;
+      border-radius: 4px;
+      cursor: pointer;
     }
-
-    .btn-success:hover {
-      background-color: #cc0000;
-    }
-
-    .btn-warning {
-      background-color: #ffd700;
-      color: #000;
-      border: none;
-      margin-top: 0.75rem;
-    }
-
-    .btn-warning:hover {
-      background-color: #e6c200;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        margin: 2rem 1rem;
-        padding: 1rem;
-      }
-
-      .card {
-        padding: 1.5rem;
-      }
+    button[type="submit"]:hover {
+      background: #219227;
     }
   </style>
 </head>
 <body>
-  <nav class="navbar">
-    <a class="navbar-brand" href="#">LabReserve</a>
-  </nav>
-
   <div class="container">
-    <div class="card">
-      <h3>Create an Account</h3>
-      <form action="login.html">
-        <div class="form-group">
-          <label for="email">DLSU Email</label>
-          <input type="email" id="email" required>
-        </div>
-        <div class="form-group">
-          <label for="role">Account Type</label>
-          <select id="role">
-            <option>Student</option>
-            <option>Lab Technician</option>
+    <div class="sidebar">
+      <h2>ReserveALab</h2>
+      <button onclick="location.href='home.html'">Home</button>
+      <button onclick="location.href='login.html'">Login</button>
+      <button onclick="location.href='view-availability.html'">View Availability</button>
+    </div>
+
+    <div class="main">
+      <div class="card">
+        <h3>Register</h3>
+        <form id="register-form">
+          <input type="text" id="username" name="username" placeholder="Username" required>
+          <input type="password" id="password" name="password" placeholder="Password" required>
+          <select id="role" name="role" required>
+            <option value="">Select Role</option>
+            <option value="student">Student</option>
+            <option value="faculty">Faculty</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" required>
-        </div>
-        <button type="submit" class="btn btn-success">Register</button>
-        <a href="login.html" class="btn btn-warning">← Back to Login</a>
-      </form>
+          <button type="submit">Register</button>
+        </form>
+      </div>
     </div>
   </div>
 </body>

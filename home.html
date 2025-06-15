@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f8f0;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 260px;
+      background: #f8f8f0;
+      border-right: 2px solid #36b53d;
+      padding: 2rem;
+    }
+    .sidebar h2 {
+      color: #36b53d;
+      margin-bottom: 2rem;
+    }
+    .sidebar button {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 2px solid #36b53d;
+      background: white;
+      color: #36b53d;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .sidebar button:hover {
+      background: #36b53d;
+      color: white;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #36b53d, #219227);
+    }
+    .card {
+      background: white;
+      padding: 3rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      text-align: center;
+    }
+    .card h3 {
+      color: #36b53d;
+      margin-bottom: 2rem;
+    }
+    .card p {
+      font-size: 1.2rem;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <h2>ReserveALab</h2>
+      <button onclick="location.href='login.html'">Login</button>
+      <button onclick="location.href='register.html'">Register</button>
+      <button onclick="location.href='view-availability.html'">View Availability</button>
+    </div>
+
+    <div class="main">
+      <div class="card">
+        <h3>Welcome to ReserveALab</h3>
+        <p>Reserve and manage your laboratory schedules easily.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
