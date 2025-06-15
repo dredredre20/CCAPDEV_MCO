@@ -167,6 +167,7 @@
     <h2>View Lab Slot Availability</h2>
     <form id="filterForm">
       <div class="form-row">
+
         <div class="form-group">
           <label for="lab">Laboratory</label>
           <select id="lab">
@@ -177,6 +178,25 @@
             <option value="G305">G305</option>
           </select>
         </div>
+
+        <div class="form-group">
+          <label for="time">Time Slot</label>
+          <select id="time">
+              <option value="">All Times</option>
+              <option value="08:00">08:00 - 08:30</option>            
+              <option value="08:30">08:30 - 09:00</option>            
+              <option value="09:00">09:00 - 09:30</option>            
+              <option value="09:30">09:30 - 10:00</option>            
+              <option value="10:00">10:00 - 10:30</option>            
+              <option value="10:30">10:30 - 11:00</option>            
+              <option value="11:00">11:00 - 11:30</option>            
+              <option value="11:30">11:30 - 12:00</option>            
+              <option value="12:00">12:00 - 12:30</option>            
+              <option value="12:30">12:30 - 01:00</option>          
+              <option value="01:00">01:00 - 01:30</option>              
+          </select>
+        </div>
+
         <div class="form-group">
           <label for="date">Date</label>
           <input type="date" id="date" />
@@ -200,52 +220,57 @@
     const sampleData = {
       G301: {
         reserved: [
-          { slot: 1, user: 'Jesus Planta' },
-          { slot: 2, user: 'Luis Sebastian' },
-          { slot: 3, user: 'Andre Chu' },
-          { slot: 4, user: 'Joaquin Tin' },
-          { slot: 5, user: 'CCAPDEV Student' },
+          { slot: 1, user: 'Jesus Planta', time: '8:30 - 9:00' },
+          { slot: 2, user: 'Luis Sebastian', time: '8:30 - 9:00' },
+          { slot: 3, user: 'Andre Chu', time: '8:30 - 9:00' },
+          { slot: 4, user: 'Joaquin Tin', time: '8:30 - 9:00' },
+          { slot: 5, user: 'CCAPDEV Student', time: '8:30 - 9:00' },
         ],
         totalSlots: 35
       },
+
       G302: {
+
         reserved: [
-          { slot: 6, user: 'Joaquin Tin' },
-          { slot: 7, user: 'Luis Sebastian' },
-          { slot: 8, user: 'Andre Chu' },
+          { slot: 6, user: 'Joaquin Tin', time: '9:30 - 10:00'},
+          { slot: 7, user: 'Luis Sebastian', time: '9:30 - 10:00'},
+          { slot: 8, user: 'Andre Chu', time: '9:30 - 10:00'},
         ],
         totalSlots: 35
       },
+
       G303: {
         reserved: [
-          { slot: 10, user: 'Joaquin Tin' },
-          { slot: 11, user: 'Luis Sebastian' },
-          { slot: 12, user: 'Andre Chu' },
+          { slot: 10, user: 'Joaquin Tin', time: '10:30 - 11:00'},
+          { slot: 11, user: 'Luis Sebastian', time: '10:30 - 11:00' },
+          { slot: 12, user: 'Andre Chu', time: '10:30 - 11:00' },
         ],
         totalSlots: 35
       },
+
       G304: {
         reserved: [
-          { slot: 13, user: 'CCAPDEV Student' },
-          { slot: 14, user: 'Jesus Planta' },
+          { slot: 13, user: 'CCAPDEV Student', time: '10:30 - 11:00' },
+          { slot: 14, user: 'Jesus Planta', time: '10:30 - 11:00' },
         ],
         totalSlots: 35
       },
+
       G305: {
         reserved: [
-          { slot: 16, user: 'CCAPDEV Student' },
-          { slot: 17, user: 'Andre Chu' },
-          { slot: 18, user: 'Jesus Planta' },
+          { slot: 16, user: 'CCAPDEV Student', time: '10:30 - 11:00' },
+          { slot: 17, user: 'Andre Chu', time: '10:30 - 11:00' },
+          { slot: 18, user: 'Jesus Planta', time: '10:30 - 11:00' },
         ],
         totalSlots: 35
       }
+
     };
 
     const form = document.getElementById('filterForm');
     const slotsContainer = document.getElementById('slotsContainer');
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
+    function loadSlots(){
       const lab = document.getElementById('lab').value;
       const data = sampleData[lab];
       const reservedSlots = data.reserved.map(r => r.slot);
@@ -263,12 +288,19 @@
         } else {
           card.innerHTML = `<div class="card seat-available">Slot ${i}<br><small>Available</small></div>`;
         }
-
         slotsContainer.appendChild(card);
-      }
-    });
 
-    form.dispatchEvent(new Event('submit'));
+      }
+
+    };
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      loadSlots();
+    })
+
+    window.addEventListener('load', loadSlots);
+
   </script>
 </body>
 </html>
