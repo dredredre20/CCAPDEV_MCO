@@ -52,16 +52,30 @@
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       width: 450px;
+      text-align: center;
     }
     .card h3 {
       color: #36b53d;
       margin-bottom: 1.5rem;
-      text-align: center;
     }
     .card p {
       font-size: 1.1rem;
       margin-bottom: 1rem;
       color: #333;
+    }
+    .delete-button {
+      padding: 0.8rem 1.5rem;
+      background: white;
+      border: 2px solid #e53935;
+      color: #e53935;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    .delete-button:hover {
+      background: #e53935;
+      color: white;
     }
   </style>
 </head>
@@ -79,8 +93,21 @@
         <h3>Profile Information</h3>
         <p><strong>Username:</strong> sampleuser</p>
         <p><strong>Role:</strong> student</p>
+        <button class="delete-button" onclick="deleteAccount()">Delete Account</button>
       </div>
     </div>
   </div>
+
+  <script>
+    function deleteAccount() {
+      if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+        // Simulated action: Replace this with actual backend call (e.g., fetch or AJAX)
+        alert("Account deleted successfully.");
+
+        // Redirect to login or homepage after deletion
+        window.location.href = "login.html";
+      }
+    }
+  </script>
 </body>
 </html>

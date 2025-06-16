@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Reservation</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f8f0;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 260px;
+      background: #f8f8f0;
+      border-right: 2px solid #36b53d;
+      padding: 2rem;
+    }
+    .sidebar h2 {
+      color: #36b53d;
+      margin-bottom: 2rem;
+    }
+    .sidebar button {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 2px solid #36b53d;
+      background: white;
+      color: #36b53d;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .sidebar button:hover {
+      background: #36b53d;
+      color: white;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #36b53d, #219227);
+    }
+    .card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 500px;
+    }
+    .card h3 {
+      color: #36b53d;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #333;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.6rem;
+      border: 2px solid #36b53d;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button.submit-btn {
+      width: 100%;
+      padding: 0.8rem;
+      background: #36b53d;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      cursor: pointer;
+    }
+    button.submit-btn:hover {
+      background: #2c9a31;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <h2>ReserveALab</h2>
+      <button onclick="location.href='home.html'">Home</button>
+      <button onclick="location.href='login.html'">Logout</button>
+      <button onclick="location.href='view-availability.html'">View Availability</button>
+    </div>
+
+    <div class="main">
+      <div class="card">
+        <h3>Edit Reservation</h3>
+        <form>
+          <div class="form-group">
+            <label for="email">DLSU Email</label>
+            <input type="email" id="email" placeholder="name@dlsu.edu.ph" required>
+          </div>
+          <div class="form-group">
+            <label for="lab">Laboratory</label>
+            <select id="lab">
+              <option value="G301">G301</option>
+              <option value="G302">G302</option>
+              <option value="G303">G303</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" required>
+          </div>
+          <div class="form-group">
+            <label for="time">Time Slot</label>
+            <select id="time">
+              <option>08:00 - 08:30</option>
+              <option>08:30 - 09:00</option>
+              <option>09:00 - 09:30</option>
+              <!-- Add more time slots as needed -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="slot">Slot Number</label>
+            <input type="number" id="slot" min="1" max="50">
+          </div>
+          <button class="submit-btn" type="submit">Update Reservation</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
