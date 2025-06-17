@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Main Login Page</title>
+        <link rel="stylesheet" href="new-login.css"/>
+        <!-- Login page for the users whether faculty or student-->
+
+        <!-- Import Bootstrap-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+        <div class="container-fluid p-0">
+            <div class="row g-0">
+
+                <!--Side Panel Content containing navigation links and user account buttons-->
+                <div class="col-lg-3 col-md-4">
+
+                    <div class="side-panel">
+                        <h1 class="side-panel-title">ReserveALab</h1>
+
+                        <div class="user-account-buttons">
+
+                            <a href="new-register.html" >
+                                <button type="button" class="btn btn-custom"> Register </button>
+                            </a>
+
+                            <a href="view-availability.html" >
+                                <button type="button" class="btn btn-custom"> View Availabile Slots </button>
+                            </a>
+                        </div>
+
+                        <nav>
+                            <!-- Will update links later -->
+                            <ul class="nav-links">
+                                <li><a href="lab_reservation.html"> Main Homepage </a></li>
+                            </ul>
+                        </nav>
+
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+
+                
+                <div class="col-lg-9 col-md-8">
+
+                    <div class="hero-container">
+
+                        <div class="card">
+
+                            <h2 class="container-title">Login</h2>
+
+                            <form id="login-form">
+                            
+                              <div class="form-group">
+                                  <label for="email">DLSU Email</label>
+                                  <input type="email" id="email" placeholder="name@dlsu.edu.ph" required>
+                              </div>
+                            
+                            
+                              <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" required>
+                              </div>
+                            
+                              <div class="form-group">
+                                    <input type="checkbox" id="rememberMe">
+                                    <label for="rememberMe">Remember me for 3 weeks</label>
+                              </div>
+                            
+                            
+                              <button type="submit" class="btn btn-primary">Submit Login</button>
+
+                              <div id="errorMessage" style="color:red; margin-top: 10px; display: none"></div>
+
+                            </form>
+                        
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+    </body>
+
+    <script>
+
+        // Sample hard coded data
+        const sampleUsers = {
+            faculty: [
+                {email: "jao.tin@dlsu.edu.ph", password:"faculty123"}, 
+                {email: "john_diego@dlsu.edu.ph", password:"qwwerty123"}
+            ],
+            student: [
+                {email: "juan@dlsu.edu.ph", password:"stud123"}
+            ]
+        };
+
+        // check the input of the users in the form
+        document.getElementById('login-form').addEventListener('submit', function(e){
+            e.preventDefault();
+            const email = document.getElementById('email').value.toLowerCase();
+            const password = document.getElementById('password').value;
+            const div_error = document.getElementById('errorMessage');
+
+
+            div_error.style.display = 'none';
+
+            // check if faculty exists
+            const faculty_user = sampleUsers.faculty.find(sampleUsers =>
+                sampleUsers.email === email && sampleUsers.password === password
+            );
+
+            // go to the main lab tech / faculty page
+            if(faculty_user){
+                window.location.href = 'lab_technician_page.html';
+                return;
+            }
+
+            // check if student
+            const student_user = sampleUsers.student.find(sampleUsers =>
+                sampleUsers.email === email && sampleUsers.password === password
+            );
+
+            // go to main student pagee
+            if(student_user){
+                window.location.href = 'student_page.html';
+                return;
+            }
+
+            // show the message if not part of the data
+            div_error.textContent = 'Invalid email or password. Try again';
+            div_error.style.display = 'block';
+        
+        });
+
+    </script>
+
+
+</html>
