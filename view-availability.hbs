@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab Slot Availability</title>
+  <!--Page for viewing the slots in each laboratory-->
+  <link rel="stylesheet" href="/css/view-availability-design.css"/>
+
+
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" onclick="history.back()"> ReserveALab </a>
+  </nav>
+
+  <div class="container">
+    <h2>View Lab Slot Availability</h2>
+
+    <form id="view-slots-form" method="GET" action="/view-slots">
+
+      <div class="form-row">
+
+        <div class="form-group">
+          <label for="lab">Laboratory</label>
+          <select id="lab">
+            <option value="G301">G301</option>
+            <option value="G302">G302</option>
+            <option value="G303">G303</option>
+            <option value="G304">G304</option>
+            <option value="G305">G305</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="time">Time Slot</label>
+          <select id="time">
+              <option value="">All Times</option>
+              <option value="08:00">08:00 - 08:30</option>            
+              <option value="08:30">08:30 - 09:00</option>            
+              <option value="09:00">09:00 - 09:30</option>            
+              <option value="09:30">09:30 - 10:00</option>            
+              <option value="10:00">10:00 - 10:30</option>            
+              <option value="10:30">10:30 - 11:00</option>            
+              <option value="11:00">11:00 - 11:30</option>            
+              <option value="11:30">11:30 - 12:00</option>            
+              <option value="12:00">12:00 - 12:30</option>            
+              <option value="12:30">12:30 - 01:00</option>          
+              <option value="01:00">01:00 - 01:30</option>              
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="date" id="date" />
+        </div>
+        <div class="form-group">
+          <button type="submit">View Availability</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="return-btn-container">
+      <a onclick="history.back()" class="return-btn">Previous Page</a>
+    </div>
+
+    <div class="row" id="slotsContainer">
+      <!-- Slots rendered via JavaScript -->
+    </div>
+  </div>
+
+
+  
+  <script>
+    /* Everything in this script will be changed */
+    const sampleData = {
+      G301: {
+        reserved: [
+          { slot: 1, user: 'Jesus Planta', time: '8:30 - 9:00' },
+          { slot: 2, user: 'Luis Sebastian', time: '8:30 - 9:00' },
+          { slot: 3, user: 'Andre Chu', time: '8:30 - 9:00' },
+          { slot: 4, user: 'Joaquin Tin', time: '8:30 - 9:00' },
+          { slot: 5, user: 'CCAPDEV Student', time: '8:30 - 9:00' },
+        ],
+        totalSlots: 35
+      },
+
+      G302: {
+
+        reserved: [
+          { slot: 6, user: 'Joaquin Tin', time: '9:30 - 10:00'},
+          { slot: 7, user: 'Luis Sebastian', time: '9:30 - 10:00'},
+          { slot: 8, user: 'Andre Chu', time: '9:30 - 10:00'},
+        ],
+        totalSlots: 35
+      },
+
+      G303: {
+        reserved: [
+          { slot: 10, user: 'Joaquin Tin', time: '10:30 - 11:00'},
+          { slot: 11, user: 'Luis Sebastian', time: '10:30 - 11:00' },
+          { slot: 12, user: 'Andre Chu', time: '10:30 - 11:00' },
+        ],
+        totalSlots: 35
+      },
+
+      G304: {
+        reserved: [
+          { slot: 13, user: 'CCAPDEV Student', time: '10:30 - 11:00' },
+          { slot: 14, user: 'Jesus Planta', time: '10:30 - 11:00' },
+        ],
+        totalSlots: 35
+      },
+
+      G305: {
+        reserved: [
+          { slot: 16, user: 'CCAPDEV Student', time: '10:30 - 11:00' },
+          { slot: 17, user: 'Andre Chu', time: '10:30 - 11:00' },
+          { slot: 18, user: 'Jesus Planta', time: '10:30 - 11:00' },
+        ],
+        totalSlots: 35
+      }
+
+    };
+
+    const form = document.getElementById('filterForm');
+    const slotsContainer = document.getElementById('slotsContainer');
+
+    function loadSlots(){
+      const lab = document.getElementById('lab').value;
+      const data = sampleData[lab];
+      const reservedSlots = data.reserved.map(r => r.slot);
+      const totalSlots = data.totalSlots;
+
+      slotsContainer.innerHTML = '';
+
+      for (let i = 1; i <= totalSlots; i++) {
+        const card = document.createElement('div');
+        card.className = 'seat-card';
+
+        if (reservedSlots.includes(i)) {
+          const user = data.reserved.find(r => r.slot === i).user;
+          card.innerHTML = `<div class="card seat-reserved">Slot ${i}<br><small>Reserved by <a href="#">${user}</a></small></div>`;
+        } else {
+          card.innerHTML = `<div class="card seat-available">Slot ${i}<br><small>Available</small></div>`;
+        }
+        slotsContainer.appendChild(card);
+
+      }
+
+    };
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      loadSlots();
+    })
+
+    window.addEventListener('load', loadSlots);
+
+  </script>
+</body>
+</html>
