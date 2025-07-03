@@ -1,0 +1,239 @@
+:root{
+    --primary-green: #36b53d;
+    --beige-bg: #F9F5EB;
+    --text-color: black;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: var(--beige-bg);
+    color: var(--text-color);
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container-fluid.p-0{
+    padding: 0;
+}
+
+.row.g-0{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.row.g-0 > [class*="col-"]{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.hero-container{
+    background: linear-gradient(135deg, var(--primary-green) 0%, #219227 100%) ;
+    color: var(--primary-green);
+    display: flex;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex: 1;
+}
+
+
+.side-panel{
+    background-color: var(--beige-bg);
+    min-height: 100vh;
+    padding: 2.5rem 1rem;
+    border-right: 2.5px solid var(--primary-green);
+
+}
+
+.side-panel-title{
+    color: var(--primary-green);
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.user-account-buttons{
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+/*buttons for side panel*/
+.btn.btn-custom{
+    background-color: white;
+    color: var(--primary-green);
+    border: 2.5px solid var(--primary-green);
+    border-radius: 10px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+    width: 60%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 1rem 1rem;
+    font-size: 14px;
+    display: block;
+    margin: auto;
+    gap: 1rem;
+    margin-top: 2rem;
+
+}
+
+.btn.btn-primary{
+    background-color: white;
+    color: var(--primary-green);
+    border: 2.5px solid var(--primary-green);
+    border-radius: 10px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+    width: 30%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 1rem 2rem;
+    font-size: 14px;
+
+    display: block;
+    margin: auto;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+
+.btn.btn-custom:hover, .btn.btn-primary:hover{
+    background-color: var(--beige-bg);
+    color: var(--primary-green);
+    transform: translateY(-2px);
+    border: 2.5px solid var(--primary-green);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);   
+}
+
+.btn.btn-custom:focus, .btn.btn-custom:active,
+.btn.btn-primary:focus, .btn.btn-primary:active {
+
+    background-color: var(--beige-bg);
+    color: black;
+    border: 2.5px solid var(--primary-green);
+    font-weight: bold;
+    outline: none;
+    box-shadow: none;
+}
+
+
+.nav-links{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li{
+    margin-bottom: 1.5rem;
+}
+
+.nav-links a{
+    color: var(--primary-green);
+    text-decoration: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 1rem 1rem;
+    border-radius: 5px;
+    transition: all 0.3 ease;
+    width: 60%;
+    display: block;
+    margin: auto;
+}
+
+.nav-links a:hover{
+    color: var(--beige-bg);
+    background: linear-gradient(135deg, var(--primary-green) 0%, #219227 100%) ;
+    transform: translateX(4px);
+}
+
+.container-title {
+    color: var(--primary-green);
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.card{
+    background-color: var(--beige-bg);
+    height: 70%;
+    width: 60%;
+    padding: 4rem;
+    border-radius: 1rem;
+    border: 2px solid white;
+    box-shadow: 0 4px 12px rgba(128, 0, 0, 0.15);
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+input[type="select"], input[type="password"], input[type="email"], select {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1.2rem;
+    border: 1.5px solid var(--primary-green);
+    border-radius: 0.5rem;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+/*Responsive adjusments when screen size is adjusted*/
+@media (max-width: 768px){
+    .side-panel{
+        min-height: auto;
+        border-right: none;
+        border-bottom: 2px solid var(--primary-green);
+    }
+
+}
+
+.hero-container{
+        animation: fadeInDown 1.0s ease-out;
+    }
+
+.side-panel{
+        animation: slideInLeft 1.0s ease-out;
+    }
+
+
+@keyframes fadeInDown{
+    from{
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(0);
+    }
+}
+
+@keyframes slideInLeft{
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+     to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
