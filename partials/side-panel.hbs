@@ -1,0 +1,25 @@
+<div class="col-lg-3 col-md-4">
+    <div class="side-panel">
+        <h1 class="side-panel-title">ReserveALab</h1>
+        <div class="user-account-buttons">
+
+            <a href="/logout" >
+                <button type="button" class="btn btn-custom"> Logout </button>
+            </a>
+            <!--Properly route these-->
+
+            <a href="/availability" >
+                <button type="button" class="btn btn-custom"> View Availabile Slots </button>
+            </a>
+            
+        </div>
+        <nav>
+            <ul class="nav-links">
+                {{#each menuItems}}
+                    <li><a href="{{this.link}}">{{this.title}}</a></li>
+                {{/each}}
+            </ul>
+        </nav>
+    </div>
+</div>
+
