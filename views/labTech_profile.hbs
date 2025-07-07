@@ -1,0 +1,119 @@
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Lab Technician Profile Page</title>
+        <link rel="stylesheet" href="/css/labTech_profile.css"/>
+        <!-- The profile faculty page-->
+
+        <!-- Import Bootstrap-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+        <div class="container-fluid p-0">
+            <div class="row g-0">
+
+                <!--Side Panel Content containing navigation links and user account buttons-->
+                <div class="col-lg-3 col-md-4">
+
+                    <div class="side-panel">
+                        <h1 class="side-panel-title">ReserveALab</h1>
+
+                        <div class="user-account-buttons">
+                            
+                            <a href="new-login.html" >
+                                <button type="button" class="btn btn-custom"> Logout </button>
+                            </a>
+
+                            <a href="/view-slots" >
+                                <button type="button" class="btn btn-custom"> View Availabile Slots </button>
+                            </a>
+                        </div>
+
+                        <nav>
+                            <!-- Will update links later -->
+                            <ul class="nav-links">
+                                <li><a href="/technician?userId={{userId}}">Technician Homepage </a></li>
+                            </ul>
+                        </nav>
+
+                        <div class="delete-section">
+                            <button class="delete-button" onclick="deleteAccount()">Delete Account</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+
+                
+                <div class="col-lg-9 col-md-8">
+
+                    <div class="hero-container">
+                        <section class="mb-5">
+                            <h2 class="hero-title"> Faculty Profile</h2>
+
+                             <!-- Profile Info -->
+                            <div class="card">
+                              <div class="card-body profile">
+
+                                <div class="profile-info">
+                                    <h4>{{user.name.first}} {{user.name.last}}</h4>
+                                    <p>{{user.email}}</p>                                    
+                                    <p>{{user.profile_description}}</p>
+                                </div>
+
+                              </div>
+                            </div>
+                            <!-- Edit Profile Form -->
+                        
+                            <div class="card">
+                              <div class="card-header">Edit Profile</div>
+                              <div class="card-body">
+                                <form>
+                                  <label for="description">Profile Description</label>
+                                  <textarea id="description" rows="3"></textarea>
+                                  <label for="profilePic">Upload Profile Picture</label>
+                                  <input type="file" id="profilePic">
+                                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </form>
+                              </div>
+                            </div>
+                        
+                            <!-- Reservation List -->
+                            <div class="card">
+                              <div class="card-header">Current Reservations Made</div>
+                                <ul class="list-group">
+                                  {{#each reservations}}
+                                  <li class="list-group-items">
+                                    {{laboratory}} - Seat {{seat_number}} - {{formatDate reservation_date}}
+                                  </li>
+                                  {{else}}
+                                    <li class="list-group-items"> No reservations found </li>
+                                  {{/each}}
+                                </ul>
+                            </div>
+
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      <script>
+        function deleteAccount() {
+          if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+            // Simulated action: Replace this with actual backend call (e.g., fetch or AJAX)
+            alert("Account deleted successfully.");
+
+            // Redirect to login or homepage after deletion
+            window.location.href = "new-login.html";
+          }
+        }
+      </script>
+        
+    </body>
+</html>
