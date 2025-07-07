@@ -1,8 +1,9 @@
 First Installation of Packages and other requirements:
 1. npm init
 2. npm i express
-3. npm install mongodb
-4. npm install mongoose
+3. npm install express-handlebars
+4. npm install mongodb
+5. npm install mongoose
 
 ======================================================================================
 CURRENT FILE STRUCTURE WHEN SETTING UP:
