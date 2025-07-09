@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const {UserProfile} = require('./models/User');
 const {Reservation} = require('./models/Reservation');
 
+// Connect to the database
 mongoose.connect('mongodb://localhost:27017/ReserveALabDB', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })  .then(() => console.log("MongoDB connected"))
     .catch(err => console.log("MongoDB error:", err));
 
+// Sample data for users
 const sampleUsers = [
     {   name: {first: 'Andre', last: 'Chu'}, 
         email: 'andre_chu@dlsu.edu.ph', 
@@ -96,7 +98,7 @@ const sampleUsers = [
     }    
 ];
 
-
+// Sample data for reservations
 const sampleReservations = [
     {
         user_id: new mongoose.Types.ObjectId(),
@@ -168,12 +170,15 @@ async function seedTheDatabase(){
         await UserProfile.deleteMany({});
         await Reservation.deleteMany({});
 
+        //Put all sample users
         const user = await UserProfile.insertMany(sampleUsers);
         console.log(`Inserted ${user.length} users`);
         
+        //Put all sample reservations
         const reserve = await Reservation.insertMany(sampleReservations);
         console.log(`Inserted ${reserve.length} reservations`);
 
+        // Exit the connection
         console.log('Database has been seeded.');
         process.exit(0);
 

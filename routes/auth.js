@@ -6,8 +6,10 @@ router.post('/user-login', async (req, res) => {
     
     try {
         const {email, password} = req.body;
+        // Check if user exists 
         const user = await UserProfile.findOne({email, password});
 
+        // if user exists, redirect to the proper page depending on user type
         if (user){
             if (user.user_type === 'faculty'){
                 return res.redirect(`/technician?userId=${user._id}`);
@@ -24,13 +26,47 @@ router.post('/user-login', async (req, res) => {
 
 
 
-router.post('/user-registration', (req, res) => {
+router.post('/user-registration', async (req, res) => {
     // Registration logic
-    const { email, password, role } = req.body;
+    const { first_name, last_name, email, password, user_type } = req.body;
     
-    //add to database logic here
+    try {
+        // check if the email is a valid dlsu email
+        const email_regex = /^[a-z]+_[a-z]+@dlsu\.edu\.ph$/;
+        if (!email_regex.test(email)){
+            return res.render('new-register', {
+                // display error if not
+                error: 'Invalid DLSU email format. Use: firstname_lastname@dlsu.edu.ph'
+            });
+        }
 
-    res.redirect('/user-login');
+        // check the database if the email already exists
+        const is_existing_user = await UserProfile.findOne({ email });
+        if (is_existing_user){
+            return res.render('new-register', {
+                error: 'Email is already registered.'
+            });
+        }
+
+        // create the user object with the given values from the body
+        const new_user = new UserProfile({
+            name: {
+                first: first_name, 
+                last: last_name
+            }, 
+            email, 
+            password, 
+            user_type, 
+            university: 'De La Salle University' + user_type
+        });
+
+        // save the user, and redirect to the login page
+        await new_user.save();
+        res.redirect('/user-login?success=Registration successful.');
+
+    } catch (error){ // show error if there's an error in registration
+        res.render('new-register', {error: 'Registration failure.'})
+    }
 });
 
 router.get('/logout', (req, res) => {
