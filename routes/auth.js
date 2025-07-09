@@ -57,7 +57,7 @@ router.post('/user-registration', async (req, res) => {
             email, 
             password, 
             user_type, 
-            university: 'De La Salle University' + user_type
+            university: 'De La Salle University ' + user_type
         });
 
         // save the user, and redirect to the login page
