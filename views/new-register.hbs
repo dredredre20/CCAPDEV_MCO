@@ -54,27 +54,39 @@
 
                             <h2 class="container-title">Register</h2>
 
-                            <form class="user-registration-form" method="POST" action="/user-registration">
+                            {{#if error}}
+                            <div class="alert alert-danger">
+                                {{error}}
+                            </div>
+                            {{/if}}
+
+                            <form id= "user-registration-form" class="user-registration-form" method="POST" action="/user-registration">
                             
                               <div class="form-group">
 
+                                <label for="first_name"> First Name</label>
+                                <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
+
+                                <label for="last_name"> Last Name</label>
+                                <input type="text" id="last_name" name="last_name" placeholder="Last Name" required>
+
                                 <label for="email">DLSU Email</label>
-                                <input type="email" id="username" name="username" placeholder="Username" required>
+                                <input type="email" id="email" name="email" placeholder="Username" required>
                                 
-                                <label for="email">Password</label>
-                                <input type="password" id="password" name="password" placeholder="Password" required>
+                                <label for="password">Password (minimum of 8 characters)</label>
+                                <input type="password" id="password" name="password" placeholder="Password" minlength="8" required>
                               </div>
                             
                             
                               <div class="form-group">
-                                <select type= "select" id="role" name="role" required>
+                                <label for="user_type">Role</label>
+                                <select id="user_type" name="user_type" required>
                                     <option value="">Select Role</option>
                                     <option value="student">Student</option>
                                     <option value="faculty">Faculty</option>
                                 </select>
                               </div>
-                                <!-- Change this for the crud-->
-                                  <a href="new-login.html" class="btn btn-primary">Submit Registration</a>
+                                <button type="submit" class="btn btn-primary"> Submit Registration</button>
                             </form>
                         
                         </div>
@@ -84,6 +96,8 @@
 
             </div>
         </div>
-        
+
+        <script src="/js/register-validation.js"></script>
+
     </body>
 </html>
