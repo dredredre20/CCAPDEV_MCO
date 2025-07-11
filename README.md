@@ -38,11 +38,6 @@
 - Technician and student roles
 - Responsive UI
 
-## Authors
-
-- Reservation CRUD: Jesus, Luis, Andre, Joaquin
-- User CRUD: Andre, Jesus, Luis, Joaquin
-
 First Installation of Packages and other requirements:
 1. npm init
 2. npm i express
