@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technician Profile Page</title>
+  <link rel="stylesheet" href="/css/labTech_profile.css"/>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+
+      <!-- Side Panel -->
+      <div class="col-lg-3 col-md-4">
+        <div class="side-panel">
+          <h1 class="side-panel-title">ReserveALab</h1>
+
+          <div class="user-account-buttons">
+            <a href="/user-login">
+              <button type="button" class="btn btn-custom">Logout</button>
+            </a>
+            <a href="/view-slots">
+              <button type="button" class="btn btn-custom">View Available Slots</button>
+            </a>
+          </div>
+
+          <nav>
+            <ul class="nav-links">
+              <li><a href="/technician?techId={{tech._id}}">Technician Homepage</a></li>
+            </ul>
+          </nav>
+
+          <div class="delete-section">
+            <button class="delete-button" onclick="deleteAccount()">Delete Account</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-9 col-md-8">
+        <div class="hero-container">
+          <section class="mb-5">
+            <h2 class="hero-title"> Technician Profile</h2>
+
+            <!-- Profile Info -->
+            <div class="card">
+              <div class="card-body profile">
+                <div class="profile-info">
+                  <h4>{{tech.name.first}} {{tech.name.last}}</h4>
+                  <p>{{tech.email}}</p>                                    
+                  <p>{{tech.profile_description}}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="card">
+              <div class="card-header">Edit Profile</div>
+              <div class="card-body">
+                <form method="POST" action="/technician/profile/edit">
+                  <input type="hidden" name="techId" value="{{tech._id}}">
+                  <label for="description">Profile Description</label>
+                  <textarea id="description" name="description" rows="3" style="color:black;">{{tech.profile_description}}</textarea>
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Reservation List -->
+            <div class="card">
+              <div class="card-header">Current Reservations</div>
+              <ul class="list-group">
+                {{#each reservations}}
+                  <li class="list-group-items">
+                    {{laboratory}} - Seat {{seat_number}} - {{formatDate reservation_date}}
+                  </li>
+                {{else}}
+                  <li class="list-group-items">No reservations found</li>
+                {{/each}}
+              </ul>
+            </div>
+
+          </section>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function deleteAccount() {
+      if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+        window.location.href = "/user-login"; // Simulated; hook to backend logic later
+      }
+    }
+  </script>
+</body>
+</html>

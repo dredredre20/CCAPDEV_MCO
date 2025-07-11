@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab Slot Availability</title>
+  <link rel="stylesheet" href="/css/view-availability-design.css"/>
+</head>
+
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="/">ReserveALab</a>
+  </nav>
+
+  <div class="container">
+    <h2>View Lab Slot Availability</h2>
+
+    <form id="view-slots-form" method="GET" action="/view-slots">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="lab">Laboratory</label>
+          <select id="lab" name="lab" required>
+            <option value="G301">G301</option>
+            <option value="G302">G302</option>
+            <option value="G303">G303</option>
+            <option value="G304">G304</option>
+            <option value="G305">G305</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="time">Time Slot</label>
+          <select id="time" name="time">
+            <option value="">All Times</option>
+            <option value="08:00">08:00 - 08:30</option>            
+            <option value="08:30">08:30 - 09:00</option>            
+            <option value="09:00">09:00 - 09:30</option>            
+            <option value="09:30">09:30 - 10:00</option>            
+            <option value="10:00">10:00 - 10:30</option>            
+            <option value="10:30">10:30 - 11:00</option>            
+            <option value="11:00">11:00 - 11:30</option>            
+            <option value="11:30">11:30 - 12:00</option>            
+            <option value="12:00">12:00 - 12:30</option>            
+            <option value="12:30">12:30 - 01:00</option>          
+            <option value="01:00">01:00 - 01:30</option>              
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="date" id="date" name="date" required />
+        </div>
+
+        <div class="form-group">
+          <button type="submit">View Availability</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="return-btn-container">
+      <a href="/" class="return-btn">Return to Home</a>
+    </div>
+
+    <div class="row" id="slotsContainer">
+      {{#if slots.length}}
+        {{#each slots}}
+          <div class="seat-card {{#if this.reserved}}seat-reserved{{else}}seat-available{{/if}}">
+            Slot {{this.seat_number}}<br />
+            <small>
+              {{#if this.reserved}}
+                Reserved{{#unless this.anonymous}} by {{this.name}}{{/unless}}
+              {{else}}
+                Available
+              {{/if}}
+            </small>
+          </div>
+        {{/each}}
+      {{else}}
+        <p>No data found. Try changing your filters.</p>
+      {{/if}}
+    </div>
+  </div>
+
+  <script>
+  document.getElementById('view-slots-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const params = new URLSearchParams(new FormData(form)).toString();
+    fetch('/reservations/availability?' + params)
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('slotsContainer').innerHTML = html;
+      });
+  });
+  </script>
+</body>
+</html>

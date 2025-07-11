@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technician Page</title>
+  <link rel="stylesheet" href="/css/lab_technician_page.css"/>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+
+      <!-- Side Panel -->
+      <div class="col-lg-3 col-md-4">
+        <div class="side-panel">
+          <h1 class="side-panel-title">ReserveALab</h1>
+
+          <div class="user-account-buttons">
+            <a href="/user-login">
+              <button type="button" class="btn btn-custom">Logout</button>
+            </a>
+
+            <a href="/view-slots">
+              <button type="button" class="btn btn-custom">View Available Slots</button>
+            </a>
+          </div>
+
+          <nav>
+            <ul class="nav-links">
+              <li><a href="/">Main Homepage</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-9 col-md-8">
+        <div class="hero-container">
+          <section class="mb-5">
+            <h2 class="hero-title"> Technician Functionalities </h2>
+
+            <div class="col-md-4">
+              <div class="function-card">
+                <h4> Reserve a Spot </h4>
+                <a href="/technician/reserve?techId={{techId}}">Reserve Now</a>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="function-card">
+                <h4> Check Profile </h4>
+                <a href="/technician/profile?techId={{techId}}">Check Now</a>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="function-card">
+                <h4> Edit a Reservation </h4>
+                <a href="/technician/edit?techId={{techId}}">Edit Now</a>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="function-card">
+                <h4> Remove a Reservation </h4>
+                <a href="/technician/remove?techId={{techId}}">Remove Now</a>
+              </div>
+            </div>
+
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

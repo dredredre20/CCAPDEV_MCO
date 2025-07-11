@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Main Login Page</title>
+  <link rel="stylesheet" href="/css/new-login.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+
+      <div class="col-lg-3 col-md-4">
+        <div class="side-panel">
+          <h1 class="side-panel-title">ReserveALab</h1>
+          <div class="user-account-buttons">
+            <a href="/user-registration"><button type="button" class="btn btn-custom">Register</button></a>
+            <a href="/view-slots"><button type="button" class="btn btn-custom">View Available Slots</button></a>
+          </div>
+          <nav>
+            <ul class="nav-links">
+              <li><a href="/">Main Homepage</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="col-lg-9 col-md-8">
+        <div class="hero-container">
+          <div class="card">
+            <h2 class="container-title">Login</h2>
+
+            <form id="user-login-form" method="POST" action="/user-login">
+              <div class="form-group">
+                <label for="email">DLSU Email</label>
+                <input type="email" id="email" name="email" placeholder="name_lastname@dlsu.edu.ph" required>
+              </div>
+
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+              </div>
+
+              <div class="form-group">
+                <input type="checkbox" id="remember_me" name="remember_me">
+                <label for="remember_me">Remember me for 3 weeks</label>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Submit Login</button>
+
+              <div id="errorMessage" style="color:red; margin-top: 10px; display: none"></div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

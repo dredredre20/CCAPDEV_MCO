@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Reserve A Lab</title>
+  <link rel="stylesheet" href="/css/new-reserve.css"/>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+
+      <!-- Side Panel -->
+      <div class="col-lg-3 col-md-4">
+        <div class="side-panel">
+          <h1 class="side-panel-title">ReserveALab</h1>
+
+          <div class="user-account-buttons">
+            <a href="/user-login">
+              <button type="button" class="btn btn-custom">Logout</button>
+            </a>
+
+            <a href="/view-slots">
+              <button type="button" class="btn btn-custom">View Available Slots</button>
+            </a>
+          </div>
+
+          <nav>
+            <ul class="nav-links">
+              <li><a href="/student?userId={{userId}}">Student Homepage</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-9 col-md-8">
+        <div class="hero-container">
+          <h2 class="hero-title">Reserve A Laboratory</h2>
+
+          <form method="POST" action="/student/reserve">
+            <input type="hidden" name="userId" value="{{userId}}" />
+
+            <div class="form-group">
+              <label for="laboratory">Laboratory:</label>
+              <select name="laboratory" id="laboratory" required>
+                <option value="G301">G301</option>
+                <option value="G302">G302</option>
+                <option value="G303">G303</option>
+                <option value="G304">G304</option>
+                <option value="G305">G305</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="reservation_date">Date:</label>
+              <input type="date" name="reservation_date" id="reservation_date" required>
+            </div>
+
+            <div class="form-group">
+              <label for="time">Time Slot:</label>
+              <select name="time" id="time" required>
+                <option value="08:00">08:00 - 08:30</option>
+                <option value="08:30">08:30 - 09:00</option>
+                <option value="09:00">09:00 - 09:30</option>
+                <option value="09:30">09:30 - 10:00</option>
+                <option value="10:00">10:00 - 10:30</option>
+                <option value="10:30">10:30 - 11:00</option>
+                <option value="11:00">11:00 - 11:30</option>
+                <option value="11:30">11:30 - 12:00</option>
+                <option value="12:00">12:00 - 12:30</option>
+                <option value="12:30">12:30 - 01:00</option>
+                <option value="01:00">01:00 - 01:30</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="seat_numbers">Select Seat Numbers (1-35):</label>
+              <div id="seat-checkboxes">
+                {{#each (range 1 36)}}
+                  <label style="display:inline-block;width:60px;">
+                    <input type="checkbox" name="seat_numbers" value="{{this}}"> {{this}}
+                  </label>
+                {{/each}}
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Reserve Slot</button>
+          </form>
+
+          {{#if error}}
+            <div class="alert alert-danger mt-3">{{error}}</div>
+          {{/if}}
+
+          {{#if success}}
+            <div class="alert alert-success mt-3">{{success}}</div>
+          {{/if}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
