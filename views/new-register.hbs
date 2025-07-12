@@ -35,7 +35,13 @@
           <div class="card">
             <h2 class="container-title">Register</h2>
 
-            <form class="user-registration-form" method="POST" action="/user-registration">
+            {{#if error}}
+            <div class="alert alert-danger">
+                {{error}}
+            </div>
+            {{/if}}
+
+            <form id= "user-registration-form" class="user-registration-form" method="POST" action="/user-registration">
               <div class="form-group">
                 <label for="first">First Name</label>
                 <input type="text" id="first" name="first" placeholder="First Name" required>
@@ -74,5 +80,7 @@
       </div>
     </div>
   </div>
+
+  <script src="/js/register-validation.js"></script>
 </body>
 </html>
