@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const {UserProfile} = require('./models/User');
 const {Reservation} = require('./models/Reservation');
+const bcrypt = require('bcrypt');
 
 mongoose.connect('mongodb://localhost:27017/ReserveALabDB', {
     useNewUrlParser: true,
@@ -168,10 +169,31 @@ async function seedTheDatabase(){
         await UserProfile.deleteMany({});
         await Reservation.deleteMany({});
 
-        const user = await UserProfile.insertMany(sampleUsers);
-        console.log(`Inserted ${user.length} users`);
+        const hashedUsers = await Promise.all(sampleUsers.map(async (user) => {
+            const hashedPassword = await bcrypt.hash(user.password, 10);
+            return {
+                ...user,
+                password: hashedPassword
+            };
+        }));
+
+        const users = await UserProfile.insertMany(hashedUsers);
+        console.log(`Inserted ${users.length} users`);
+
+        const reservationsToInsert = sampleReservations.map(res => {
+            const user = users.find(u => u.email === res.email);
+            return {
+                ...res,
+                user_id: user._id, 
+                laboratory: res.laboratory, 
+                reservation_date: res.reservation_date, 
+                time_slot: res.time_slot, 
+                seat_number: res.seat_number, 
+                is_anonymous: res.is_anonymous
+            };
+        });
         
-        const reserve = await Reservation.insertMany(sampleReservations);
+        const reserve = await Reservation.insertMany(reservationsToInsert);
         console.log(`Inserted ${reserve.length} reservations`);
 
         console.log('Database has been seeded.');
