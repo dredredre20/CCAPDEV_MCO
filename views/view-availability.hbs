@@ -15,7 +15,7 @@
   <div class="container">
     <h2>View Lab Slot Availability</h2>
 
-    <form id="view-slots-form" method="GET" action="/view-slots">
+    <form id="view-slots-form" method="GET" action="/reservations/availability">
       <div class="form-row">
         <div class="form-group">
           <label for="lab">Laboratory</label>
@@ -61,37 +61,94 @@
       <a href="/" class="return-btn">Return to Home</a>
     </div>
 
-    <div class="row" id="slotsContainer">
-      {{#if slots.length}}
-        {{#each slots}}
-          <div class="seat-card {{#if this.reserved}}seat-reserved{{else}}seat-available{{/if}}">
-            Slot {{this.seat_number}}<br />
-            <small>
-              {{#if this.reserved}}
-                Reserved{{#unless this.anonymous}} by {{this.name}}{{/unless}}
-              {{else}}
-                Available
-              {{/if}}
-            </small>
+    <div class="grid-container">
+      <div class="grid-header">
+        <div>Seat #</div>
+        <div>Status</div>
+        {{#if time}}
+          <div>Time Slot</div>
+        {{/if}}
+        <div>Reserved By</div>
+      </div>
+      <div class="grid-body" id="slotsContainer">
+        {{#if slots.length}}
+          {{#if time}}
+            <!---->
+            {{#each slots}}
+              <div class="grid-row {{#if reserved}}reserved{{else}}available{{/if}}">
+                <div class="seat-number">#{{this.seat_number}}</div>
+                <div class="status">
+                  {{#if this.reserved}}
+                    <span class="status-badge reserved">Reserved</span>
+                  {{else}}
+                    <span class="status-badge available">Available</span>
+                  {{/if}}
+                </div>
+                <div class="time-slot">
+                  {{#if this.reserved}}{{this.time_slot}}{{else}}-{{/if}}
+                </div>
+                <div class="reserved-by">
+                  {{#if this.reserved}}
+                    {{#if this.anonymous}}
+                      <span class="anonymous">Anonymous</span>
+                    {{else}}
+                      {{this.name}}
+                    {{/if}}
+                  {{else}}
+                    -
+                  {{/if}}
+                </div>
+              </div>
+            {{/each}}
+          {{else}}
+            {{!-- All times view --}}
+            {{#each slots}}
+              <div class="grid-row {{#if reserved}}reserved{{else}}available{{/if}}">
+                <div class="seat-number">#{{this.seat_number}}</div>
+                <div class="status">
+                  {{#if this.reserved}}
+                    <span class="status-badge reserved">Reserved</span>
+                  {{else}}
+                    <span class="status-badge available">Available</span>
+                  {{/if}}
+                </div>
+                <div class="reservation-details">
+                  {{#if this.reserved}}
+                    <div class="reservation-list">
+                      {{#each this.reservations}}
+                        <div class="reservation-item">
+                          <span class="time-slot">{{this.time_slot}}</span>
+                          <span class="reserved-by">
+                            {{#if this.anonymous}}
+                              <span class="anonymous">Anonymous</span>
+                            {{else}}
+                              {{this.name}}
+                            {{/if}}
+                          </span>
+                        </div>
+                      {{/each}}
+                    </div>
+                  {{else}}
+                    <div class="no-reservation">-</div>
+                  {{/if}}
+                </div>
+              </div>
+            {{/each}}
+          {{/if}}
+        {{else}}
+          <div class="no-results">
+            <p>No seats found. Try changing your filters.</p>
           </div>
-        {{/each}}
-      {{else}}
-        <p>No data found. Try changing your filters.</p>
-      {{/if}}
+        {{/if}}
+      </div>
     </div>
+
+
   </div>
 
-  <script>
-  document.getElementById('view-slots-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = e.target;
-    const params = new URLSearchParams(new FormData(form)).toString();
-    fetch('/reservations/availability?' + params)
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('slotsContainer').innerHTML = html;
-      });
-  });
-  </script>
+  <!-- view slots script -->
+   <script src="/js/view-slots.js"></script>
+
+
 </body>
 </html>
