@@ -26,9 +26,23 @@ const sampleUsers = [
                 is_anonymous: false, 
             },
             {
+                laboratory: 'G302', 
+                reservation_date: new Date('2025-07-09'), 
+                time_slot: '08:30-9:00', 
+                seat_number: 3, 
+                is_anonymous: true, 
+            },
+            {
                 laboratory: 'G301', 
                 reservation_date: new Date('2025-07-21'), 
                 time_slot: '11:30-12:00', 
+                seat_number: 5, 
+                is_anonymous: true, 
+            }, 
+            {
+                laboratory: 'G301', 
+                reservation_date: new Date('2025-07-21'), 
+                time_slot: '12:00-12:30', 
                 seat_number: 5, 
                 is_anonymous: true, 
             }
@@ -80,7 +94,7 @@ const sampleUsers = [
     {
         name: {first: 'Luis', last: 'Biacora'}, 
         email: 'luis_biacora@dlsu.edu.ph', 
-        password: 'cybersec456', 
+        password: 'Cybersec_456', 
         user_type: 'faculty', 
         university: 'UP Diliman Graduate',
         profile_description: 'Interested in Cybersecurity', 
@@ -89,7 +103,7 @@ const sampleUsers = [
     {
         name: {first: 'Ramon', last: 'Alcaide'}, 
         email: 'ramon_alcaide@dlsu.edu.ph', 
-        password: 'eleceng789', 
+        password: 'Eleceng_789', 
         user_type: 'faculty', 
         university: 'UP Diliman Graduate',
         profile_description: 'Interested in Electrical Engineering', 
@@ -169,6 +183,7 @@ async function seedTheDatabase(){
         await UserProfile.deleteMany({});
         await Reservation.deleteMany({});
 
+        // Hash the password, the same way in register so it recognizes the data in the database
         const hashedUsers = await Promise.all(sampleUsers.map(async (user) => {
             const hashedPassword = await bcrypt.hash(user.password, 10);
             return {
@@ -180,6 +195,7 @@ async function seedTheDatabase(){
         const users = await UserProfile.insertMany(hashedUsers);
         console.log(`Inserted ${users.length} users`);
 
+        // Map the reservations made by the user
         const reservationsToInsert = sampleReservations.map(res => {
             const user = users.find(u => u.email === res.email);
             return {
