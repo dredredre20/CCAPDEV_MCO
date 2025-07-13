@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Faculty - Edit Reservations</title>
+  <link rel="stylesheet" href="/css/new-edit_reserve.css"/>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+
+      <!-- Side Panel -->
+      <div class="col-lg-3 col-md-4">
+        <div class="side-panel">
+          <h1 class="side-panel-title">ReserveALab</h1>
+
+          <div class="user-account-buttons">
+            <a href="/user-login">
+              <button type="button" class="btn btn-custom">Logout</button>
+            </a>
+
+            <a href="/view-slots">
+              <button type="button" class="btn btn-custom">View Available Slots</button>
+            </a>
+          </div>
+
+          <nav>
+            <ul class="nav-links">
+              <li><a href="/faculty?userId={{userId}}">Faculty Homepage</a></li>
+              <li><a href="/faculty/reserve?userId={{userId}}">Make New Reservation</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-9 col-md-8">
+        <div class="hero-container">
+          <h2 class="hero-title">Faculty - Edit Reservations</h2>
+
+          {{#if reservations.length}}
+            <div class="reservations-list">
+              {{#each reservations}}
+                <div class="reservation-item">
+                  <div class="reservation-details">
+                    <strong>Laboratory:</strong> {{laboratory}}<br>
+                    <strong>Date:</strong> {{formatDate reservation_date 'YYYY-MM-DD'}}<br>
+                    <strong>Time:</strong> {{time_slot_display}}<br>
+                    <strong>Seat:</strong> {{seat_number}}<br>
+                    {{#if reservation_type}}
+                      <strong>Type:</strong> {{reservation_type}}<br>
+                    {{/if}}
+                    {{#if course_code}}
+                      <strong>Course:</strong> {{course_code}}<br>
+                    {{/if}}
+                    {{#if purpose}}
+                      <strong>Purpose:</strong> {{purpose}}<br>
+                    {{/if}}
+                    {{#if description}}
+                      <strong>Description:</strong> {{description}}<br>
+                    {{/if}}
+                  </div>
+                  <div class="reservation-actions">
+                    <button class="btn btn-primary btn-sm" onclick="editReservation('{{_id}}', '{{laboratory}}', '{{formatDate reservation_date 'YYYY-MM-DD'}}', '{{time_slot}}', {{seat_number}})">Edit</button>
+                    <form method="POST" action="/faculty/remove-reservation" style="display: inline;">
+                      <input type="hidden" name="userId" value="{{../userId}}">
+                      <input type="hidden" name="reservationId" value="{{_id}}">
+                      <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this reservation?')">Remove</button>
+                    </form>
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            <div class="no-reservations">
+              <p>No reservations found. <a href="/faculty/reserve?userId={{userId}}">Make a new reservation</a></p>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Edit Reservation</h4>
+        </div>
+        <form method="POST" action="/faculty/edit-reservation">
+          <div class="modal-body">
+            <input type="hidden" name="reservationId" id="edit_id">
+            <input type="hidden" name="userId" value="{{userId}}">
+            
+            <div class="form-group">
+              <label>Laboratory</label>
+              <select name="laboratory" class="form-control" id="edit_lab" required>
+                <option value="G301">G301</option>
+                <option value="G302">G302</option>
+                <option value="G303">G303</option>
+                <option value="G304">G304</option>
+                <option value="G305">G305</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" name="reservation_date" class="form-control" id="edit_date" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Time Slot</label>
+              <select name="time_slot" class="form-control" id="edit_time" required>
+                <option value="08:00">08:00 - 08:30</option>
+                <option value="08:30">08:30 - 09:00</option>
+                <option value="09:00">09:00 - 09:30</option>
+                <option value="09:30">09:30 - 10:00</option>
+                <option value="10:00">10:00 - 10:30</option>
+                <option value="10:30">10:30 - 11:00</option>
+                <option value="11:00">11:00 - 11:30</option>
+                <option value="11:30">11:30 - 12:00</option>
+                <option value="12:00">12:00 - 12:30</option>
+                <option value="12:30">12:30 - 01:00</option>
+                <option value="01:00">01:00 - 01:30</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Seat Number</label>
+              <input type="number" name="seat_number" class="form-control" id="edit_seat" min="1" max="35" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function editReservation(id, lab, date, time, seat) {
+      document.getElementById('edit_id').value = id;
+      document.getElementById('edit_lab').value = lab;
+      document.getElementById('edit_date').value = date;
+      document.getElementById('edit_time').value = time;
+      document.getElementById('edit_seat').value = seat;
+      $('#editModal').modal('show');
+    }
+  </script>
+</body>
+</html> 

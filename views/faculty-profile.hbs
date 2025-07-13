@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Faculty Profile - ReserveALab</title>
+  <link rel="stylesheet" href="/css/faculty-dashboard.css"/>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body>
+  <div class="faculty-dashboard">
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <i class="fas fa-university"></i>
+          <span>ReserveALab - Faculty Portal</span>
+        </div>
+        <div class="nav-user">
+          <span class="user-name">Dr. {{user.name.first}} {{user.name.last}}</span>
+          <div class="user-actions">
+            <a href="/faculty/profile?userId={{userId}}" class="nav-link">
+              <i class="fas fa-user-circle"></i>
+              Profile
+            </a>
+            <a href="/user-login" class="nav-link">
+              <i class="fas fa-sign-out-alt"></i>
+              Logout
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="faculty-sidebar">
+        <div class="sidebar-header">
+          <div class="user-info">
+            <div class="user-avatar">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="user-details">
+              <h4>{{user.name.first}} {{user.name.last}}</h4>
+              <p>{{user.user_type}}</p>
+              <small>{{user.email}}</small>
+            </div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a href="/faculty?userId={{userId}}" class="nav-link">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/faculty/reserve?userId={{userId}}" class="nav-link">
+                <i class="fas fa-calendar-plus"></i>
+                <span>New Reservation</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/faculty/edit-reservation?userId={{userId}}" class="nav-link">
+                <i class="fas fa-edit"></i>
+                <span>Manage Reservations</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/view-slots" class="nav-link">
+                <i class="fas fa-search"></i>
+                <span>View Availability</span>
+              </a>
+            </li>
+            <li class="nav-item active">
+              <a href="/faculty/profile?userId={{userId}}" class="nav-link">
+                <i class="fas fa-user-cog"></i>
+                <span>Profile Settings</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="content-header">
+          <h1>Faculty Profile</h1>
+          <p>Manage your academic profile and account settings.</p>
+        </div>
+
+        {{#if success}}
+          <div class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle"></i>
+            {{success}}
+          </div>
+        {{/if}}
+
+        <div class="profile-container">
+          <!-- Profile Information -->
+          <div class="profile-section">
+            <div class="section-header">
+              <h2><i class="fas fa-user-circle"></i> Personal Information</h2>
+            </div>
+            
+            <div class="profile-card">
+              <form action="/faculty/profile" method="POST">
+                <input type="hidden" name="userId" value="{{userId}}">
+                
+                <div class="form-group">
+                  <label for="first">First Name</label>
+                  <input type="text" id="first" name="first" value="{{user.name.first}}" required class="form-control">
+                </div>
+                
+                <div class="form-group">
+                  <label for="last">Last Name</label>
+                  <input type="text" id="last" name="last" value="{{user.name.last}}" required class="form-control">
+                </div>
+                
+                <div class="form-group">
+                  <label for="email">Email Address</label>
+                  <input type="email" id="email" name="email" value="{{user.email}}" required class="form-control">
+                </div>
+                
+                <div class="form-group">
+                  <label for="profile_description">Academic Profile Description</label>
+                  <textarea id="profile_description" name="profile_description" rows="4" class="form-control" placeholder="Brief description of your academic role, research interests, or teaching focus...">{{user.profile_description}}</textarea>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Update Profile
+                  </button>
+                  <a href="/faculty?userId={{userId}}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                  </a>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Account Information -->
+          <div class="profile-section">
+            <div class="section-header">
+              <h2><i class="fas fa-shield-alt"></i> Account Information</h2>
+            </div>
+            
+            <div class="profile-card">
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>User Type</label>
+                  <span class="info-value">{{user.user_type}}</span>
+                </div>
+                
+                <div class="info-item">
+                  <label>Account Created</label>
+                  <span class="info-value">{{formatDate user.createdAt 'MMM DD, YYYY'}}</span>
+                </div>
+                
+                <div class="info-item">
+                  <label>Last Updated</label>
+                  <span class="info-value">{{formatDate user.updatedAt 'MMM DD, YYYY'}}</span>
+                </div>
+                
+                <div class="info-item">
+                  <label>Total Reservations</label>
+                  <span class="info-value">{{user.current_reservations.length}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account Actions -->
+          <div class="profile-section">
+            <div class="section-header">
+              <h2><i class="fas fa-cog"></i> Account Actions</h2>
+            </div>
+            
+            <div class="profile-card">
+              <div class="action-grid">
+                <div class="action-item">
+                  <h4>Change Password</h4>
+                  <p>Update your account password for enhanced security.</p>
+                  <button class="btn btn-outline-primary" onclick="showChangePassword()">
+                    <i class="fas fa-key"></i>
+                    Change Password
+                  </button>
+                </div>
+                
+                <div class="action-item">
+                  <h4>Delete Account</h4>
+                  <p>Permanently delete your account and all associated data.</p>
+                  <button class="btn btn-outline-danger" onclick="confirmDeleteAccount()">
+                    <i class="fas fa-trash"></i>
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Change Password</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <form action="/faculty/change-password" method="POST">
+          <div class="modal-body">
+            <input type="hidden" name="userId" value="{{userId}}">
+            
+            <div class="form-group">
+              <label for="currentPassword">Current Password</label>
+              <input type="password" id="currentPassword" name="currentPassword" required class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="newPassword">New Password</label>
+              <input type="password" id="newPassword" name="newPassword" required class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="confirmPassword">Confirm New Password</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" required class="form-control">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Change Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showChangePassword() {
+      $('#changePasswordModal').modal('show');
+    }
+    
+    function confirmDeleteAccount() {
+      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        // Redirect to delete account route
+        window.location.href = `/faculty/delete-account?userId={{userId}}`;
+      }
+    }
+    
+    // Add active class to current nav item
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPath = window.location.pathname;
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const link = item.querySelector('.nav-link');
+        if (link.getAttribute('href').includes(currentPath)) {
+          item.classList.add('active');
+        }
+      });
+    });
+  </script>
+
+  <style>
+    .profile-container {
+      display: grid;
+      gap: 2rem;
+    }
+    
+    .profile-section {
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    
+    .profile-card {
+      padding: 2rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--secondary-blue);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: var(--secondary-blue);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent-blue);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: var(--light-blue);
+      color: var(--text-dark);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--border-color);
+      color: var(--text-dark);
+    }
+    
+    .btn-outline-primary {
+      background: white;
+      color: var(--secondary-blue);
+      border: 2px solid var(--secondary-blue);
+    }
+    
+    .btn-outline-primary:hover {
+      background: var(--secondary-blue);
+      color: white;
+    }
+    
+    .btn-outline-danger {
+      background: white;
+      color: var(--danger-red);
+      border: 2px solid var(--danger-red);
+    }
+    
+    .btn-outline-danger:hover {
+      background: var(--danger-red);
+      color: white;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .info-item {
+      padding: 1rem;
+      background: var(--light-blue);
+      border-radius: 8px;
+    }
+    
+    .info-item label {
+      display: block;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+    
+    .info-value {
+      color: var(--secondary-blue);
+      font-weight: 500;
+    }
+    
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .action-item {
+      padding: 1.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .action-item h4 {
+      color: var(--primary-blue);
+      margin-bottom: 0.5rem;
+    }
+    
+    .action-item p {
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+    
+    .alert {
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .alert-success {
+      background-color: rgba(39, 174, 96, 0.1);
+      color: var(--success-green);
+      border: 1px solid rgba(39, 174, 96, 0.2);
+    }
+  </style>
+</body>
+</html> 

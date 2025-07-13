@@ -1,0 +1,370 @@
+/* Faculty Reservation Page Styles */
+.faculty-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.faculty-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  padding: 30px;
+  margin-bottom: 20px;
+  border: 1px solid #e1e8ed;
+}
+
+.faculty-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #3498db;
+}
+
+.faculty-header h1 {
+  color: #2c3e50;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.faculty-header p {
+  color: #7f8c8d;
+  font-size: 1.1em;
+  font-style: italic;
+}
+
+.reservation-type-selector {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.type-option {
+  padding: 20px 30px;
+  border: 3px solid #3498db;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  text-align: center;
+  min-width: 150px;
+  position: relative;
+  overflow: hidden;
+}
+
+.type-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.type-option:hover::before {
+  left: 100%;
+}
+
+.type-option.active {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4);
+}
+
+.type-option:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+}
+
+.type-option strong {
+  display: block;
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+.type-option small {
+  opacity: 0.8;
+  font-size: 0.9em;
+}
+
+.form-section {
+  margin-bottom: 30px;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 5px solid #3498db;
+}
+
+.form-section h3 {
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+  font-size: 1.4em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-row {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 250px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #34495e;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #ecf0f1;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  transform: translateY(-2px);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+  max-width: 600px;
+}
+
+.seat-item {
+  position: relative;
+}
+
+.seat-item input[type="checkbox"] {
+  display: none;
+}
+
+.seat-item label {
+  display: block;
+  padding: 12px 8px;
+  text-align: center;
+  background: #ecf0f1;
+  border: 2px solid #bdc3c7;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.seat-item input[type="checkbox"]:checked + label {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  border-color: #2980b9;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.seat-item label:hover {
+  background: #d5dbdb;
+  transform: translateY(-2px);
+}
+
+.recurring-options {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 25px;
+  border-radius: 12px;
+  margin-top: 20px;
+  border: 2px solid #dee2e6;
+}
+
+.btn-faculty {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  padding: 18px 35px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-faculty::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-faculty:hover::before {
+  left: 100%;
+}
+
+.btn-faculty:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+}
+
+.btn-secondary {
+  background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+  margin-left: 15px;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(45deg, #7f8c8d, #6c7b7d);
+}
+
+.hidden {
+  display: none;
+}
+
+.faculty-sidebar {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.faculty-sidebar h3 {
+  color: #ecf0f1;
+  margin-bottom: 20px;
+  font-size: 1.3em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+.faculty-sidebar a {
+  color: #3498db;
+  text-decoration: none;
+  display: block;
+  padding: 12px 15px;
+  margin: 5px 0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+}
+
+.faculty-sidebar a:hover {
+  color: #5dade2;
+  background: rgba(52, 152, 219, 0.1);
+  border-left-color: #3498db;
+  transform: translateX(5px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .faculty-container {
+    padding: 10px;
+  }
+  
+  .faculty-card {
+    padding: 20px;
+  }
+  
+  .reservation-type-selector {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .type-option {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+  }
+  
+  .seat-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .btn-faculty {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .btn-secondary {
+    margin-left: 0;
+  }
+}
+
+/* Animation for form sections */
+.form-section {
+  animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom checkbox styling */
+.form-group input[type="checkbox"] {
+  display: inline-block;
+  width: auto;
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.form-group input[type="checkbox"] + label {
+  display: inline;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: normal;
+} 

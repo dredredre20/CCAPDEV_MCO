@@ -1,0 +1,278 @@
+{{!-- Modern Student Dashboard --}}
+<div class="student-dashboard" style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 1.5rem;">
+  <!-- Modern Top Navigation Bar -->
+  <nav class="navbar" style="margin-bottom: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+    <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; max-width: 1200px; width: 100%; margin: 0 auto;">
+      <div class="nav-brand" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.25rem; color: #2563eb;">
+        <i class="fas fa-university" style="font-size: 1.5rem;"></i>
+        <span>ReserveALab - Student Portal</span>
+      </div>
+      <div class="nav-user" style="display: flex; align-items: center; gap: 1.5rem;">
+        <span class="user-name" style="font-weight: 500; color: #374151;">{{user.name.first}} {{user.name.last}}</span>
+        <div class="user-actions" style="display: flex; gap: 1rem;">
+          <a href="/student/profile?userId={{userId}}" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(37, 99, 235, 0.1);">
+            <i class="fas fa-user-circle"></i>
+            Profile
+          </a>
+          <a href="/user-login" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(239, 68, 68, 0.1);">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="dashboard-container" style="width: 100%; max-width: 1200px; margin: 0 auto; display: flex; gap: 2rem; padding: 2rem;">
+    <!-- Modern Sidebar -->
+    <aside class="student-sidebar" style="width: 280px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); height: fit-content;">
+      <div class="sidebar-header" style="margin-bottom: 2rem;">
+        <div class="user-info" style="text-align: center;">
+          <div class="user-avatar" style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2rem; color: white; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="user-details">
+            <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #1f2937;">{{user.name.first}} {{user.name.last}}</h4>
+            <p style="margin: 0 0 0.25rem 0; color: #6b7280; text-transform: capitalize;">{{user.user_type}}</p>
+            <small style="color: #9ca3af; font-size: 0.875rem;">{{user.email}}</small>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <ul class="nav-menu" style="list-style: none; padding: 0; margin: 0;">
+          <li class="nav-item active" style="margin-bottom: 0.5rem;">
+            <a href="/student?userId={{userId}}" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #1f2937; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item" style="margin-bottom: 0.5rem;">
+            <a href="/student/reserve?userId={{userId}}" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(255, 255, 255, 0.5);">
+              <i class="fas fa-calendar-plus"></i>
+              <span>New Reservation</span>
+            </a>
+          </li>
+          <li class="nav-item" style="margin-bottom: 0.5rem;">
+            <a href="/student/edit-reservation?userId={{userId}}" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(255, 255, 255, 0.5);">
+              <i class="fas fa-edit"></i>
+              <span>Manage Reservations</span>
+            </a>
+          </li>
+          <li class="nav-item" style="margin-bottom: 0.5rem;">
+            <a href="/view-slots" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(255, 255, 255, 0.5);">
+              <i class="fas fa-search"></i>
+              <span>View Availability</span>
+            </a>
+          </li>
+          <li class="nav-item" style="margin-bottom: 0.5rem;">
+            <a href="/student/profile?userId={{userId}}" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(255, 255, 255, 0.5);">
+              <i class="fas fa-user-cog"></i>
+              <span>Profile Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" style="flex: 1; padding-top: 0;">
+      <!-- Header -->
+      <div class="dashboard-header text-center mb-4" style="margin-bottom: 2rem;">
+        <h1 class="dashboard-title" style="font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+          <i class="fas fa-tachometer-alt" style="color: #fbbf24; margin-right: 0.5rem;"></i>
+          Dashboard
+        </h1>
+        <p class="dashboard-subtitle" style="color: rgba(255, 255, 255, 0.9); font-size: 1.125rem; margin: 0;">Welcome to your student dashboard</p>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <div class="stat-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 1.5rem; transition: transform 0.2s ease;">
+          <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <div class="stat-content">
+            <h3 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 0.25rem 0;">{{reservations.length}}</h3>
+            <p style="color: #6b7280; margin: 0; font-weight: 500;">Active Reservations</p>
+          </div>
+        </div>
+        
+        <div class="stat-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 1.5rem; transition: transform 0.2s ease;">
+          <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <h3 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 0.25rem 0;">{{upcomingCount}}</h3>
+            <p style="color: #6b7280; margin: 0; font-weight: 500;">Upcoming Sessions</p>
+          </div>
+        </div>
+        
+        <div class="stat-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 1.5rem; transition: transform 0.2s ease;">
+          <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+            <i class="fas fa-flask"></i>
+          </div>
+          <div class="stat-content">
+            <h3 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 0.25rem 0;">{{labCount}}</h3>
+            <p style="color: #6b7280; margin: 0; font-weight: 500;">Labs Used</p>
+          </div>
+        </div>
+        
+        <div class="stat-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 1.5rem; transition: transform 0.2s ease;">
+          <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-content">
+            <h3 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 0.25rem 0;">{{totalHours}}</h3>
+            <p style="color: #6b7280; margin: 0; font-weight: 500;">Total Hours</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 700; color: #1f2937; margin-bottom: 1.5rem;">Quick Actions</h2>
+        <div class="action-buttons" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <a href="/student/reserve?userId={{userId}}" class="action-btn primary" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+            <i class="fas fa-plus"></i>
+            <span>Create New Reservation</span>
+          </a>
+          <a href="/view-slots" class="action-btn secondary" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; border: 1px solid rgba(0, 0, 0, 0.1);">
+            <i class="fas fa-search"></i>
+            <span>Check Availability</span>
+          </a>
+          <a href="/student/edit-reservation?userId={{userId}}" class="action-btn secondary" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; border: 1px solid rgba(0, 0, 0, 0.1);">
+            <i class="fas fa-edit"></i>
+            <span>Manage Reservations</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Reservations -->
+      <div class="recent-reservations" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 700; color: #1f2937; margin: 0;">Recent Reservations</h2>
+          <a href="/student/edit-reservation?userId={{userId}}" class="view-all" style="color: #667eea; text-decoration: none; font-weight: 600; transition: color 0.2s ease;">View All</a>
+        </div>
+        
+        {{#if reservations.length}}
+          <div class="reservations-list" style="display: grid; gap: 1rem;">
+            {{#each recentReservations}}
+              <div class="reservation-card" style="background: rgba(255, 255, 255, 0.8); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 0, 0, 0.05); transition: transform 0.2s ease;">
+                <div class="reservation-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <div class="lab-info" style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-building" style="color: #667eea; font-size: 1.25rem;"></i>
+                    <span class="lab-name" style="font-weight: 600; color: #1f2937;">{{laboratory}}</span>
+                  </div>
+                  <div class="reservation-status">
+                    <span class="status-badge {{status}}" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600; text-transform: capitalize; background: {{#ifEquals status 'active'}}#d1fae5{{else}}#fee2e2{{/ifEquals}}; color: {{#ifEquals status 'active'}}#065f46{{else}}#991b1b{{/ifEquals}};">{{status}}</span>
+                  </div>
+                </div>
+                
+                <div class="reservation-details" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                  <div class="detail-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-calendar" style="color: #6b7280; width: 16px;"></i>
+                    <span style="color: #374151;">{{formatDate reservation_date 'MMM DD, YYYY'}}</span>
+                  </div>
+                  <div class="detail-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-clock" style="color: #6b7280; width: 16px;"></i>
+                    <span style="color: #374151;">{{time_slot}}</span>
+                  </div>
+                  <div class="detail-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-chair" style="color: #6b7280; width: 16px;"></i>
+                    <span style="color: #374151;">Seat {{seat_number}}</span>
+                  </div>
+                </div>
+                
+                <div class="reservation-actions" style="display: flex; justify-content: flex-end;">
+                  <a href="/student/edit-reservation?userId={{../userId}}" class="btn-edit" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; transition: transform 0.2s ease;">
+                    <i class="fas fa-edit"></i>
+                    Edit
+                  </a>
+                </div>
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <div class="empty-state" style="text-align: center; padding: 3rem 2rem;">
+            <i class="fas fa-calendar-times" style="font-size: 4rem; color: #d1d5db; margin-bottom: 1rem;"></i>
+            <h3 style="color: #6b7280; margin-bottom: 0.5rem;">No Reservations Yet</h3>
+            <p style="color: #9ca3af; margin-bottom: 2rem;">You haven't made any reservations yet. Start by creating your first lab reservation.</p>
+            <a href="/student/reserve?userId={{userId}}" class="btn-create" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: transform 0.2s ease;">
+              <i class="fas fa-plus"></i>
+              Create First Reservation
+            </a>
+          </div>
+        {{/if}}
+      </div>
+    </main>
+  </div>
+</div>
+
+<style>
+/* Hover effects */
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.nav-link:hover {
+  background: rgba(37, 99, 235, 0.1) !important;
+  color: #2563eb !important;
+  transform: translateX(4px);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.reservation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.btn-edit:hover {
+  transform: translateY(-1px);
+}
+
+.btn-create:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .student-sidebar {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  .reservation-details {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

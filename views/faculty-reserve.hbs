@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Faculty - Academic Lab Reservation</title>
+  <link rel="stylesheet" href="/css/faculty-reserve.css"/>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="faculty-container">
+    <div class="container-fluid">
+      <div class="row">
+        
+        <!-- Faculty Sidebar -->
+        <div class="col-md-3">
+          <div class="faculty-sidebar">
+            <h3>Faculty Portal</h3>
+            <a href="/faculty?userId={{userId}}">Dashboard</a>
+            <a href="/faculty/reserve?userId={{userId}}">New Reservation</a>
+            <a href="/faculty/edit-reservation?userId={{userId}}">Manage Reservations</a>
+            <a href="/faculty/profile?userId={{userId}}">Profile</a>
+            <a href="/view-slots">View Availability</a>
+            <a href="/user-login">Logout</a>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+          <div class="faculty-card">
+            <div class="faculty-header">
+              <h1>Academic Lab Reservation</h1>
+              <p>Reserve laboratory facilities for academic purposes</p>
+            </div>
+
+            <!-- Reservation Type Selector -->
+            <div class="reservation-type-selector">
+              <div class="type-option active" onclick="selectType('individual')">
+                <strong>Individual</strong><br>
+                <small>Personal use</small>
+              </div>
+              <div class="type-option" onclick="selectType('class')">
+                <strong>Class/Group</strong><br>
+                <small>Multiple seats</small>
+              </div>
+              <div class="type-option" onclick="selectType('recurring')">
+                <strong>Recurring</strong><br>
+                <small>Weekly sessions</small>
+              </div>
+            </div>
+
+            <form method="POST" action="/faculty/reserve" id="reservationForm">
+              <input type="hidden" name="userId" value="{{userId}}" />
+              <input type="hidden" name="reservation_type" id="reservation_type" value="individual" />
+
+              <!-- Basic Information Section -->
+              <div class="form-section">
+                <h3>Reservation Details</h3>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="laboratory">Laboratory</label>
+                    <select name="laboratory" id="laboratory" required>
+                      <option value="">Select Laboratory</option>
+                      <option value="G301">G301 - Computer Lab 1</option>
+                      <option value="G302">G302 - Computer Lab 2</option>
+                      <option value="G303">G303 - Computer Lab 3</option>
+                      <option value="G304">G304 - Computer Lab 4</option>
+                      <option value="G305">G305 - Computer Lab 5</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="reservation_date">Date</label>
+                    <input type="date" name="reservation_date" id="reservation_date" required>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="time">Time Slot</label>
+                    <select name="time" id="time" required>
+                      <option value="">Select Time</option>
+                      <option value="08:00">08:00 - 08:30</option>
+                      <option value="08:30">08:30 - 09:00</option>
+                      <option value="09:00">09:00 - 09:30</option>
+                      <option value="09:30">09:30 - 10:00</option>
+                      <option value="10:00">10:00 - 10:30</option>
+                      <option value="10:30">10:30 - 11:00</option>
+                      <option value="11:00">11:00 - 11:30</option>
+                      <option value="11:30">11:30 - 12:00</option>
+                      <option value="12:00">12:00 - 12:30</option>
+                      <option value="12:30">12:30 - 01:00</option>
+                      <option value="01:00">01:00 - 01:30</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="duration">Duration (Class/Group only)</label>
+                    <select name="duration" id="duration" disabled>
+                      <option value="30">30 minutes</option>
+                      <option value="60">1 hour</option>
+                      <option value="90">1.5 hours</option>
+                      <option value="120">2 hours</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Academic Information Section -->
+              <div class="form-section">
+                <h3>Academic Information</h3>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="course_code">Course Code (Optional)</label>
+                    <input type="text" name="course_code" id="course_code" placeholder="e.g., CCAPDEV, CS123">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="purpose">Purpose</label>
+                    <select name="purpose" id="purpose" required>
+                      <option value="">Select Purpose</option>
+                      <option value="lecture">Lecture/Discussion</option>
+                      <option value="lab_work">Laboratory Work</option>
+                      <option value="research">Research</option>
+                      <option value="consultation">Student Consultation</option>
+                      <option value="meeting">Department Meeting</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="description">Description</label>
+                  <textarea name="description" id="description" rows="3" placeholder="Brief description of the activity..."></textarea>
+                </div>
+              </div>
+
+              <!-- Seat Selection Section -->
+              <div class="form-section">
+                <h3>Seat Selection</h3>
+                
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" name="anonymous" id="anonymous"> Reserve Anonymously
+                  </label>
+                </div>
+
+                <div class="seat-grid" id="seatGrid">
+                  {{#each (range 1 36)}}
+                    <div class="seat-item">
+                      <input type="checkbox" name="seat_numbers" value="{{this}}" id="seat{{this}}">
+                      <label for="seat{{this}}">{{this}}</label>
+                    </div>
+                  {{/each}}
+                </div>
+              </div>
+
+              <!-- Recurring Options Section -->
+              <div class="form-section hidden" id="recurringSection">
+                <h3>Recurring Schedule</h3>
+                <div class="recurring-options">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="recurring_type">Repeat</label>
+                      <select name="recurring_type" id="recurring_type">
+                        <option value="weekly">Weekly</option>
+                        <option value="biweekly">Bi-weekly</option>
+                        <option value="monthly">Monthly</option>
+                      </select>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="recurring_weeks">Number of Weeks</label>
+                      <input type="number" name="recurring_weeks" id="recurring_weeks" min="2" max="12" value="4">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Buttons -->
+              <div style="text-align: center; margin-top: 30px;">
+                <button type="submit" class="btn-faculty">Create Reservation</button>
+                <a href="/faculty?userId={{userId}}" class="btn-faculty btn-secondary">Cancel</a>
+              </div>
+            </form>
+
+            {{#if error}}
+              <div class="alert alert-danger mt-3">{{error}}</div>
+            {{/if}}
+
+            {{#if success}}
+              <div class="alert alert-success mt-3">{{success}}</div>
+            {{/if}}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectType(type) {
+      // Update active state
+      document.querySelectorAll('.type-option').forEach(option => {
+        option.classList.remove('active');
+      });
+      event.target.closest('.type-option').classList.add('active');
+      
+      // Update hidden field
+      document.getElementById('reservation_type').value = type;
+      
+      // Show/hide sections based on type
+      const durationField = document.getElementById('duration');
+      const recurringSection = document.getElementById('recurringSection');
+      
+      if (type === 'class') {
+        durationField.disabled = false;
+        recurringSection.classList.add('hidden');
+      } else if (type === 'recurring') {
+        durationField.disabled = true;
+        recurringSection.classList.remove('hidden');
+      } else {
+        durationField.disabled = true;
+        recurringSection.classList.add('hidden');
+      }
+    }
+    
+    // Set minimum date to today
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('reservation_date').min = today;
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ReserveALab Homepage</title>
+
+        <!-- This is the main homepage of the MCO-->
+        <link rel="stylesheet" href="/css/lab_reservation_design.css"/>
+
+        <!-- Import Bootstrap-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    </head>
+
+    <body>
+
+        <div class="homepage-container" style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 2.5rem;">
+            <div class="container-fluid" style="max-width: 900px;">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <!-- Header -->
+                        <div class="homepage-header text-center mb-3" style="margin-bottom: 1.2rem;">
+                            <h1 class="homepage-title">
+                                <i class="fas fa-university text-primary"></i>
+                                ReserveALab
+                            </h1>
+                            <p class="homepage-subtitle">Welcome to the Laboratory Reservation System</p>
+                        </div>
+
+                        <div class="row g-0">
+
+                            <!--Side Panel Content containing navigation links and user account buttons-->
+                            <div class="col-lg-3 col-md-4">
+
+                                <div class="side-panel">
+                                    <h2 class="side-panel-title">ReserveALab</h2>
+
+                                    <div class="user-account-buttons">
+                                        {{#if userId}}
+                                            <!-- User is logged in - show user info and logout -->
+                                            <div class="user-info" style="margin-bottom: 1rem; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 10px; text-align: center;">
+                                                <i class="fas fa-user-circle" style="font-size: 2rem; color: white; margin-bottom: 0.5rem;"></i>
+                                                <p style="color: white; margin: 0; font-weight: 600;">Welcome!</p>
+                                                <p style="color: rgba(255, 255, 255, 0.8); margin: 0; font-size: 0.875rem;">You are logged in</p>
+                                            </div>
+                                            <a href="/view-slots">
+                                                <button type="button" class="btn btn-custom"> View Available Slots </button>
+                                            </a>
+                                            <a href="/user-login">
+                                                <button type="button" class="btn btn-custom"> Logout </button>
+                                            </a>
+                                        {{else}}
+                                            <!-- User is not logged in - show login and register -->
+                                            <a href="/user-login">
+                                                <button type="button" class="btn btn-custom"> Login </button>
+                                            </a>
+                                            <a href="/user-registration">
+                                                <button type="button" class="btn btn-custom"> Register </button>
+                                            </a>
+                                            <a href="/view-slots">
+                                                <button type="button" class="btn btn-custom"> View Available Slots </button>
+                                            </a>
+                                        {{/if}}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Main Content -->
+                            <div class="col-lg-9 col-md-8">
+
+                                <section class="hero-section">
+                                    <div class="hero-container">
+
+                                        <div class="hero-content">
+
+                                            <h1 class="hero-title">Reserve a Lab Space with Easy Access</h1>
+                                            <p class="hero-sub-info">
+                                                {{#if userId}}
+                                                    Welcome back! You can now make reservations, view your bookings, and manage your profile.
+                                                {{else}}
+                                                    Tired of missing out on spaces for study sessions and projects? 
+                                                    Book a computer lab seat with us in advance to guarantee a spot!
+                                                    Login first or register your account to reserve with us!
+                                                {{/if}}
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

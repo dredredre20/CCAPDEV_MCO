@@ -1,0 +1,65 @@
+{{#if time}}
+  <!--This is for viewing specific time slots-->
+  {{#each slots}}
+    <div class="grid-row {{#if reserved}}reserved{{else}}available{{/if}}">
+      <div class="seat-number">#{{seat_number}}</div>
+      <div class="status">
+        {{#if reserved}}
+          <span class="status-badge reserved">Reserved</span>
+        {{else}}
+          <span class="status-badge available">Available</span>
+        {{/if}}
+      </div>
+      <!---->
+      <div class="time-slot">
+        {{#if reserved}}{{time_slot}}{{else}}-{{/if}}
+      </div>
+      <div class="reserved-by">
+        {{#if reserved}}
+          {{#if anonymous}}
+            <span class="anonymous">Anonymous</span>
+          {{else}}
+            {{name}}
+          {{/if}}
+        {{else}}
+          -
+        {{/if}}
+      </div>
+    </div>
+  {{/each}}
+{{else}}
+
+  <!--This is for viewing all available time slots in the filter-->
+  {{#each slots}}
+    <div class="grid-row {{#if reserved}}reserved{{else}}available{{/if}}">
+      <div class="seat-number">#{{seat_number}}</div>
+      <div class="status">
+        {{#if reserved}}
+          <span class="status-badge reserved">Reserved</span>
+        {{else}}
+          <span class="status-badge available">Available</span>
+        {{/if}}
+      </div>
+      <div class="reservation-details">
+        {{#if reserved}}
+          <div class="reservation-list">
+            {{#each reservations}}
+              <div class="reservation-item">
+                <span class="time-slot">{{time_slot}}</span>
+                <span class="reserved-by">
+                  {{#if anonymous}}
+                    <span class="anonymous">Anonymous</span>
+                  {{else}}
+                    {{name}}
+                  {{/if}}
+                </span>
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <div class="no-reservation">-</div>
+        {{/if}}
+      </div>
+    </div>
+  {{/each}}
+{{/if}}

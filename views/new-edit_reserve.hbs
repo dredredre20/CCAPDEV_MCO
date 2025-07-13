@@ -1,0 +1,580 @@
+{{!-- Modern Edit Reservation Page --}}
+<div class="edit-reservation-container" style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 1.5rem;">
+  <!-- Modern Top Navigation Bar -->
+  <nav class="navbar" style="margin-bottom: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+    <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; max-width: 1200px; width: 100%; margin: 0 auto;">
+      <div class="nav-brand" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.25rem; color: #2563eb;">
+        <i class="fas fa-university" style="font-size: 1.5rem;"></i>
+        <span>ReserveALab</span>
+      </div>
+      <div class="nav-user" style="display: flex; gap: 1rem;">
+        <a href="/student?userId={{userId}}" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(37, 99, 235, 0.1);">
+          <i class="fas fa-home"></i>
+          Dashboard
+        </a>
+        <a href="/student/reserve?userId={{userId}}" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(16, 185, 129, 0.1);">
+          <i class="fas fa-calendar-plus"></i>
+          New Reservation
+        </a>
+        <a href="/user-login" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(239, 68, 68, 0.1);">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="edit-reservation-content" style="width: 100%; max-width: 1000px; margin: 0 auto; padding: 2rem;">
+    <!-- Header -->
+    <div class="edit-reservation-header text-center mb-4" style="margin-bottom: 2rem;">
+      <h1 class="edit-reservation-title" style="font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <i class="fas fa-edit" style="color: #fbbf24; margin-right: 0.5rem;"></i>
+        Edit Reservation
+      </h1>
+      <p class="edit-reservation-subtitle" style="color: rgba(255, 255, 255, 0.9); font-size: 1.125rem; margin: 0;">Modify your existing reservation</p>
+    </div>
+
+    <!-- Error/Success Messages -->
+    {{#if error}}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: rgba(254, 226, 226, 0.95); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2); margin-bottom: 1.5rem;">
+        <i class="fas fa-exclamation-circle"></i>
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {{/if}}
+
+    {{#if success}}
+      <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: rgba(209, 250, 229, 0.95); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); margin-bottom: 1.5rem;">
+        <i class="fas fa-check-circle"></i>
+        {{success}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {{/if}}
+
+    <div class="edit-reservation-layout" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+      <!-- Edit Reservation Form Card -->
+      <div class="edit-reservation-form-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+        <div class="card-header" style="margin-bottom: 1.5rem;">
+          <h5 style="font-size: 1.25rem; font-weight: 700; color: #1f2937; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-edit" style="color: #667eea;"></i>
+            Edit Details
+          </h5>
+        </div>
+        
+        <form id="editReservationForm" method="POST" action="/student/edit-reservation">
+          <input type="hidden" name="userId" value="{{userId}}" />
+          <input type="hidden" name="reservationId" id="editReservationId" />
+          
+          <div class="form-group" style="margin-bottom: 2rem;">
+            <label for="reservationDropdown" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas fa-list"></i>
+              Select Reservation to Edit
+            </label>
+            <select class="form-select" id="reservationDropdown" style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+              <option value="">Choose a reservation...</option>
+              {{#each reservations}}
+                <option value="{{_id}}">
+                  {{laboratory}} | {{reservation_date}} | {{time_slot}} | Seat {{seat_number}}
+                </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label for="editLaboratory" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-building" style="color: #667eea;"></i>
+                Laboratory
+              </label>
+              <select class="form-select" id="editLaboratory" name="laboratory" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+                <option value="G301">G301</option>
+                <option value="G302">G302</option>
+                <option value="G303">G303</option>
+                <option value="G304">G304</option>
+                <option value="G305">G305</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="editDate" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-calendar" style="color: #667eea;"></i>
+                Date
+              </label>
+              <input type="date" class="form-control" id="editDate" name="reservation_date" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+            </div>
+          </div>
+          
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+              <label for="editTimeSlot" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-clock" style="color: #667eea;"></i>
+                Time Slot
+              </label>
+              <select class="form-select" id="editTimeSlot" name="time_slot" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+                <option value="08:00">08:00 - 08:30</option>
+                <option value="08:30">08:30 - 09:00</option>
+                <option value="09:00">09:00 - 09:30</option>
+                <option value="09:30">09:30 - 10:00</option>
+                <option value="10:00">10:00 - 10:30</option>
+                <option value="10:30">10:30 - 11:00</option>
+                <option value="11:00">11:00 - 11:30</option>
+                <option value="11:30">11:30 - 12:00</option>
+                <option value="12:00">12:00 - 12:30</option>
+                <option value="12:30">12:30 - 01:00</option>
+                <option value="01:00">01:00 - 01:30</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="editSeatNumber" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-chair" style="color: #667eea;"></i>
+                Seat Number
+              </label>
+              <select class="form-select" id="editSeatNumber" name="seat_number" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+                {{#range 1 35}}
+                  <option value="{{this}}">Seat {{this}}</option>
+                {{/range}}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions" style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn-save-changes" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+              <i class="fas fa-save"></i>
+              Save Changes
+            </button>
+            <button type="button" class="btn-cancel" data-bs-dismiss="modal" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; font-weight: 600; transition: all 0.2s ease;">
+              <i class="fas fa-times"></i>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Previous Reservations Section -->
+      <div class="previous-reservations-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); margin-top: 2rem;">
+        <div class="card-header" style="margin-bottom: 1.5rem;">
+          <h5 style="font-size: 1.25rem; font-weight: 700; color: #1f2937; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-history" style="color: #667eea;"></i>
+            Your Previous Reserved Seats
+          </h5>
+        </div>
+        
+        {{#if reservations}}
+          <div class="reservations-list" style="max-height: 400px; overflow-y: auto;">
+            {{#each reservations}}
+              <div class="reservation-item" style="background: rgba(102, 126, 234, 0.05); border: 1px solid rgba(102, 126, 234, 0.1); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; transition: all 0.2s ease; cursor: pointer;" onclick="selectReservation('{{_id}}')">
+                <div class="reservation-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span class="reservation-id" style="font-weight: 600; color: #667eea; font-size: 0.875rem;">ID: {{_id}}</span>
+                  <span class="reservation-status" style="padding: 0.25rem 0.5rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 8px; font-size: 0.75rem; font-weight: 600;">Active</span>
+                </div>
+                <div class="reservation-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.875rem;">
+                  <div class="detail-item">
+                    <span style="color: #6b7280; font-weight: 500;">Lab:</span>
+                    <span style="color: #1f2937; font-weight: 600;">{{laboratory}}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span style="color: #6b7280; font-weight: 500;">Date:</span>
+                    <span style="color: #1f2937; font-weight: 600;">{{reservation_date}}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span style="color: #6b7280; font-weight: 500;">Time:</span>
+                    <span style="color: #1f2937; font-weight: 600;">{{time_slot}}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span style="color: #6b7280; font-weight: 500;">Seat:</span>
+                    <span style="color: #1f2937; font-weight: 600;">{{seat_number}}</span>
+                  </div>
+                </div>
+                <div class="reservation-actions" style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                  <button type="button" class="btn-edit-reservation" onclick="event.stopPropagation(); selectReservation('{{_id}}')" style="padding: 0.25rem 0.5rem; background: rgba(37, 99, 235, 0.1); color: #2563eb; border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 6px; font-size: 0.75rem; font-weight: 600; transition: all 0.2s ease; cursor: pointer;">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                  <button type="button" class="btn-delete-reservation" onclick="event.stopPropagation(); deleteReservation('{{_id}}')" style="padding: 0.25rem 0.5rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 6px; font-size: 0.75rem; font-weight: 600; transition: all 0.2s ease; cursor: pointer;">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </div>
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <div class="empty-reservations" style="text-align: center; padding: 2rem; color: #6b7280;">
+            <i class="fas fa-calendar-times" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+            <h6 style="margin-bottom: 0.5rem; color: #9ca3af;">No Reservations Found</h6>
+            <p style="margin: 0; font-size: 0.875rem;">You haven't made any reservations yet.</p>
+            <a href="/student/reserve?userId={{userId}}" class="btn-create-reservation" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.875rem; text-decoration: none; transition: all 0.2s ease;">
+              <i class="fas fa-plus"></i>
+              Create First Reservation
+            </a>
+          </div>
+        {{/if}}
+      </div>
+
+      <!-- Info Sidebar -->
+      <div class="info-sidebar" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Edit Guidelines -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Edit Guidelines</h6>
+          </div>
+          <div style="color: #6b7280; font-size: 0.875rem; line-height: 1.5;">
+            <p style="margin: 0 0 0.5rem 0;">• You can modify your reservation up to 1 hour before the session</p>
+            <p style="margin: 0 0 0.5rem 0;">• Changes are subject to availability</p>
+            <p style="margin: 0;">• All modifications are logged for security</p>
+          </div>
+        </div>
+
+        <!-- Current Reservation -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Current Reservation</h6>
+          </div>
+          <div id="currentReservationInfo" style="color: #6b7280; font-size: 0.875rem; line-height: 1.5;">
+            <p style="margin: 0 0 0.5rem 0;"><strong>Lab:</strong> <span id="currentLab">-</span></p>
+            <p style="margin: 0 0 0.5rem 0;"><strong>Date:</strong> <span id="currentDate">-</span></p>
+            <p style="margin: 0 0 0.5rem 0;"><strong>Time:</strong> <span id="currentTime">-</span></p>
+            <p style="margin: 0;"><strong>Seat:</strong> <span id="currentSeat">-</span></p>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Danger Zone</h6>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <button type="button" class="btn-delete-reservation" onclick="openDeleteModal()" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; font-size: 0.875rem; font-weight: 600; transition: all 0.2s ease; cursor: pointer;">
+              <i class="fas fa-trash"></i>
+              Cancel Reservation
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteReservationModal" tabindex="-1" style="background: rgba(0, 0, 0, 0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 1.5rem;">
+        <h5 class="modal-title" style="font-weight: 700; color: #1f2937; display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+          Cancel Reservation
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" style="background: none; border: none; font-size: 1.5rem; color: #6b7280; cursor: pointer;"></button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        <p style="color: #374151; margin-bottom: 1rem;">Are you sure you want to cancel this reservation?</p>
+        <p style="color: #ef4444; font-weight: 600; margin: 0;"><strong>This action cannot be undone.</strong></p>
+      </div>
+      <div class="modal-footer" style="border-top: 1px solid rgba(0, 0, 0, 0.1); padding: 1.5rem; display: flex; gap: 1rem;">
+        <button type="button" class="btn-keep-reservation" data-bs-dismiss="modal" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; font-weight: 600; transition: all 0.2s ease;">
+          <i class="fas fa-times"></i>
+          Keep Reservation
+        </button>
+        <form method="POST" action="/student/delete-reservation" style="display: inline;">
+          <input type="hidden" name="userId" value="{{userId}}" />
+          <input type="hidden" name="reservationId" id="deleteReservationId" />
+          <button type="submit" class="btn-confirm-delete" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+            <i class="fas fa-trash"></i>
+            Cancel Reservation
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Hover effects */
+.nav-link:hover {
+  background: rgba(37, 99, 235, 0.2) !important;
+  color: #2563eb !important;
+  transform: translateY(-1px);
+}
+
+.btn-save-changes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+}
+
+.btn-cancel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.btn-delete-reservation:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.btn-confirm-delete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
+.btn-keep-reservation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.reservation-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.btn-edit-reservation:hover {
+  background: rgba(37, 99, 235, 0.2) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-delete-reservation:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.btn-create-reservation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Form focus effects */
+.form-control:focus, .form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  outline: none;
+}
+
+/* Modal animations */
+.modal.fade .modal-dialog {
+  transition: transform 0.3s ease-out;
+  transform: translate(0, -50px);
+}
+
+.modal.show .modal-dialog {
+  transform: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .edit-reservation-content {
+    padding: 1rem;
+  }
+  
+  .edit-reservation-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .info-sidebar {
+    order: -1;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+  }
+}
+</style>
+
+<script>
+// Function to open delete modal
+function openDeleteModal() {
+  const modal = new bootstrap.Modal(document.getElementById('deleteReservationModal'));
+  modal.show();
+}
+
+// Function to populate edit form with current reservation data
+function populateEditForm(reservationData) {
+  document.getElementById('editReservationId').value = reservationData.id;
+  document.getElementById('editLaboratory').value = reservationData.laboratory;
+  document.getElementById('editDate').value = reservationData.date;
+  document.getElementById('editTimeSlot').value = reservationData.timeSlot;
+  document.getElementById('editSeatNumber').value = reservationData.seatNumber;
+  
+  // Update current reservation info
+  document.getElementById('currentLab').textContent = reservationData.laboratory;
+  document.getElementById('currentDate').textContent = reservationData.date;
+  document.getElementById('currentTime').textContent = reservationData.timeSlot;
+  document.getElementById('currentSeat').textContent = `Seat ${reservationData.seatNumber}`;
+  
+  // Set delete reservation ID
+  document.getElementById('deleteReservationId').value = reservationData.id;
+}
+
+// Form validation
+document.getElementById('editReservationForm').addEventListener('submit', function(e) {
+  const laboratory = document.getElementById('editLaboratory').value;
+  const date = document.getElementById('editDate').value;
+  const timeSlot = document.getElementById('editTimeSlot').value;
+  const seatNumber = document.getElementById('editSeatNumber').value;
+  
+  if (!laboratory || !date || !timeSlot || !seatNumber) {
+    e.preventDefault();
+    alert('Please fill in all required fields.');
+    return false;
+  }
+  
+  // Show loading state
+  const submitBtn = this.querySelector('.btn-save-changes');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+  submitBtn.disabled = true;
+  
+  // Re-enable after 3 seconds if form doesn't submit
+  setTimeout(() => {
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }, 3000);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const labSelect = document.getElementById('editLaboratory');
+  const dateInput = document.getElementById('editDate');
+  const timeSlotSelect = document.getElementById('editTimeSlot');
+  const seatNumberSelect = document.getElementById('editSeatNumber');
+  const reservationDropdown = document.getElementById('reservationDropdown');
+  const reservations = {{json reservations}};
+
+  async function fetchTimeSlots() {
+    const lab = labSelect.value;
+    const date = dateInput.value;
+    if (!lab || !date) {
+      timeSlotSelect.innerHTML = '<option value="">Select Time Slot</option>';
+      seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+      return;
+    }
+    const res = await fetch(`/student/availability?laboratory=${encodeURIComponent(lab)}&date=${encodeURIComponent(date)}`);
+    const data = await res.json();
+    timeSlotSelect.innerHTML = '<option value="">Select Time Slot</option>';
+    data.availableSlots.forEach(slot => {
+      const opt = document.createElement('option');
+      opt.value = slot.timeSlot;
+      opt.textContent = `${slot.timeSlot} - ${slot.endTime}`;
+      timeSlotSelect.appendChild(opt);
+    });
+    seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+  }
+
+  async function fetchSeats() {
+    const lab = labSelect.value;
+    const date = dateInput.value;
+    const timeSlot = timeSlotSelect.value;
+    if (!lab || !date || !timeSlot) {
+      seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+      return;
+    }
+    const res = await fetch(`/student/availability?laboratory=${encodeURIComponent(lab)}&date=${encodeURIComponent(date)}&timeSlot=${encodeURIComponent(timeSlot)}`);
+    const data = await res.json();
+    seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+    (data.availableSeats || []).forEach(seat => {
+      const opt = document.createElement('option');
+      opt.value = seat;
+      opt.textContent = `Seat ${seat}`;
+      seatNumberSelect.appendChild(opt);
+    });
+  }
+
+  reservationDropdown.addEventListener('change', function() {
+    const selectedId = this.value;
+    const res = reservations.find(r => r._id === selectedId);
+    if (res) {
+      document.getElementById('editReservationId').value = res._id;
+      document.getElementById('editLaboratory').value = res.laboratory;
+      document.getElementById('editDate').value = res.reservation_date;
+      document.getElementById('editTimeSlot').value = res.time_slot;
+      document.getElementById('editSeatNumber').value = res.seat_number;
+      // Optionally update the current reservation info sidebar
+      document.getElementById('currentLab').textContent = res.laboratory;
+      document.getElementById('currentDate').textContent = res.reservation_date;
+      document.getElementById('currentTime').textContent = res.time_slot;
+      document.getElementById('currentSeat').textContent = `Seat ${res.seat_number}`;
+      // Trigger change events to update seat dropdown
+      document.getElementById('editLaboratory').dispatchEvent(new Event('change'));
+      document.getElementById('editDate').dispatchEvent(new Event('change'));
+      document.getElementById('editTimeSlot').dispatchEvent(new Event('change'));
+    }
+  });
+
+  labSelect.addEventListener('change', fetchTimeSlots);
+  dateInput.addEventListener('change', fetchTimeSlots);
+  timeSlotSelect.addEventListener('change', fetchSeats);
+});
+
+// Function to select a reservation from the list
+function selectReservation(reservationId) {
+  const reservationDropdown = document.getElementById('reservationDropdown');
+  reservationDropdown.value = reservationId;
+  reservationDropdown.dispatchEvent(new Event('change'));
+  
+  // Scroll to the edit form
+  document.querySelector('.edit-reservation-form-card').scrollIntoView({ 
+    behavior: 'smooth', 
+    block: 'start' 
+  });
+}
+
+// Function to delete a reservation directly from the list
+function deleteReservation(reservationId) {
+  if (confirm('Are you sure you want to delete this reservation? This action cannot be undone.')) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/student/delete-reservation';
+    
+    const userIdInput = document.createElement('input');
+    userIdInput.type = 'hidden';
+    userIdInput.name = 'userId';
+    userIdInput.value = '{{userId}}';
+    
+    const reservationIdInput = document.createElement('input');
+    reservationIdInput.type = 'hidden';
+    reservationIdInput.name = 'reservationId';
+    reservationIdInput.value = reservationId;
+    
+    form.appendChild(userIdInput);
+    form.appendChild(reservationIdInput);
+    document.body.appendChild(form);
+    form.submit();
+  }
+}
+
+// Make functions available globally
+window.populateEditForm = populateEditForm;
+window.openDeleteModal = openDeleteModal;
+window.selectReservation = selectReservation;
+window.deleteReservation = deleteReservation;
+</script>

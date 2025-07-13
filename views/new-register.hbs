@@ -1,0 +1,518 @@
+{{!-- Professional Registration Page --}}
+<div class="register-container" style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 2.5rem;">
+  <div class="register-content" style="width: 100%; max-width: 480px; margin: 0 auto;">
+    <div class="register-card shadow-lg" style="margin-bottom: 1.5rem;">
+      <!-- Header -->
+      <div class="register-header text-center mb-4" style="margin-bottom: 1.2rem;">
+        <div class="register-logo">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <h1 class="register-title">Create Account</h1>
+        <p class="register-subtitle">Sign up for ReserveALab</p>
+      </div>
+
+      <!-- Registration Form -->
+      <form method="POST" action="/user-register" class="register-form" id="registerForm">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="first" class="form-label">
+              <i class="fas fa-user"></i>
+              First Name
+            </label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="first" 
+              name="first" 
+              placeholder="Enter your first name"
+              required
+              value="{{first}}"
+            >
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="last" class="form-label">
+              <i class="fas fa-user"></i>
+              Last Name
+            </label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="last" 
+              name="last" 
+              placeholder="Enter your last name"
+              required
+              value="{{last}}"
+            >
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">
+            <i class="fas fa-envelope"></i>
+            DLSU Email Address
+          </label>
+          <input 
+            type="email" 
+            class="form-control" 
+            id="email" 
+            name="email" 
+            placeholder="firstname_lastname@dlsu.edu.ph"
+            required
+            value="{{email}}"
+          >
+          <div class="form-text">Use your DLSU email (e.g., juan_dela@dlsu.edu.ph)</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="user_type" class="form-label">
+            <i class="fas fa-users"></i>
+            User Type
+          </label>
+          <select class="form-select" id="user_type" name="user_type" required>
+            <option value="">Select your role</option>
+            <option value="student" {{#ifEquals user_type "student"}}selected{{/ifEquals}}>Student</option>
+            <option value="faculty" {{#ifEquals user_type "faculty"}}selected{{/ifEquals}}>Faculty</option>
+            <option value="technician" {{#ifEquals user_type "technician"}}selected{{/ifEquals}}>Lab Technician</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">
+            <i class="fas fa-lock"></i>
+            Password
+          </label>
+          <div class="password-input-group">
+            <input 
+              type="password" 
+              class="form-control" 
+              id="password" 
+              name="password" 
+              placeholder="Create a strong password"
+              required
+              minlength="8"
+            >
+            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+              <i class="fas fa-eye" id="passwordIcon"></i>
+            </button>
+          </div>
+          <div class="form-text">Minimum 8 characters required</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="confirm_password" class="form-label">
+            <i class="fas fa-lock"></i>
+            Confirm Password
+          </label>
+          <div class="password-input-group">
+            <input 
+              type="password" 
+              class="form-control" 
+              id="confirm_password" 
+              name="confirm_password" 
+              placeholder="Confirm your password"
+              required
+            >
+            <button type="button" class="password-toggle" onclick="togglePassword('confirm_password')">
+              <i class="fas fa-eye" id="confirmPasswordIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-3 form-check">
+        </div>
+
+        <!-- Error/Success Messages (moved here) -->
+        {{#if error}}
+          <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+            <i class="fas fa-exclamation-circle"></i>
+            {{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {{/if}}
+
+        {{#if success}}
+          <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+            <i class="fas fa-check-circle"></i>
+            {{success}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {{/if}}
+
+        <button type="submit" class="btn btn-primary w-100 mb-3">
+          <i class="fas fa-user-plus"></i>
+          Create Account
+        </button>
+      </form>
+
+            <!-- Divider -->
+            <div class="divider">
+              <span>or</span>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center">
+              <p class="mb-0">Already have an account?</p>
+              <a href="/user-login" class="btn btn-outline w-100">
+                <i class="fas fa-sign-in-alt"></i>
+                Sign In
+              </a>
+            </div>
+
+            <!-- Footer -->
+            <div class="register-footer text-center mt-4">
+              <p class="text-muted small">
+                <i class="fas fa-shield-alt"></i>
+                Your data is protected and secure
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.register-container {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.register-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: -2;
+}
+
+.register-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  z-index: -1;
+}
+
+.register-content {
+  position: relative;
+  z-index: 1;
+}
+
+.register-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.register-header {
+  margin-bottom: 2rem;
+}
+
+.register-logo {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 2rem;
+  color: white;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+}
+
+.register-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin-bottom: 0.5rem;
+}
+
+.register-subtitle {
+  color: var(--secondary-color);
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.register-form .form-label {
+  font-weight: 500;
+  color: var(--dark-color);
+  margin-bottom: 0.5rem;
+}
+
+.register-form .form-label i {
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+.password-input-group {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--secondary-color);
+  cursor: pointer;
+  padding: 0;
+  font-size: 1rem;
+}
+
+.password-toggle:hover {
+  color: var(--primary-color);
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.divider {
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.divider span {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0 1rem;
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+}
+
+.register-footer {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+.register-footer i {
+  color: var(--success-color);
+  margin-right: 0.5rem;
+}
+
+/* Password strength indicator */
+.password-strength {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.strength-weak { color: var(--danger-color); }
+.strength-medium { color: var(--warning-color); }
+.strength-strong { color: var(--success-color); }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .register-card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .register-title {
+    font-size: 1.75rem;
+  }
+  
+  .register-logo {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
+
+/* Animation */
+.register-card {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus effects */
+.form-control:focus, .form-select:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+}
+
+.btn:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+}
+</style>
+
+<script>
+// Override the global showAlert function for this page
+function showAlert(message, type = 'info') {
+  // Remove any existing alerts first
+  const existingAlerts = document.querySelectorAll('.alert');
+  existingAlerts.forEach(alert => alert.remove());
+  
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert alert-${type} alert-dismissible fade show mt-2`;
+  alertDiv.innerHTML = `
+    <i class="fas fa-${type === 'danger' ? 'exclamation-circle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+    ${message}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  `;
+  
+  // Insert the alert before the submit button
+  const submitButton = document.querySelector('#registerForm button[type="submit"]');
+  if (submitButton) {
+    submitButton.parentNode.insertBefore(alertDiv, submitButton);
+  }
+  
+  // Auto-dismiss after 5 seconds
+  setTimeout(() => {
+    if (alertDiv.parentNode) {
+      alertDiv.remove();
+    }
+  }, 5000);
+}
+
+function togglePassword(fieldId) {
+  const passwordInput = document.getElementById(fieldId);
+  const passwordIcon = document.getElementById(fieldId === 'password' ? 'passwordIcon' : 'confirmPasswordIcon');
+  
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    passwordIcon.classList.remove('fa-eye');
+    passwordIcon.classList.add('fa-eye-slash');
+  } else {
+    passwordInput.type = 'password';
+    passwordIcon.classList.remove('fa-eye-slash');
+    passwordIcon.classList.add('fa-eye');
+  }
+}
+
+// Password strength checker
+function checkPasswordStrength(password) {
+  let strength = 0;
+  let feedback = [];
+  
+  if (password.length >= 8) strength++;
+  else feedback.push('At least 8 characters');
+  
+  if (/[a-z]/.test(password)) strength++;
+  else feedback.push('Include lowercase letters');
+  
+  if (/[A-Z]/.test(password)) strength++;
+  else feedback.push('Include uppercase letters');
+  
+  if (/[0-9]/.test(password)) strength++;
+  else feedback.push('Include numbers');
+  
+  if (/[^A-Za-z0-9]/.test(password)) strength++;
+  else feedback.push('Include special characters');
+  
+  return { strength, feedback };
+}
+
+// Real-time password validation
+document.getElementById('password').addEventListener('input', function() {
+  const password = this.value;
+  const strength = checkPasswordStrength(password);
+  
+  // Remove existing strength indicator
+  const existingIndicator = document.querySelector('.password-strength');
+  if (existingIndicator) existingIndicator.remove();
+  
+  if (password.length > 0) {
+    const indicator = document.createElement('div');
+    indicator.className = 'password-strength';
+    
+    let strengthClass = '';
+    let strengthText = '';
+    
+    if (strength.strength <= 2) {
+      strengthClass = 'strength-weak';
+      strengthText = 'Weak';
+    } else if (strength.strength <= 3) {
+      strengthClass = 'strength-medium';
+      strengthText = 'Medium';
+    } else {
+      strengthClass = 'strength-strong';
+      strengthText = 'Strong';
+    }
+    
+    indicator.innerHTML = `<span class="${strengthClass}">Password strength: ${strengthText}</span>`;
+    this.parentNode.appendChild(indicator);
+  }
+});
+
+// Form validation
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirm_password').value;
+  const email = document.getElementById('email').value;
+  const userType = document.getElementById('user_type').value;
+  
+  // Check if passwords match
+  if (password !== confirmPassword) {
+    e.preventDefault();
+    showAlert('Passwords do not match.', 'danger');
+    return;
+  }
+  
+  // Check password strength
+  const strength = checkPasswordStrength(password);
+  if (strength.strength < 3) {
+    e.preventDefault();
+    showAlert('Please create a stronger password.', 'danger');
+    return;
+  }
+  
+  // Validate DLSU email format
+  const dlsuEmailRegex = /^[a-z]+_[a-z]+@dlsu\.edu\.ph$/;
+  if (!dlsuEmailRegex.test(email.toLowerCase())) {
+    e.preventDefault();
+    showAlert('Please use a valid DLSU email address (e.g., juan_dela@dlsu.edu.ph).', 'danger');
+    return;
+  }
+  
+  // Check if user type is selected
+  if (!userType) {
+    e.preventDefault();
+    showAlert('Please select your user type.', 'danger');
+    return;
+  }
+  
+});
+
+// Auto-focus on first name input
+document.addEventListener('DOMContentLoaded', function() {
+  const firstNameInput = document.getElementById('first');
+  if (firstNameInput) {
+    firstNameInput.focus();
+  }
+});
+</script>
