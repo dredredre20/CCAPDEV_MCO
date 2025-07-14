@@ -5,6 +5,15 @@ const { UserProfile } = require('../models/User');
 const { ReservationSlot } = require('../models/ReservationSlot');
 const userController = require('../controllers/userController');
 
+// Utility function to add minutes to a time string (e.g., '08:00' + 30 = '08:30')
+function addMinutes(time, mins) {
+  const [h, m] = time.split(':').map(Number);
+  const total = h * 60 + m + mins;
+  const nh = Math.floor(total / 60);
+  const nm = total % 60;
+  return `${nh.toString().padStart(2, '0')}:${nm.toString().padStart(2, '0')}`;
+}
+
 // Technician homepage
 router.get('/technician', async (req, res) => {
     const userId = req.session.userId;
@@ -12,7 +21,7 @@ router.get('/technician', async (req, res) => {
         return res.redirect('/user-login?error=Please log in to access your dashboard');
     }
     try {
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.redirect('/user-login?error=User not found');
         }
@@ -21,7 +30,7 @@ router.get('/technician', async (req, res) => {
         }
 
         // Get all reservations for stats
-        const allReservations = await Reservation.find({ status: 'active' }).populate('user_id', 'name email');
+        const allReservations = await Reservation.find({ status: 'active' }).populate('user_id', 'name email').lean();
         const totalReservations = allReservations.length;
         
         // Get active users (users with active reservations)
@@ -74,14 +83,14 @@ router.get('/technician/profile', async (req, res) => {
         return res.redirect('/user-login?error=Please log in to view your profile');
     }
     try {
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.redirect('/user-login?error=User not found');
         }
         if (user.user_type !== 'technician') {
             return res.redirect('/user-login?error=Access denied. Technician only.');
         }
-        const reservations = await Reservation.find({ user_id: userId });
+        const reservations = await Reservation.find({ user_id: userId }).lean();
         res.render('labTech_profile', { 
             title: 'Technician Profile',
             style: 'labTech_profile.css',
@@ -100,16 +109,20 @@ router.get('/technician/profile', async (req, res) => {
 
 // Reserve for student page
 router.get('/technician/reserve', async (req, res) => {
+    const isAjax = req.query.ajax === '1';
     const userId = req.session.userId;
     if (!userId || typeof userId !== 'string' || userId.length !== 24) {
+        if (isAjax) return res.status(401).json({ error: 'Not logged in', availableSlots: [] });
         return res.redirect('/user-login?error=Please log in to reserve for a student');
     }
     try {
         const user = await UserProfile.findById(userId);
         if (!user) {
+            if (isAjax) return res.status(401).json({ error: 'User not found', availableSlots: [] });
             return res.redirect('/user-login?error=User not found');
         }
         if (user.user_type !== 'technician') {
+            if (isAjax) return res.status(403).json({ error: 'Access denied. Technician only.', availableSlots: [] });
             return res.redirect('/user-login?error=Access denied. Technician only.');
         }
 
@@ -164,6 +177,7 @@ router.get('/technician/reserve', async (req, res) => {
                 }
                 availableSlots.push({
                     timeSlot,
+                    endTime: addMinutes(timeSlot, 30),
                     availableSeats,
                     takenCount: takenSeats.length,
                     blockedSeats,
@@ -182,7 +196,7 @@ router.get('/technician/reserve', async (req, res) => {
         }
 
         // If AJAX request, return JSON for dynamic UI
-        if (ajax === '1') {
+        if (isAjax) {
             return res.json({ availableSlots });
         }
 
@@ -201,6 +215,7 @@ router.get('/technician/reserve', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician/reserve]', err);
+        if (isAjax) return res.status(500).json({ error: 'Server error', availableSlots: [] });
         res.status(500).send('Error loading reserve page');
     }
 });
@@ -668,18 +683,61 @@ router.get('/technician/availability', async (req, res) => {
     const userId = req.session.userId;
     const { laboratory, date, timeSlot, currentReservationId } = req.query;
     if (!userId || typeof userId !== 'string' || userId.length !== 24) {
-      return res.status(401).json({ availableSeats: [], blockedSeats: [], error: 'Not logged in' });
+      return res.status(401).json({ availableSlots: [], availableSeats: [], error: 'Not logged in' });
     }
-    if (!laboratory || !date || !timeSlot) {
-      return res.json({ availableSeats: [], blockedSeats: [] });
+    if (!laboratory || !date) {
+      return res.json({ availableSlots: [], availableSeats: [] });
     }
-    // Get date as UTC to avoid timezone issues
-    const utcDate = new Date(date);
-    utcDate.setUTCHours(0, 0, 0, 0);
-    // Find reservations excluding current one if editing
+    // If only lab and date are provided, return available time slots
+    if (!timeSlot) {
+      const allTimeSlots = [
+        '08:00', '08:30', '09:00', '09:30', '10:00',
+        '10:30', '11:00', '11:30', '12:00', '12:30', '13:00',
+        '13:30', '14:00', '14:30', '15:00', '15:30',
+        '16:00', '16:30', '17:00', '17:30', '18:00'
+      ];
+      const availableSlots = [];
+      for (const slot of allTimeSlots) {
+        const reservationQuery = {
+          laboratory,
+          reservation_date: new Date(date),
+          time_slot: slot,
+          status: 'active'
+        };
+        if (currentReservationId) {
+          reservationQuery._id = { $ne: currentReservationId };
+        }
+        const reservations = await Reservation.find(reservationQuery);
+        let takenSeats = reservations.map(r => r.seat_number);
+        if (currentReservationId) {
+          const currentRes = await Reservation.findById(currentReservationId);
+          if (currentRes) {
+            takenSeats = takenSeats.filter(seat => seat !== currentRes.seat_number);
+          }
+        }
+        const blockedSlots = await ReservationSlot.find({
+          laboratory,
+          date: new Date(date),
+          time_slot: slot,
+          is_blocked: true
+        });
+        const blockedSeats = blockedSlots.map(s => s.seat_number);
+        const allSeats = Array.from({ length: 35 }, (_, i) => i + 1);
+        const availableSeats = allSeats.filter(seat => !takenSeats.includes(seat) && !blockedSeats.includes(seat));
+        if (availableSeats.length > 0) {
+          availableSlots.push({
+            timeSlot: slot,
+            endTime: addMinutes(slot, 30),
+            availableSeats
+          });
+        }
+      }
+      return res.json({ availableSlots });
+    }
+    // If lab, date, and timeSlot are provided, return available seats
     const reservationQuery = {
       laboratory,
-      reservation_date: utcDate,
+      reservation_date: new Date(date),
       time_slot: timeSlot,
       status: 'active'
     };
@@ -687,36 +745,26 @@ router.get('/technician/availability', async (req, res) => {
       reservationQuery._id = { $ne: currentReservationId };
     }
     const reservations = await Reservation.find(reservationQuery);
-    const takenSeats = reservations.map(r => r.seat_number);
-    // Get blocked seats
+    let takenSeats = reservations.map(r => r.seat_number);
+    if (currentReservationId) {
+      const currentRes = await Reservation.findById(currentReservationId);
+      if (currentRes) {
+        takenSeats = takenSeats.filter(seat => seat !== currentRes.seat_number);
+      }
+    }
     const blockedSlots = await ReservationSlot.find({
       laboratory,
-      date: utcDate,
+      date: new Date(date),
       time_slot: timeSlot,
       is_blocked: true
     });
     const blockedSeats = blockedSlots.map(s => s.seat_number);
-    // Generate all seats
     const allSeats = Array.from({ length: 35 }, (_, i) => i + 1);
-    // Get current reservation if editing
-    let currentSeat = null;
-    if (currentReservationId) {
-      const currentRes = await Reservation.findById(currentReservationId);
-      currentSeat = currentRes?.seat_number;
-    }
-    // Calculate available seats
-    const availableSeats = allSeats.filter(seat => {
-      if (currentSeat === seat) return true;
-      return !takenSeats.includes(seat) && !blockedSeats.includes(seat);
-    });
-    res.json({ availableSeats, blockedSeats });
+    const availableSeats = allSeats.filter(seat => !takenSeats.includes(seat) && !blockedSeats.includes(seat));
+    return res.json({ availableSeats, blockedSeats });
   } catch (err) {
-    console.error('[GET /technician/availability]', err);
-    res.json({ availableSeats: [], blockedSeats: [] });
+    res.json({ availableSlots: [], availableSeats: [] });
   }
 });
-
-router.post('/technician/profile/delete', userController.deleteAccount);
-
 
 module.exports = router;

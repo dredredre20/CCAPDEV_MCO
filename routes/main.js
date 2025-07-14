@@ -19,7 +19,7 @@ router.get('/view-slots', async (req, res) => {
         let userType = null;
         if (userId) {
             const { UserProfile } = require('../models/User');
-            const user = await UserProfile.findById(userId);
+            const user = await UserProfile.findById(userId).lean();
             if (user) userType = user.user_type;
         }
         // If no filters are provided, show empty results
@@ -102,7 +102,7 @@ router.get('/student', async (req, res) => {
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.redirect('/user-login?error=User not found');
         }
@@ -150,7 +150,7 @@ router.get('/student/profile', async (req, res) => {
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.redirect('/user-login?error=User not found');
         }
@@ -187,7 +187,7 @@ router.get('/student/edit-reservation', async (req, res) => {
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.redirect('/user-login?error=User not found');
         }
@@ -239,7 +239,7 @@ router.get('/technician', async (req, res) => {
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.render('lab_technician_page', {
                 title: 'Technician Dashboard',
@@ -336,7 +336,7 @@ router.get('/technician/profile', async (req, res) => {
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.render('labTech_profile', {
                 title: 'Technician Profile',

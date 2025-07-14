@@ -416,7 +416,7 @@
 </style>
 
 // Replace the entire script section with this updated version
-<script>
+  <script>
 // Function to open delete modal
 function openDeleteModal(reservationId) {
   document.getElementById('deleteReservationId').value = reservationId;
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const seatNumberSelect = document.getElementById('editSeatNumber');
   const reservationDropdown = document.getElementById('reservationDropdown');
   const reservations = JSON.parse('{{{json reservations}}}'.replace(/&quot;/g, '"'));
-  
+
   // Function to fetch available time slots
   async function fetchTimeSlots() {
     const lab = labSelect.value;
@@ -483,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const response = await fetch(url);
       const data = await response.json();
       
-      seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+    seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
       
       // Create all 35 seat options
       for (let seat = 1; seat <= 35; seat++) {
@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     } catch (error) {
       console.error('Error fetching seats:', error);
-    }
+  }
   }
 
   // When reservation selection changes
@@ -543,14 +543,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Delete reservation function
 async function deleteReservation(reservationId) {
-  const userId = '{{userId}}';
-  try {
-    const response = await fetch('/student/delete-reservation', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, reservationId })
-    });
-    if (response.ok) {
+    const userId = '{{userId}}';
+    try {
+      const response = await fetch('/student/delete-reservation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, reservationId })
+      });
+      if (response.ok) {
       // Remove reservation item from UI
       const item = document.getElementById(`reservation-item-${reservationId}`);
       if (item) item.remove();
@@ -558,7 +558,7 @@ async function deleteReservation(reservationId) {
       const toast = new bootstrap.Toast(document.getElementById('deleteToast'));
       document.getElementById('deleteToastBody').textContent = 'Reservation deleted successfully!';
       toast.show();
-    } else {
+      } else {
       const error = await response.text();
       alert(`Error: ${error}`);
     }
@@ -567,7 +567,7 @@ async function deleteReservation(reservationId) {
     alert('Failed to delete reservation');
   }
 }
-</script>
+  </script>
 
 
 

@@ -1,6 +1,5 @@
 const { UserProfile } = require('../models/User');
-const { Reservation } = require('../models/Reservation');
-const { ReservationSlot } = require('../models/ReservationSlot');
+const Reservation = require('../models/Reservation');
 
 // GET: Student or Technician Homepage
 exports.getHomePage = async (req, res) => {
@@ -9,7 +8,7 @@ exports.getHomePage = async (req, res) => {
     if (!userId || typeof userId !== 'string' || userId.length !== 24) {
       return res.redirect('/user-login?error=Please log in to access your homepage');
     }
-    const user = await UserProfile.findById(userId);
+    const user = await UserProfile.findById(userId).lean();
     if (!user) return res.redirect('/user-login?error=User not found');
     const view = user.user_type === 'student' ? 'student_page' : 'lab_technician_page';
     res.render(view, { userId: user._id });
@@ -26,17 +25,17 @@ exports.getProfile = async (req, res) => {
     if (!userId || typeof userId !== 'string' || userId.length !== 24) {
       return res.redirect('/user-login?error=Please log in to view your profile');
     }
-    const user = await UserProfile.findById(userId);
+    const user = await UserProfile.findById(userId).lean();
     if (!user) return res.redirect('/user-login?error=User not found');
     if (user.user_type === 'technician') {
-      const reservations = await Reservation.find({ user_id: user._id });
+      const reservations = await Reservation.find({ user_id: user._id }).lean();
       res.render('labTech_profile', {
         user,
         tech: user,
         reservations
       });
     } else {
-      const reservations = await Reservation.find({ user_id: user._id });
+      const reservations = await Reservation.find({ user_id: user._id }).lean();
       res.render('new-profile', {
         user,
         userId: user._id,
@@ -80,32 +79,9 @@ exports.deleteAccount = async (req, res) => {
   try {
     const userId = req.session.userId;
     if (!userId) return res.redirect('/user-login?error=User not found');
-    
-    // Delete all reservations associated with this user
-    await Reservation.deleteMany({ user_id: userId });
-    
-    // Release all reservation slots reserved by this user
-    await ReservationSlot.updateMany(
-      { reserved_by: userId },
-      {
-        $set: {
-          is_available: true,
-          reserved_by: null,
-          reservation_id: null
-        }
-      }
-    );
-    
-    // Delete the user account
-    const deletedUser = await UserProfile.findByIdAndDelete(userId);
-    
-    if (!deletedUser) {
-      return res.redirect('/user-login?error=User not found');
-    }
-    
-    // Destroy session after successful deletion
+    await UserProfile.findByIdAndDelete(userId);
     req.session.destroy(() => {
-      res.redirect('/user-login?success=Account deleted successfully');
+      res.redirect('/user-login');
     });
   } catch (err) {
     console.error(err);

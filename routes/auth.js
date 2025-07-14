@@ -125,7 +125,7 @@ router.post('/user-login', async (req, res) => {
 // Logout user (destroy session)
 router.get('/logout', (req, res) => {
     req.session.destroy(() => {
-        res.redirect('/user-login');
+    res.redirect('/user-login');
     });
 });
 

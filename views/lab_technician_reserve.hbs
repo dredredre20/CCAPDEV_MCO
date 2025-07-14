@@ -103,9 +103,7 @@
               </label>
               <select class="form-select" id="time" name="time" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
                 <option value="">Select Time Slot</option>
-                {{#each timeSlots}}
-                  <option value="{{this}}">{{this}}</option>
-                {{/each}}
+                <!-- Time slots will be populated by JS -->
               </select>
             </div>
           </div>
@@ -118,20 +116,8 @@
               <span class="badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border-radius: 8px; padding: 0.25rem 0.75rem; font-size: 0.85rem; margin-left: 1rem;">Walk-in</span>
             </label>
             <div class="seat-map" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; padding: 1rem; background: rgba(245, 158, 11, 0.05); border-radius: 12px; border: 2px solid rgba(245, 158, 11, 0.1); min-height: 120px;">
-              {{#if availableSlots}}
-                {{#each availableSlots}}
-                  {{#if (eq ../selectedTimeSlot this.timeSlot)}}
-                    {{#each this.availableSeats}}
-                      <label class="seat-checkbox" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border-radius: 8px; background: #fffbe6; border: 2px solid #fbbf24; cursor: pointer; transition: all 0.2s ease;">
-                        <input type="checkbox" name="seat_numbers" value="{{this}}" style="width: 1rem; height: 1rem; accent-color: #f59e0b;">
-                        <span style="font-weight: 600; color: #b45309;">{{this}}</span>
-                      </label>
-                    {{/each}}
-                  {{/if}}
-                {{/each}}
-              {{else}}
-                <span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>
-              {{/if}}
+              <span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>
+              <!-- Seat checkboxes will be populated by JS -->
             </div>
             <div class="seat-legend" style="margin-top: 1rem; display: flex; gap: 1.5rem; align-items: center;">
               <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="width: 18px; height: 18px; background: #fffbe6; border: 2px solid #fbbf24; border-radius: 4px; display: inline-block;"></span> Available</span>
@@ -285,153 +271,5 @@
 }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const labSelect = document.getElementById('laboratory');
-  const dateInput = document.getElementById('reservation_date');
-  const timeSelect = document.getElementById('time');
-  const seatMap = document.querySelector('.seat-map');
-  const availableSlotsSection = document.getElementById('available-slots-section');
-  const availableSlotsTitle = document.getElementById('available-slots-title');
-  const slotsGrid = document.getElementById('slots-grid');
-
-  let currentAvailableSlots = [];
-
-  async function fetchAndRenderAvailableSlots() {
-    const lab = labSelect.value;
-    const date = dateInput.value;
-    if (!lab || !date) {
-      availableSlotsSection.style.display = 'none';
-      timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
-      seatMap.innerHTML = '<span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>';
-      return;
-    }
-    availableSlotsTitle.textContent = `Available Slots for ${lab} on ${date}`;
-    slotsGrid.innerHTML = '<span style="color: #b45309;"><i class="fas fa-spinner fa-spin"></i> Loading slots...</span>';
-    availableSlotsSection.style.display = 'block';
-    try {
-      const res = await fetch(`/technician/reserve?laboratory=${encodeURIComponent(lab)}&date=${encodeURIComponent(date)}&ajax=1`);
-      const data = await res.json();
-      currentAvailableSlots = data.availableSlots || [];
-      // Populate time slot dropdown with only slots that have available seats
-      timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
-      currentAvailableSlots.forEach(slot => {
-        if (slot.availableSeats && slot.availableSeats.length > 0) {
-          const opt = document.createElement('option');
-          opt.value = slot.timeSlot;
-          opt.textContent = `${slot.timeSlot} - ${addMinutes(slot.timeSlot, 30)}`;
-          timeSelect.appendChild(opt);
-        }
-      });
-      // If a time slot is already selected and still available, keep it selected
-      if (timeSelect.dataset.prevValue && [...timeSelect.options].some(o => o.value === timeSelect.dataset.prevValue)) {
-        timeSelect.value = timeSelect.dataset.prevValue;
-      } else {
-        timeSelect.value = '';
-      }
-      // Render available slots summary
-      if (!currentAvailableSlots.length) {
-        slotsGrid.innerHTML = '<span style="color: #b91c1c;">No available slots for this lab and date.</span>';
-        seatMap.innerHTML = '<span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>';
-        return;
-      }
-      let html = '';
-      currentAvailableSlots.forEach(slot => {
-        html += `<div class='slot-card' style='background: white; border-radius: 8px; padding: 1rem; border: 1px solid rgba(0,0,0,0.05);'>` +
-          `<div class='slot-time' style='font-weight: 600; color: #374151; margin-bottom: 0.5rem;'>${slot.timeSlot} - ${addMinutes(slot.timeSlot, 30)}</div>` +
-          `<div class='slot-availability' style='font-size: 0.875rem; color: #6b7280;'><span style='color: #10b981;'>${slot.availableCount} seats available</span> <span style='color: #ef4444; margin-left: 0.5rem;'>${slot.takenCount} taken</span></div>` +
-          `<div class='available-seats' style='margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.25rem;'>` +
-          slot.availableSeats.map(seat => `<span class='seat-badge' style='padding: 0.25rem 0.5rem; background: rgba(16,185,129,0.1); color: #059669; border-radius: 4px; font-size: 0.75rem; font-weight: 600;'>${seat}</span>`).join('') +
-          `</div></div>`;
-      });
-      slotsGrid.innerHTML = html;
-      // Update seat map if a time slot is selected
-      updateSeatMap();
-    } catch (err) {
-      slotsGrid.innerHTML = '<span style="color: #b91c1c;">Error loading slots.</span>';
-      seatMap.innerHTML = '<span style="color: #b91c1c;">Error loading seat data.</span>';
-    }
-  }
-
-  function updateSeatMap() {
-    const lab = labSelect.value;
-    const date = dateInput.value;
-    const time = timeSelect.value;
-    timeSelect.dataset.prevValue = time;
-    if (!lab || !date || !time) {
-      seatMap.innerHTML = '<span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>';
-      return;
-    }
-    seatMap.innerHTML = '<span style="color: #b45309;"><i class="fas fa-spinner fa-spin"></i> Loading seat data...</span>';
-    fetch(`/technician/availability?laboratory=${encodeURIComponent(lab)}&date=${encodeURIComponent(date)}&timeSlot=${encodeURIComponent(time)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (!data || !data.availableSeats) {
-          seatMap.innerHTML = '<span style="color: #b91c1c;">No seat data available.</span>';
-          return;
-        }
-        let html = '';
-        for (let seat = 1; seat <= 35; seat++) {
-          const isAvailable = data.availableSeats.includes(seat);
-          const isBlocked = data.blockedSeats && data.blockedSeats.includes(seat);
-          html += `<label class='seat-checkbox' style='display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border-radius: 8px; background: ${isAvailable ? '#fffbe6' : isBlocked ? '#fee2e2' : '#e5e7eb'}; border: 2px solid ${isAvailable ? '#fbbf24' : isBlocked ? '#ef4444' : '#9ca3af'}; cursor: ${isAvailable ? 'pointer' : 'not-allowed'}; transition: all 0.2s ease; margin-bottom: 2px;'>` +
-            `<input type='checkbox' name='seat_numbers' value='${seat}' style='width: 1rem; height: 1rem; accent-color: #f59e0b;' ${isAvailable ? '' : 'disabled'}>` +
-            `<span style='font-weight: 600; color: ${isAvailable ? '#b45309' : isBlocked ? '#b91c1c' : '#6b7280'};'>${seat}</span>` +
-            `</label>`;
-        }
-        seatMap.innerHTML = html;
-      })
-      .catch(() => {
-        seatMap.innerHTML = '<span style="color: #b91c1c;">Error loading seat data.</span>';
-      });
-  }
-
-  function addMinutes(time, mins) {
-    const [h, m] = time.split(':').map(Number);
-    const total = h * 60 + m + mins;
-    const nh = Math.floor(total / 60);
-    const nm = total % 60;
-    return `${nh.toString().padStart(2, '0')}:${nm.toString().padStart(2, '0')}`;
-  }
-
-  labSelect.addEventListener('change', fetchAndRenderAvailableSlots);
-  dateInput.addEventListener('change', fetchAndRenderAvailableSlots);
-  timeSelect.addEventListener('change', updateSeatMap);
-  // Initial load if all fields are pre-filled
-  if (labSelect.value && dateInput.value) {
-    fetchAndRenderAvailableSlots();
-  }
-});
-
-// Form validation
-document.getElementById('reserveForm').addEventListener('submit', function(e) {
-  const laboratory = document.getElementById('laboratory').value;
-  const date = document.getElementById('reservation_date').value;
-  const time = document.getElementById('time').value;
-  const seatNumbers = document.querySelectorAll('input[name="seat_numbers"]:checked');
-  
-  if (!laboratory || !date || !time) {
-    e.preventDefault();
-    alert('Please fill in all required fields.');
-    return false;
-  }
-  
-  if (seatNumbers.length === 0) {
-    e.preventDefault();
-    alert('Please select at least one seat.');
-    return false;
-  }
-  
-  // Show loading state
-  const submitBtn = this.querySelector('.btn-create-reservation');
-  const originalText = submitBtn.innerHTML;
-  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
-  submitBtn.disabled = true;
-  
-  // Re-enable after 3 seconds if form doesn't submit
-  setTimeout(() => {
-    submitBtn.innerHTML = originalText;
-    submitBtn.disabled = false;
-  }, 3000);
-});
-</script>
+<!-- Attach the technician reservation JS at the end of the body -->
+<script src="/js/form-handlers.js"></script>

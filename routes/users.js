@@ -7,7 +7,7 @@ const Reservation = require('../models/Reservation');
 router.get('/student/profile', async (req, res) => {
     const userId = req.query.userId;
     try {
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.status(404).send('User not found');
         }

@@ -13,7 +13,7 @@ exports.reserveSlot = async (req, res) => {
       return res.redirect('/user-login?error=Please log in to make reservations');
     }
 
-    const user = await UserProfile.findById(userId);
+    const user = await UserProfile.findById(userId).lean();
     if (!user) {
       return res.redirect('/user-login?error=User not found');
     }
@@ -43,18 +43,18 @@ exports.reserveSlot = async (req, res) => {
       date: new Date(reservation_date),
       time_slot,
       seat_number
-    });
+    }).lean();
 
     // If slot doesn't exist, create it as available
     if (!slot) {
       slot = new ReservationSlot({
-        laboratory,
-        date: new Date(reservation_date),
-        time_slot,
-        seat_number,
-        is_available: true,
-        is_blocked: false
-      });
+      laboratory,
+      date: new Date(reservation_date),
+      time_slot,
+      seat_number,
+      is_available: true,
+      is_blocked: false
+    });
     }
 
     // Check if slot can be reserved
@@ -69,7 +69,7 @@ exports.reserveSlot = async (req, res) => {
       reservation_date: new Date(reservation_date),
       time_slot,
       status: 'active'
-    });
+    }).lean();
 
     if (existingReservation) {
       return res.redirect(`/student/reserve?userId=${userId}&error=You already have a reservation for this time slot`);
@@ -120,7 +120,7 @@ exports.viewReservations = async (req, res) => {
       return res.redirect('/user-login?error=Please log in to view reservations');
     }
 
-    const user = await UserProfile.findById(userId);
+    const user = await UserProfile.findById(userId).lean();
     if (!user) {
       return res.redirect('/user-login?error=User not found');
     }
@@ -129,7 +129,7 @@ exports.viewReservations = async (req, res) => {
     const reservations = await Reservation.find({ 
       user_id: userId, 
       status: 'active' 
-    }).sort({ reservation_date: 1, time_slot: 1 });
+    }).sort({ reservation_date: 1, time_slot: 1 }).lean();
 
     res.render('student_page', {
       title: 'My Reservations',
@@ -154,12 +154,12 @@ exports.editReservation = async (req, res) => {
       return res.redirect('/user-login?error=Please log in to edit reservations');
     }
 
-    const user = await UserProfile.findById(userId);
+    const user = await UserProfile.findById(userId).lean();
     if (!user) {
       return res.redirect('/user-login?error=User not found');
     }
 
-    const reservation = await Reservation.findById(reservationId);
+    const reservation = await Reservation.findById(reservationId).lean();
     if (!reservation) {
       return res.redirect(`/student?userId=${userId}&error=Reservation not found`);
     }
@@ -184,18 +184,18 @@ exports.editReservation = async (req, res) => {
       date: new Date(reservation_date),
       time_slot,
       seat_number
-    });
+    }).lean();
 
     // If new slot doesn't exist, create it
     if (!newSlot) {
       newSlot = new ReservationSlot({
-        laboratory,
-        date: new Date(reservation_date),
-        time_slot,
-        seat_number,
-        is_available: true,
-        is_blocked: false
-      });
+      laboratory,
+      date: new Date(reservation_date),
+      time_slot,
+      seat_number,
+      is_available: true,
+      is_blocked: false
+    });
     }
 
     if (!newSlot.canBeReserved()) {
@@ -209,7 +209,7 @@ exports.editReservation = async (req, res) => {
       time_slot: reservation.time_slot,
       seat_number: reservation.seat_number,
       reservation_id: reservation._id
-    });
+    }).lean();
 
     if (oldSlot) {
       await oldSlot.release();
@@ -250,12 +250,12 @@ exports.removeReservation = async (req, res) => {
       return res.redirect('/user-login?error=Please log in to remove reservations');
     }
 
-    const user = await UserProfile.findById(userId);
+    const user = await UserProfile.findById(userId).lean();
     if (!user) {
       return res.redirect('/user-login?error=User not found');
     }
 
-    const reservation = await Reservation.findById(reservationId);
+    const reservation = await Reservation.findById(reservationId).lean();
     if (!reservation) {
       return res.redirect(`/student?userId=${userId}&error=Reservation not found`);
     }
@@ -286,7 +286,7 @@ exports.removeReservation = async (req, res) => {
       time_slot: reservation.time_slot,
       seat_number: reservation.seat_number,
       reservation_id: reservation._id
-    });
+    }).lean();
 
     if (slot) {
       await slot.release();
@@ -294,10 +294,10 @@ exports.removeReservation = async (req, res) => {
 
     // Remove from user's current reservations
     if (user.current_reservations) {
-      user.current_reservations = user.current_reservations.filter(
-        r => r.toString() !== reservationId
-      );
-      await user.save();
+    user.current_reservations = user.current_reservations.filter(
+      r => r.toString() !== reservationId
+    );
+    await user.save();
     }
 
     // Delete reservation
@@ -350,7 +350,7 @@ exports.viewAvailability = async (req, res) => {
       
       const reservations = await Reservation.find(query)
         .populate('user_id', 'name email')
-        .sort({ seat_number: 1 });
+        .sort({ seat_number: 1 }).lean();
 
       // Find blocked slots
       let blockedQuery = { 
@@ -360,7 +360,7 @@ exports.viewAvailability = async (req, res) => {
       };
       if (time_slot) blockedQuery.time_slot = time_slot;
       
-      const blockedSlots = await ReservationSlot.find(blockedQuery);
+      const blockedSlots = await ReservationSlot.find(blockedQuery).lean();
 
       // Create a map of reserved and blocked seats
       const seatStatus = {};
@@ -444,7 +444,7 @@ exports.viewAvailability = async (req, res) => {
     }
     if (userId && typeof userId === 'string' && userId.length === 24) {
       try {
-        let user = await UserProfile.findById(userId);
+        let user = await UserProfile.findById(userId).lean();
         if (user) {
           // Convert to plain object to avoid Handlebars prototype access warning
           user = user.toObject();
@@ -485,12 +485,12 @@ exports.reserveForStudent = async (req, res) => {
       return res.redirect('/user-login?error=Please log in to make reservations');
     }
 
-    const technician = await UserProfile.findById(technicianId);
+    const technician = await UserProfile.findById(technicianId).lean();
     if (!technician || technician.user_type !== 'technician') {
       return res.redirect('/user-login?error=Only technicians can reserve for students');
     }
 
-    const student = await UserProfile.findOne({ email: student_email.toLowerCase() });
+    const student = await UserProfile.findOne({ email: student_email.toLowerCase() }).lean();
     if (!student) {
       return res.redirect(`/technician/reserve?userId=${technicianId}&error=Student not found`);
     }
@@ -515,18 +515,18 @@ exports.reserveForStudent = async (req, res) => {
       date: new Date(reservation_date),
       time_slot,
       seat_number
-    });
+    }).lean();
 
     // If slot doesn't exist, create it as available
     if (!slot) {
       slot = new ReservationSlot({
-        laboratory,
-        date: new Date(reservation_date),
-        time_slot,
-        seat_number,
-        is_available: true,
-        is_blocked: false
-      });
+      laboratory,
+      date: new Date(reservation_date),
+      time_slot,
+      seat_number,
+      is_available: true,
+      is_blocked: false
+    });
     }
 
     if (!slot.canBeReserved()) {
@@ -580,7 +580,7 @@ exports.blockTimeSlot = async (req, res) => {
       return res.redirect('/user-login?error=Please log in to block slots');
     }
 
-    const technician = await UserProfile.findById(technicianId);
+    const technician = await UserProfile.findById(technicianId).lean();
     if (!technician || technician.user_type !== 'technician') {
       return res.redirect('/user-login?error=Only technicians can block slots');
     }
@@ -595,7 +595,7 @@ exports.blockTimeSlot = async (req, res) => {
       date: new Date(date),
       time_slot,
       seat_number
-    });
+    }).lean();
 
     if (!slot) {
       // Create new slot if it doesn't exist

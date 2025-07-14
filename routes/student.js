@@ -5,6 +5,15 @@ const { UserProfile } = require('../models/User');
 const { ReservationSlot } = require('../models/ReservationSlot');
 const userController = require('../controllers/userController');
 
+// Utility function to add minutes to a time string (e.g., '08:00' + 30 = '08:30')
+function addMinutes(time, mins) {
+  const [h, m] = time.split(':').map(Number);
+  const total = h * 60 + m + mins;
+  const nh = Math.floor(total / 60);
+  const nm = total % 60;
+  return `${nh.toString().padStart(2, '0')}:${nm.toString().padStart(2, '0')}`;
+}
+
 // Student homepage
 router.get('/student', async (req, res) => {
     const userId = req.session.userId;
@@ -12,7 +21,7 @@ router.get('/student', async (req, res) => {
         return res.redirect('/user-login?error=Please log in to access your dashboard');
     }
     try {
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.redirect('/user-login?error=User not found');
         }
@@ -21,7 +30,7 @@ router.get('/student', async (req, res) => {
         const reservations = await Reservation.find({ 
             user_id: userId, 
             status: 'active' 
-        }).sort({ reservation_date: 1, time_slot: 1 });
+        }).sort({ reservation_date: 1, time_slot: 1 }).lean();
         
         console.log(`📊 Dashboard: Found ${reservations.length} active reservations for user ${userId}`);
         
@@ -75,7 +84,7 @@ router.get('/student/reserve', async (req, res) => {
     return res.redirect('/user-login?error=Please log in to reserve a lab');
   }
   try {
-    const user = await UserProfile.findById(userId);
+    const user = await UserProfile.findById(userId).lean();
     if (!user) {
       return res.redirect('/user-login?error=User not found');
     }
@@ -261,14 +270,10 @@ router.post('/student/reserve', async (req, res) => {
     await slot.save();
 
     // Add reservation to user's current_reservations array
-    if (!user.current_reservations) {
-      user.current_reservations = [];
-    }
-    user.current_reservations.push(reservation._id);
-    await user.save();
+    // No need to update user.current_reservations; Reservation collection is the source of truth
 
     console.log(`✅ Reservation created: ${reservation._id} for user ${userId}`);
-    console.log(`📊 User ${userId} now has ${user.current_reservations.length} reservations`);
+    console.log(`📊 User ${userId} now has ${user.current_reservations ? user.current_reservations.length : 0} reservations`);
     
     res.redirect(`/student?userId=${userId}&success=Reservation created successfully`);
   } catch (err) {
@@ -284,7 +289,7 @@ router.get('/student/edit-reservation', async (req, res) => {
     return res.redirect('/user-login?error=Please log in to edit your reservations');
   }
   try {
-    const user = await UserProfile.findById(userId);
+    const user = await UserProfile.findById(userId).lean();
     if (!user) {
       return res.redirect('/user-login?error=User not found');
     }
@@ -293,7 +298,7 @@ router.get('/student/edit-reservation', async (req, res) => {
     const reservations = await Reservation.find({ 
       user_id: userId, 
       status: 'active' 
-    }).sort({ reservation_date: 1, time_slot: 1 });
+    }).sort({ reservation_date: 1, time_slot: 1 }).lean();
     
     console.log(`📋 Found ${reservations.length} reservations for user ${userId}`);
     
@@ -472,7 +477,7 @@ router.get('/student/profile', async (req, res) => {
         return res.redirect('/user-login?error=Please log in to view your profile');
     }
     try {
-        const user = await UserProfile.findById(userId);
+        const user = await UserProfile.findById(userId).lean();
         if (!user) {
             return res.redirect('/user-login?error=User not found');
         }
@@ -481,7 +486,7 @@ router.get('/student/profile', async (req, res) => {
         const reservations = await Reservation.find({ 
             user_id: userId, 
             status: 'active' 
-        }).sort({ reservation_date: 1, time_slot: 1 });
+        }).sort({ reservation_date: 1, time_slot: 1 }).lean();
         
         console.log(`👤 Profile: Found ${reservations.length} active reservations for user ${userId}`);
         
@@ -511,7 +516,7 @@ router.get('/user/:userId/profile', async (req, res) => {
   }
 
   try {
-    const user = await UserProfile.findById(userId).populate('current_reservations');
+    const user = await UserProfile.findById(userId).populate('current_reservations').lean();
     if (!user) {
       return res.status(404).send('User not found');
     }
@@ -531,14 +536,67 @@ router.get('/user/:userId/profile', async (req, res) => {
   }
 });
 
-/*
-// API endpoint to get available seats for a lab/date/time slot
+// API endpoint to get available time slots or seats for a lab/date/time slot
 router.get('/student/availability', async (req, res) => {
   try {
     const { laboratory, date, timeSlot, currentReservationId } = req.query;
-    if (!laboratory || !date || !timeSlot) {
-      return res.json({ availableSeats: [] });
+    if (!laboratory || !date) {
+      return res.json({ availableSlots: [], availableSeats: [] });
     }
+    // If only lab and date are provided, return available time slots
+    if (!timeSlot) {
+      // List of all possible time slots
+      const allTimeSlots = [
+        '08:00', '08:30', '09:00', '09:30', '10:00',
+        '10:30', '11:00', '11:30', '12:00', '12:30', '13:00',
+        '13:30', '14:00', '14:30', '15:00', '15:30',
+        '16:00', '16:30', '17:00', '17:30', '18:00'
+      ];
+      // For each time slot, check if at least one seat is available
+      const availableSlots = [];
+      for (const slot of allTimeSlots) {
+        // Find all reservations for this slot (excluding the current one if editing)
+        const reservationQuery = {
+          laboratory,
+          reservation_date: new Date(date),
+          time_slot: slot,
+          status: 'active'
+        };
+        if (currentReservationId) {
+          reservationQuery._id = { $ne: currentReservationId };
+        }
+        const reservations = await Reservation.find(reservationQuery);
+        let takenSeats = reservations.map(r => r.seat_number);
+        if (currentReservationId) {
+          const currentRes = await Reservation.findById(currentReservationId);
+          if (currentRes) {
+            takenSeats = takenSeats.filter(seat => seat !== currentRes.seat_number);
+          }
+        }
+        // Find blocked slots
+        const blockedSlots = await ReservationSlot.find({
+          laboratory,
+          date: new Date(date),
+          time_slot: slot,
+          is_blocked: true
+        });
+        const blockedSeats = blockedSlots.map(s => s.seat_number);
+        // All seats 1-35
+        const allSeats = Array.from({ length: 35 }, (_, i) => i + 1);
+        // Exclude taken and blocked seats
+        const availableSeats = allSeats.filter(seat => !takenSeats.includes(seat) && !blockedSeats.includes(seat));
+        if (availableSeats.length > 0) {
+          // Add slot if at least one seat is available
+          availableSlots.push({
+            timeSlot: slot,
+            endTime: addMinutes(slot, 30),
+            availableSeats
+          });
+        }
+      }
+      return res.json({ availableSlots });
+    }
+    // If lab, date, and timeSlot are provided, return available seats
     // Find all reservations for this slot (excluding the current one if editing)
     const reservationQuery = {
       laboratory,
@@ -550,18 +608,13 @@ router.get('/student/availability', async (req, res) => {
       reservationQuery._id = { $ne: currentReservationId };
     }
     const reservations = await Reservation.find(reservationQuery);
-
-  // Added by andre - marker
     let takenSeats = reservations.map(r => r.seat_number);
-
     if (currentReservationId) {
       const currentRes = await Reservation.findById(currentReservationId);
       if (currentRes) {
-        // Remove current seat from takenSeats if present
         takenSeats = takenSeats.filter(seat => seat !== currentRes.seat_number);
       }
     }
-
     // Find blocked slots
     const blockedSlots = await ReservationSlot.find({
       laboratory,
@@ -574,78 +627,13 @@ router.get('/student/availability', async (req, res) => {
     const allSeats = Array.from({ length: 35 }, (_, i) => i + 1);
     // Exclude taken and blocked seats
     const availableSeats = allSeats.filter(seat => !takenSeats.includes(seat) && !blockedSeats.includes(seat));
-    res.json({ availableSeats });
+    return res.json({ availableSeats });
   } catch (err) {
-    res.json({ availableSeats: [] });
-  }
-});*/
-
-// Update this endpoint
-router.get('/student/availability', async (req, res) => {
-  try {
-    const userId = req.session.userId;
-    const { laboratory, date, timeSlot, currentReservationId } = req.query;
-    if (!userId || typeof userId !== 'string' || userId.length !== 24) {
-      return res.redirect('/user-login?error=Please log in to check availability');
-    }
-    if (!laboratory || !date || !timeSlot) {
-      return res.json({ availableSeats: [] });
-    }
-
-    // Get date as UTC to avoid timezone issues
-    const utcDate = new Date(date);
-    utcDate.setUTCHours(0, 0, 0, 0);
-
-    // Find reservations excluding current one if editing
-    const reservationQuery = {
-      laboratory,
-      reservation_date: utcDate,
-      time_slot: timeSlot,
-      status: 'active'
-    };
-    
-    if (currentReservationId) {
-      reservationQuery._id = { $ne: currentReservationId };
-    }
-
-    const reservations = await Reservation.find(reservationQuery);
-    const takenSeats = reservations.map(r => r.seat_number);
-
-    // Get blocked seats
-    const blockedSlots = await ReservationSlot.find({
-      laboratory,
-      date: utcDate,
-      time_slot: timeSlot,
-      is_blocked: true
-    });
-    const blockedSeats = blockedSlots.map(s => s.seat_number);
-
-    // Generate all seats
-    const allSeats = Array.from({ length: 35 }, (_, i) => i + 1);
-
-    // Get current reservation if editing
-    let currentSeat = null;
-    if (currentReservationId) {
-      const currentRes = await Reservation.findById(currentReservationId);
-      currentSeat = currentRes?.seat_number;
-    }
-
-    // Calculate available seats
-    const availableSeats = allSeats.filter(seat => {
-      // Always include current seat in available options
-      if (currentSeat === seat) return true;
-      // Exclude taken and blocked seats
-      return !takenSeats.includes(seat) && !blockedSeats.includes(seat);
-    });
-
-    res.json({ availableSeats });
-  } catch (err) {
-    console.error('[GET /student/availability]', err);
-    res.json({ availableSeats: [] });
+    res.json({ availableSlots: [], availableSeats: [] });
   }
 });
 
-router.post('/student/profile/delete', userController.deleteAccount);
+
 
 
 // Debug route to test database connection
@@ -688,14 +676,5 @@ router.get('/student/debug', async (req, res) => {
     res.json({ error: err.message });
   }
 });
-
-// Helper function for adding minutes
-function addMinutes(time, mins) {
-  const [h, m] = time.split(':').map(Number);
-  const total = h * 60 + m + mins;
-  const nh = Math.floor(total / 60);
-  const nm = total % 60;
-  return `${nh.toString().padStart(2, '0')}:${nm.toString().padStart(2, '0')}`;
-}
 
 module.exports = router;

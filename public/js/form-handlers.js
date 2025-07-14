@@ -311,3 +311,137 @@ window.formHandlers = {
     showSuccessMessage,
     handleFormError
 }; 
+
+// Technician Reservation Dynamic Integration
+console.log("[Technician Reservation] JS loaded!");
+document.addEventListener('DOMContentLoaded', function() {
+    const labSelect = document.getElementById('laboratory');
+    const dateInput = document.getElementById('reservation_date');
+    const timeSlotSelect = document.getElementById('time');
+    const seatMapContainer = document.querySelector('.seat-map');
+
+    // Extra debug logs
+    console.log("[Technician Reservation] DOMContentLoaded");
+    console.log("Lab select:", labSelect);
+    console.log("Date input:", dateInput);
+    console.log("Time slot select:", timeSlotSelect);
+    console.log("Seat map container:", seatMapContainer);
+
+    function clearTimeSlots() {
+        if (timeSlotSelect) {
+            timeSlotSelect.innerHTML = '<option value="">Select Time Slot</option>';
+        }
+    }
+
+    function clearSeatMap() {
+        if (seatMapContainer) {
+            seatMapContainer.innerHTML = '<span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>';
+        }
+    }
+
+    function fetchTimeSlots() {
+        if (!labSelect.value || !dateInput.value) {
+            clearTimeSlots();
+            clearSeatMap();
+            console.log("[Technician Reservation] fetchTimeSlots: missing lab or date");
+            return;
+        }
+        const url = `/technician/reserve?ajax=1&laboratory=${encodeURIComponent(labSelect.value)}&date=${encodeURIComponent(dateInput.value)}`;
+        console.log("[Technician Reservation] Fetching time slots from:", url);
+        fetch(url)
+            .then(res => {
+                console.log("[Technician Reservation] Raw time slot response:", res);
+                return res.json();
+            })
+            .then(data => {
+                console.log("[Technician Reservation] Time slot data:", data);
+                clearTimeSlots();
+                const allTimeSlots = [
+                    '08:00', '08:30', '09:00', '09:30', '10:00',
+                    '10:30', '11:00', '11:30', '12:00', '12:30', '13:00',
+                    '13:30', '14:00', '14:30', '15:00', '15:30',
+                    '16:00', '16:30', '17:00', '17:30', '18:00'
+                ];
+                allTimeSlots.forEach(slotTime => {
+                    const slot = data.availableSlots ? data.availableSlots.find(s => s.timeSlot === slotTime) : null;
+                    const opt = document.createElement('option');
+                    opt.value = slotTime;
+                    opt.textContent = slotTime;
+                    if (slot && slot.availableCount !== undefined) {
+                        opt.textContent += ` (${slot.availableCount} available)`;
+                    }
+                    timeSlotSelect.appendChild(opt);
+                });
+                clearSeatMap();
+            })
+            .catch((err) => {
+                console.error("[Technician Reservation] Error fetching time slots:", err);
+                clearTimeSlots();
+                clearSeatMap();
+            });
+    }
+
+    function fetchSeatMap() {
+        if (!labSelect.value || !dateInput.value || !timeSlotSelect.value) {
+            clearSeatMap();
+            console.log("[Technician Reservation] fetchSeatMap: missing lab, date, or time slot");
+            return;
+        }
+        const url = `/technician/availability?laboratory=${encodeURIComponent(labSelect.value)}&date=${encodeURIComponent(dateInput.value)}&timeSlot=${encodeURIComponent(timeSlotSelect.value)}`;
+        console.log("[Technician Reservation] Fetching seat map from:", url);
+        fetch(url)
+            .then(res => {
+                console.log("[Technician Reservation] Raw seat map response:", res);
+                return res.json();
+            })
+            .then(data => {
+                console.log("[Technician Reservation] Seat map data:", data);
+                let html = '';
+                for (let i = 1; i <= 35; i++) {
+                    const isAvailable = data.availableSeats && data.availableSeats.includes(i);
+                    const isBlocked = data.blockedSeats && data.blockedSeats.includes(i);
+                    const isTaken = !isAvailable && !isBlocked;
+                    let style = '';
+                    let disabled = '';
+                    if (isBlocked) {
+                        style = 'background: #fee2e2; border: 2px solid #ef4444;';
+                        disabled = 'disabled';
+                    } else if (isTaken) {
+                        style = 'background: #e5e7eb; border: 2px solid #9ca3af;';
+                        disabled = 'disabled';
+                    } else {
+                        style = 'background: #fffbe6; border: 2px solid #fbbf24;';
+                    }
+                    html += `<label class="seat-checkbox" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border-radius: 8px; ${style} cursor: pointer; transition: all 0.2s ease;">
+                        <input type="checkbox" name="seat_numbers" value="${i}" style="width: 1rem; height: 1rem; accent-color: #f59e0b;" ${disabled}>
+                        <span style="font-weight: 600; color: #b45309;">${i}</span>
+                    </label>`;
+                }
+                seatMapContainer.innerHTML = html;
+            })
+            .catch((err) => {
+                console.error("[Technician Reservation] Error fetching seat map:", err);
+                seatMapContainer.innerHTML = '<span style="color: #b91c1c;">Error loading seat map.</span>';
+            });
+    }
+
+    if (labSelect && dateInput && timeSlotSelect && seatMapContainer) {
+        // Set today's date as default if empty
+        if (!dateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+        labSelect.addEventListener('change', fetchTimeSlots);
+        dateInput.addEventListener('change', fetchTimeSlots);
+        timeSlotSelect.addEventListener('change', fetchSeatMap);
+        // Auto-trigger on page load if lab and date are set
+        if (labSelect.value && dateInput.value) {
+            fetchTimeSlots();
+        } else {
+            clearTimeSlots();
+            clearSeatMap();
+        }
+    } else {
+        console.error("[Technician Reservation] One or more required elements not found.");
+    }
+}); 

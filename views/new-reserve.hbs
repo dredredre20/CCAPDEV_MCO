@@ -353,11 +353,39 @@
 </style>
 
 <script>
+function getQueryParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   const laboratorySelect = document.getElementById('laboratory');
   const dateInput = document.getElementById('reservation_date');
   const timeSlotSelect = document.getElementById('time_slot');
   const seatNumberSelect = document.getElementById('seat_number');
+
+  // Pre-fill from query params if present
+  const qpLab = getQueryParam('laboratory');
+  const qpDate = getQueryParam('reservation_date');
+  const qpTime = getQueryParam('time_slot');
+  const qpSeat = getQueryParam('seat_number');
+
+  if (qpLab) laboratorySelect.value = qpLab;
+  if (qpDate) dateInput.value = qpDate;
+
+  async function fetchAvailabilityAndPrefill() {
+    await fetchAvailability();
+    if (qpTime) {
+      timeSlotSelect.value = qpTime;
+      await fetchSeats();
+      if (qpSeat) seatNumberSelect.value = qpSeat;
+    }
+  }
+
+  // If lab and date are pre-filled, fetch and prefill
+  if (qpLab && qpDate) {
+    fetchAvailabilityAndPrefill();
+  }
 
   async function fetchAvailability() {
     const laboratory = laboratorySelect.value;
