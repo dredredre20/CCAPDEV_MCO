@@ -49,10 +49,17 @@ exports.reserveSlot = async (req, res) => {
       return res.redirect(`/student/reserve?userId=${userId}&error=You already have a reservation for this time slot`);
     }
 
+    /*
     // Calculate end time (30 minutes later)
     const [hours, minutes] = time_slot.split(':').map(Number);
     const endTime = new Date(new Date(reservation_date).setHours(hours, minutes + 30));
     const endTimeString = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
+    */
+
+    const dateObj = new Date(reservation_date);
+    const [hours, minutes] = time_slot.split(':').map(Number);
+    dateObj.setHours(hours, minutes + 30);
+    const endTimeString = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
 
     // Create reservation
     const reservation = new Reservation({
