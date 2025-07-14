@@ -1,89 +1,271 @@
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{{!-- Modern Lab Technician Dashboard --}}
+<div class="technician-dashboard" style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 1.5rem;">
+  <!-- Modern Top Navigation Bar -->
+  <nav class="navbar" style="margin-bottom: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+    <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; max-width: 1200px; width: 100%; margin: 0 auto;">
+      <div class="nav-brand" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.25rem; color: #2563eb;">
+        <i class="fas fa-university" style="font-size: 1.5rem;"></i>
+        <span>ReserveALab - Technician Portal</span>
+      </div>
+      <div class="nav-user" style="display: flex; align-items: center; gap: 1.5rem;">
+        <span class="user-name" style="font-weight: 500; color: #374151;">{{user.name.first}} {{user.name.last}}</span>
+        <div class="user-actions" style="display: flex; gap: 1rem;">
+          <a href="/technician/profile" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(37, 99, 235, 0.1);">
+            <i class="fas fa-user-circle"></i>
+            Profile
+          </a>
+          <a href="/logout" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(239, 68, 68, 0.1);">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-        <!-- Main Technician Homepage-->
-        <title>Lab Technician Page</title>
-        <link rel="stylesheet" href="/css/lab_technician_page_design.css"/>
+  <div class="dashboard-container" style="width: 100%; max-width: 1200px; margin: 0 auto; display: flex; gap: 2rem; padding: 2rem;">
+    <!-- Modern Sidebar -->
+    <aside class="technician-sidebar" style="width: 280px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); height: fit-content;">
+      <div class="sidebar-header" style="margin-bottom: 2rem;">
+        <div class="user-info" style="text-align: center;">
+          <div class="user-avatar" style="width: 80px; height: 80px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2rem; color: white; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);">
+            <i class="fas fa-tools"></i>
+          </div>
+          <div class="user-details">
+            <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #1f2937;">{{user.name.first}} {{user.name.last}}</h4>
+            <p style="margin: 0 0 0.25rem 0; color: #6b7280; text-transform: capitalize;">{{user.user_type}}</p>
+            <small style="color: #9ca3af; font-size: 0.875rem;">{{user.email}}</small>
+          </div>
+        </div>
+      </div>
 
-        <!-- Import Bootstrap-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    </head>
+      <nav class="sidebar-nav">
+        <ul class="nav-menu" style="list-style: none; padding: 0; margin: 0;">
+          <li class="nav-item active" style="margin-bottom: 0.5rem;">
+            <a href="/technician" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #1f2937; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item" style="margin-bottom: 0.5rem;">
+            <a href="/technician/reserve" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(255, 255, 255, 0.5);">
+              <i class="fas fa-calendar-plus"></i>
+              <span>Walk-in Reservation</span>
+            </a>
+          </li>
+          <li class="nav-item" style="margin-bottom: 0.5rem;">
+            <a href="/technician/edit" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(255, 255, 255, 0.5);">
+              <i class="fas fa-edit"></i>
+              <span>Edit Reservations</span>
+            </a>
+          </li>
+          <li class="nav-item" style="margin-bottom: 0.5rem;">
+            <a href="/technician/remove" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(255, 255, 255, 0.5);">
+              <i class="fas fa-trash"></i>
+              <span>Remove Reservations</span>
+            </a>
+          </li>
+          <li class="nav-item" style="margin-bottom: 0.5rem;">
+            <a href="/view-slots" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(255, 255, 255, 0.5);">
+              <i class="fas fa-search"></i>
+              <span>View Availability</span>
+            </a>
+          </li>
+          <li class="nav-item" style="margin-bottom: 0.5rem;">
+            <a href="/technician/profile" class="nav-link" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(255, 255, 255, 0.5);">
+              <i class="fas fa-user-cog"></i>
+              <span>Profile Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
 
-    <body>
-        <div class="container-fluid p-0">
-            <div class="row g-0">
+      <!-- Main Content -->
+    <main class="main-content" style="flex: 1; padding-top: 0;">
+      <!-- Header -->
+      <div class="dashboard-header text-center mb-4" style="margin-bottom: 2rem;">
+        <h1 class="dashboard-title" style="font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+          <i class="fas fa-tachometer-alt" style="color: #fbbf24; margin-right: 0.5rem;"></i>
+          Technician Dashboard
+        </h1>
+        <p class="dashboard-subtitle" style="color: rgba(255, 255, 255, 0.9); font-size: 1.125rem; margin: 0;">Manage laboratory reservations and assist users</p>
+      </div>
 
-                <!--Side Panel Content containing navigation links and user account buttons-->
-                <div class="col-lg-3 col-md-4">
+      <div class="dashboard-actions" style="margin-bottom: 2rem; text-align: right;">
+        <a href="/view-slots" class="btn btn-primary" style="padding: 0.75rem 2rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 1rem; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+          <i class="fas fa-search"></i> Check Lab Availability
+        </a>
+      </div>
 
-                    <div class="side-panel">
-                        <h1 class="side-panel-title">ReserveALab</h1>
-
-                        <div class="user-account-buttons">
-
-                            <!-- Change this logic later-->
-                            <a href="new-login.html" >
-                                <button type="button" class="btn btn-custom"> Logout </button>
-                            </a>
-
-                            <a href="/view-slots" >
-                                <button type="button" class="btn btn-custom"> View Availabile Slots </button>
-                            </a>
-                            
-                        </div>
-
-                        <nav>
-                            <!-- Will update links later -->
-                            <ul class="nav-links">
-                                <li><a href="/technician/profile?userId={{userId}}"> Check Profile</a></li>
-                                <li><a href="/">Main Homepage </a></li>
-                                
-                            </ul>
-                        </nav>
-
-                    </div>
-                </div>
-
-                <!-- Main Content -->
-
-                
-                <div class="col-lg-9 col-md-8">
-
-                    <div class="hero-container">
-                        <section class="mb-5">
-                            <h2 class="hero-title"> Lab Technician Functionalities </h2>
-
-                            <div class="col-md-4">
-                                <div class="function-card">
-                                    <h4> Reserve for a Student </h4>
-                                    <a href="/labTech-reserve?userId={{userId}}"> Reserve Now </a>
-
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="function-card">
-                                    <h4> Remove Reservation </h4>
-                                    <a href="/remove-reservation?userId={{userId}}">Remove Now </a>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="function-card">
-                                    <h4> Edit a Reservation </h4>
-                                    <a href="/edit-reservation?userId={{userId}}"> Edit Now </a>
-                                </div>
-                            </div>
-
-                        </section>
-                    </div>
-                </div>
+      <!-- Quick Stats -->
+      <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <div class="stat-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 1.5rem; transition: transform 0.2s ease;">
+          <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <div class="stat-content">
+            <h3 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 0.25rem 0;">{{totalReservations}}</h3>
+            <p style="color: #6b7280; margin: 0; font-weight: 500;">Total Reservations</p>
+              </div>
             </div>
+
+        <div class="stat-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 1.5rem; transition: transform 0.2s ease;">
+          <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-content">
+            <h3 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 0.25rem 0;">{{activeUsers}}</h3>
+            <p style="color: #6b7280; margin: 0; font-weight: 500;">Active Users</p>
+              </div>
+            </div>
+
+        <div class="stat-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 1.5rem; transition: transform 0.2s ease;">
+          <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+            <i class="fas fa-flask"></i>
+          </div>
+          <div class="stat-content">
+            <h3 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 0.25rem 0;">{{availableLabs}}</h3>
+            <p style="color: #6b7280; margin: 0; font-weight: 500;">Available Labs</p>
+              </div>
+            </div>
+
+        <div class="stat-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 1.5rem; transition: transform 0.2s ease;">
+          <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content">
+            <h3 style="font-size: 2rem; font-weight: 700; color: #1f2937; margin: 0 0 0.25rem 0;">{{todayBookings}}</h3>
+            <p style="color: #6b7280; margin: 0; font-weight: 500;">Today's Bookings</p>
+          </div>
+              </div>
+            </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 700; color: #1f2937; margin-bottom: 1.5rem;">Quick Actions</h2>
+        <div class="action-buttons" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <a href="/technician/reserve" class="action-btn primary" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1rem 1.5rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+            <i class="fas fa-plus"></i>
+            <span>Create Walk-in Reservation</span>
+          </a>
+          <a href="/view-slots" class="action-btn secondary" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; border: 1px solid rgba(0, 0, 0, 0.1);">
+            <i class="fas fa-search"></i>
+            <span>Check Availability</span>
+          </a>
+          <a href="/technician/edit" class="action-btn secondary" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; border: 1px solid rgba(0, 0, 0, 0.1);">
+            <i class="fas fa-edit"></i>
+            <span>Manage Reservations</span>
+          </a>
+          <a href="/technician/remove" class="action-btn warning" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+            <i class="fas fa-trash"></i>
+            <span>Remove Reservations</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="recent-activity" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 700; color: #1f2937; margin: 0;">Recent Activity</h2>
+          <a href="/technician/edit" class="view-all" style="color: #f59e0b; text-decoration: none; font-weight: 600; transition: color 0.2s ease;">View All</a>
         </div>
         
-    </body>
-</html>
+        {{#if recentActivity.length}}
+          <div class="activity-list" style="display: grid; gap: 1rem;">
+            {{#each recentActivity}}
+              <div class="activity-card" style="background: rgba(255, 255, 255, 0.8); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 0, 0, 0.05); transition: transform 0.2s ease;">
+                <div class="activity-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <div class="activity-type" style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-{{activityIcon}}" style="color: #f59e0b; font-size: 1.25rem;"></i>
+                    <span class="activity-title" style="font-weight: 600; color: #1f2937;">{{activityType}}</span>
+                  </div>
+                  <div class="activity-time">
+                    <span class="time-badge" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600; background: rgba(245, 158, 11, 0.1); color: #d97706;">{{formatDate timestamp 'MMM DD, HH:mm'}}</span>
+                  </div>
+                </div>
+                
+                <div class="activity-details">
+                  <p style="color: #374151; margin-bottom: 0.5rem;">{{description}}</p>
+                  {{#if user}}
+                    <small style="color: #6b7280; font-size: 0.875rem;">User: {{user.name.first}} {{user.name.last}}</small>
+                  {{/if}}
+                </div>
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <div class="empty-state" style="text-align: center; padding: 3rem 2rem;">
+            <i class="fas fa-clipboard-list" style="font-size: 4rem; color: #d1d5db; margin-bottom: 1rem;"></i>
+            <h3 style="color: #6b7280; margin-bottom: 0.5rem;">No Recent Activity</h3>
+            <p style="color: #9ca3af; margin-bottom: 2rem;">No recent reservations or modifications have been made.</p>
+            <a href="/technician/reserve" class="btn-create" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: transform 0.2s ease;">
+              <i class="fas fa-plus"></i>
+              Create First Reservation
+            </a>
+          </div>
+        {{/if}}
+    </div>
+    </main>
+  </div>
+</div>
+
+<style>
+/* Hover effects */
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.nav-link:hover {
+  background: rgba(245, 158, 11, 0.1) !important;
+  color: #d97706 !important;
+  transform: translateX(4px);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.activity-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.btn-create:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .technician-sidebar {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

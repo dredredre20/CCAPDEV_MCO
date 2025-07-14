@@ -1,118 +1,437 @@
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{{!-- Modern Lab Technician Reserve Page --}}
+<div class="technician-reserve-container" style="min-height: 100vh; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 1.5rem;">
+  <!-- Modern Top Navigation Bar -->
+  <nav class="navbar" style="margin-bottom: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+    <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; max-width: 1200px; width: 100%; margin: 0 auto;">
+      <div class="nav-brand" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.25rem; color: #d97706;">
+        <i class="fas fa-university" style="font-size: 1.5rem;"></i>
+        <span>ReserveALab - Technician</span>
+      </div>
+      <div class="nav-user" style="display: flex; gap: 1rem;">
+        <a href="/technician" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(245, 158, 11, 0.1);">
+          <i class="fas fa-home"></i>
+          Dashboard
+        </a>
+        <a href="/view-slots" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(16, 185, 129, 0.1);">
+          <i class="fas fa-search"></i>
+          View Slots
+        </a>
+        <a href="/user-login" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(239, 68, 68, 0.1);">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
+      </div>
+    </div>
+  </nav>
 
-        <!-- Reservation Page for the Technician-->
-        <title>Lab Technician Reserve Page</title>
-        <link rel="stylesheet" href="/css/lab_technician_reserve_design.css"/>
+  <div class="reserve-content" style="width: 100%; max-width: 1000px; margin: 0 auto; padding: 2rem;">
+    <!-- Header -->
+    <div class="reserve-header text-center mb-4" style="margin-bottom: 2rem;">
+      <h1 class="reserve-title" style="font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <i class="fas fa-calendar-plus" style="color: #fbbf24; margin-right: 0.5rem;"></i>
+        Walk-in Reservation
+      </h1>
+      <p class="reserve-subtitle" style="color: rgba(255, 255, 255, 0.9); font-size: 1.125rem; margin: 0;">Create a reservation for walk-in users</p>
+    </div>
 
-        <!-- Import Bootstrap-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    </head>
+    <!-- Error/Success Messages -->
+    {{#if error}}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: rgba(254, 226, 226, 0.95); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2); margin-bottom: 1.5rem;">
+        <i class="fas fa-exclamation-circle"></i>
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {{/if}}
 
-    <body>
-        <div class="container-fluid p-0">
-            <div class="row g-0">
+    {{#if success}}
+      <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: rgba(209, 250, 229, 0.95); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); margin-bottom: 1.5rem;">
+        <i class="fas fa-check-circle"></i>
+        {{success}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {{/if}}
 
-                <!--Side Panel Content containing navigation links and user account buttons-->
-                <div class="col-lg-3 col-md-4">
+    <!-- Dynamic Available Slots Display for Technician (like student UI) -->
+    <div id="available-slots-section" style="display:none; background: rgba(16, 185, 129, 0.1); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.2);">
+      <h6 style="font-weight: 700; color: #059669; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fas fa-check-circle"></i>
+        <span id="available-slots-title"></span>
+      </h6>
+      <div id="slots-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;"></div>
+    </div>
 
-                    <div class="side-panel">
-                        <h1 class="side-panel-title">ReserveALab</h1>
-
-                        <div class="user-account-buttons">
-                            
-                            <a href="new-login.html" >
-                                <button type="button" class="btn btn-custom"> Logout </button>
-                            </a>
-                            <a href="/view-slots" >
-                                <button type="button" class="btn btn-custom"> View Availabile Slots </button>
-                            </a>
-                        </div>
-
-
-                        <nav>
-                            <!-- Will update links later -->
-                            <ul class="nav-links">
-                                <li><a href="/technician?userId={{userId}}"> Technician Homepage </a></li>
-                            </ul>
-                        </nav>
-
-                    </div>
-                </div>
-
-                <!-- Main Content -->
-
-                <div class="col-lg-9 col-md-8">
-
-                    <div class="hero-container">
-
-                        <div class="card">
-
-                            <h2 class="container-title">Reserve for a Student</h2>
-
-                            <form id="labTech-reservation-form" method="POST" action="/labTech-reserve">
-                            
-                              <div class="form-group">
-                                  <label for="email">DLSU Email</label>
-                                  <input type="email" id="email" placeholder="name@dlsu.edu.ph" required>
-                              </div>
-                            
-                            
-                              <div class="form-group">
-                                <label for="lab">Laboratory</label>
-                                <select id="lab">
-                                    <option>G301</option>
-                                    <option>G302</option>
-                                    <option>G303</option>
-                                    <option>G304</option>
-                                    <option>G305</option>
-                                </select>
-                              </div>
-                            
-                              <div class="form-group">
-                                    <label for="date">Date</label>
-                                    <input type="date" id="date">
-                              </div>
-                            
-                              <div class="form-group">
-                                <label for="time">Time Slot</label>
-                                <select id="time">
-                                    <option value="08:00">08:00 - 08:30</option>
-                                    <option value="08:30">08:30 - 09:00</option>
-                                    <option value="09:00">09:00 - 09:30</option>
-                                    <option value="09:30">09:30 - 10:00</option>
-                                    <option value="10:00">10:00 - 10:30</option>
-                                    <option value="10:30">10:30 - 11:00</option>
-                                    <option value="11:00">11:00 - 11:30</option>
-                                    <option value="11:30">11:30 - 12:00</option>
-                                    <option value="12:00">12:00 - 12:30</option>
-                                    <option value="12:30">12:30 - 01:00</option>
-                                    <option value="01:00">01:00 - 01:30</option>
-                                </select>
-                              </div>
-                            
-                              <div class="form-group">
-                                <label for="seat">Seat Number</label>
-                                <input type="number" id="seat" min="1" max="35">
-                              </div>
-                            
-                              <button type="submit" class="btn btn-primary">Submit Reservation</button>
-
-                            </form>
-                        
-                        </div>
-
-                    </div>
-                </div>
-                
-            </div>
+    <div class="reserve-layout" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+      <!-- Reservation Form Card -->
+      <div class="reserve-form-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+        <div class="card-header" style="margin-bottom: 1.5rem;">
+          <h5 style="font-size: 1.25rem; font-weight: 700; color: #1f2937; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-edit" style="color: #f59e0b;"></i>
+            Reservation Details
+          </h5>
         </div>
         
-    </body>
+        <form method="POST" action="/technician/reserve" class="reserve-form" id="reserveForm">
+          <!-- Remove techId hidden field -->
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label for="laboratory" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-building" style="color: #f59e0b;"></i>
+                Laboratory
+              </label>
+              <select class="form-select" id="laboratory" name="laboratory" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+                <option value="">Select Laboratory</option>
+                <option value="G301">G301</option>
+                <option value="G302">G302</option>
+                <option value="G303">G303</option>
+                <option value="G304">G304</option>
+                <option value="G305">G305</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reservation_date" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-calendar" style="color: #f59e0b;"></i>
+                Date
+              </label>
+              <input type="date" class="form-control" id="reservation_date" name="reservation_date" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+            </div>
+          </div>
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label for="time" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-clock" style="color: #f59e0b;"></i>
+                Time Slot
+              </label>
+              <select class="form-select" id="time" name="time" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+                <option value="">Select Time Slot</option>
+                {{#each timeSlots}}
+                  <option value="{{this}}">{{this}}</option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
 
+          <!-- Seat Map Section -->
+          <div class="form-group" style="margin-bottom: 2rem;">
+            <label class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas fa-chair" style="color: #f59e0b;"></i>
+              Seat Map (Select multiple available seats)
+              <span class="badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border-radius: 8px; padding: 0.25rem 0.75rem; font-size: 0.85rem; margin-left: 1rem;">Walk-in</span>
+            </label>
+            <div class="seat-map" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; padding: 1rem; background: rgba(245, 158, 11, 0.05); border-radius: 12px; border: 2px solid rgba(245, 158, 11, 0.1); min-height: 120px;">
+              {{#if availableSlots}}
+                {{#each availableSlots}}
+                  {{#if (eq ../selectedTimeSlot this.timeSlot)}}
+                    {{#each this.availableSeats}}
+                      <label class="seat-checkbox" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border-radius: 8px; background: #fffbe6; border: 2px solid #fbbf24; cursor: pointer; transition: all 0.2s ease;">
+                        <input type="checkbox" name="seat_numbers" value="{{this}}" style="width: 1rem; height: 1rem; accent-color: #f59e0b;">
+                        <span style="font-weight: 600; color: #b45309;">{{this}}</span>
+                      </label>
+                    {{/each}}
+                  {{/if}}
+                {{/each}}
+              {{else}}
+                <span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>
+              {{/if}}
+            </div>
+            <div class="seat-legend" style="margin-top: 1rem; display: flex; gap: 1.5rem; align-items: center;">
+              <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="width: 18px; height: 18px; background: #fffbe6; border: 2px solid #fbbf24; border-radius: 4px; display: inline-block;"></span> Available</span>
+              <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="width: 18px; height: 18px; background: #e5e7eb; border: 2px solid #9ca3af; border-radius: 4px; display: inline-block;"></span> Taken</span>
+              <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="width: 18px; height: 18px; background: #fee2e2; border: 2px solid #ef4444; border-radius: 4px; display: inline-block;"></span> Blocked</span>
+            </div>
+          </div>
 
-</html>
+          <div class="form-group" style="margin-bottom: 2rem;">
+            <div class="form-check" style="display: flex; align-items: center; gap: 0.75rem;">
+              <input type="checkbox" class="form-check-input" id="anonymous" name="anonymous" style="width: 1.25rem; height: 1.25rem; border: 2px solid #e5e7eb; border-radius: 6px;">
+              <label class="form-check-label" for="anonymous" style="font-weight: 500; color: #374151; margin: 0;">
+                Reserve Anonymously
+              </label>
+            </div>
+          </div>
+
+          <div class="form-actions" style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn-create-reservation" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+              <i class="fas fa-calendar-plus"></i>
+              Create Reservation
+            </button>
+            <a href="/technician" class="btn-cancel" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; font-weight: 600; transition: all 0.2s ease; text-decoration: none;">
+              <i class="fas fa-times"></i>
+              Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Info Sidebar -->
+      <div class="info-sidebar" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Walk-in Guidelines -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Walk-in Guidelines</h6>
+          </div>
+          <div style="color: #6b7280; font-size: 0.875rem; line-height: 1.5;">
+            <p style="margin: 0 0 0.5rem 0;">• Use this for users without accounts</p>
+            <p style="margin: 0 0 0.5rem 0;">• Each session is 30 minutes long</p>
+            <p style="margin: 0;">• Multiple seats can be selected</p>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Quick Actions</h6>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a href="/view-slots" class="quick-action-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: all 0.2s ease;">
+              <i class="fas fa-search"></i>
+              Check Availability
+            </a>
+            <a href="/technician" class="quick-action-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: all 0.2s ease;">
+              <i class="fas fa-home"></i>
+              Back to Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Hover effects */
+.nav-link:hover {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #d97706 !important;
+  transform: translateY(-1px);
+}
+
+.btn-create-reservation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+}
+
+.btn-cancel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.quick-action-link:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.seat-checkbox:hover {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: #f59e0b;
+  transform: translateY(-1px);
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* Form focus effects */
+.form-control:focus, .form-select:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  outline: none;
+}
+
+.form-check-input:checked {
+  background-color: #f59e0b;
+  border-color: #f59e0b;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .reserve-content {
+    padding: 1rem;
+  }
+  
+  .reserve-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  #seat-checkboxes {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .info-sidebar {
+    order: -1;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const labSelect = document.getElementById('laboratory');
+  const dateInput = document.getElementById('reservation_date');
+  const timeSelect = document.getElementById('time');
+  const seatMap = document.querySelector('.seat-map');
+  const availableSlotsSection = document.getElementById('available-slots-section');
+  const availableSlotsTitle = document.getElementById('available-slots-title');
+  const slotsGrid = document.getElementById('slots-grid');
+
+  let currentAvailableSlots = [];
+
+  async function fetchAndRenderAvailableSlots() {
+    const lab = labSelect.value;
+    const date = dateInput.value;
+    if (!lab || !date) {
+      availableSlotsSection.style.display = 'none';
+      timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
+      seatMap.innerHTML = '<span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>';
+      return;
+    }
+    availableSlotsTitle.textContent = `Available Slots for ${lab} on ${date}`;
+    slotsGrid.innerHTML = '<span style="color: #b45309;"><i class="fas fa-spinner fa-spin"></i> Loading slots...</span>';
+    availableSlotsSection.style.display = 'block';
+    try {
+      const res = await fetch(`/technician/reserve?laboratory=${encodeURIComponent(lab)}&date=${encodeURIComponent(date)}&ajax=1`);
+      const data = await res.json();
+      currentAvailableSlots = data.availableSlots || [];
+      // Populate time slot dropdown with only slots that have available seats
+      timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
+      currentAvailableSlots.forEach(slot => {
+        if (slot.availableSeats && slot.availableSeats.length > 0) {
+          const opt = document.createElement('option');
+          opt.value = slot.timeSlot;
+          opt.textContent = `${slot.timeSlot} - ${addMinutes(slot.timeSlot, 30)}`;
+          timeSelect.appendChild(opt);
+        }
+      });
+      // If a time slot is already selected and still available, keep it selected
+      if (timeSelect.dataset.prevValue && [...timeSelect.options].some(o => o.value === timeSelect.dataset.prevValue)) {
+        timeSelect.value = timeSelect.dataset.prevValue;
+      } else {
+        timeSelect.value = '';
+      }
+      // Render available slots summary
+      if (!currentAvailableSlots.length) {
+        slotsGrid.innerHTML = '<span style="color: #b91c1c;">No available slots for this lab and date.</span>';
+        seatMap.innerHTML = '<span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>';
+        return;
+      }
+      let html = '';
+      currentAvailableSlots.forEach(slot => {
+        html += `<div class='slot-card' style='background: white; border-radius: 8px; padding: 1rem; border: 1px solid rgba(0,0,0,0.05);'>` +
+          `<div class='slot-time' style='font-weight: 600; color: #374151; margin-bottom: 0.5rem;'>${slot.timeSlot} - ${addMinutes(slot.timeSlot, 30)}</div>` +
+          `<div class='slot-availability' style='font-size: 0.875rem; color: #6b7280;'><span style='color: #10b981;'>${slot.availableCount} seats available</span> <span style='color: #ef4444; margin-left: 0.5rem;'>${slot.takenCount} taken</span></div>` +
+          `<div class='available-seats' style='margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.25rem;'>` +
+          slot.availableSeats.map(seat => `<span class='seat-badge' style='padding: 0.25rem 0.5rem; background: rgba(16,185,129,0.1); color: #059669; border-radius: 4px; font-size: 0.75rem; font-weight: 600;'>${seat}</span>`).join('') +
+          `</div></div>`;
+      });
+      slotsGrid.innerHTML = html;
+      // Update seat map if a time slot is selected
+      updateSeatMap();
+    } catch (err) {
+      slotsGrid.innerHTML = '<span style="color: #b91c1c;">Error loading slots.</span>';
+      seatMap.innerHTML = '<span style="color: #b91c1c;">Error loading seat data.</span>';
+    }
+  }
+
+  function updateSeatMap() {
+    const lab = labSelect.value;
+    const date = dateInput.value;
+    const time = timeSelect.value;
+    timeSelect.dataset.prevValue = time;
+    if (!lab || !date || !time) {
+      seatMap.innerHTML = '<span style="color: #b91c1c;">Select a lab, date, and time slot to view available seats.</span>';
+      return;
+    }
+    seatMap.innerHTML = '<span style="color: #b45309;"><i class="fas fa-spinner fa-spin"></i> Loading seat data...</span>';
+    fetch(`/technician/availability?laboratory=${encodeURIComponent(lab)}&date=${encodeURIComponent(date)}&timeSlot=${encodeURIComponent(time)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data || !data.availableSeats) {
+          seatMap.innerHTML = '<span style="color: #b91c1c;">No seat data available.</span>';
+          return;
+        }
+        let html = '';
+        for (let seat = 1; seat <= 35; seat++) {
+          const isAvailable = data.availableSeats.includes(seat);
+          const isBlocked = data.blockedSeats && data.blockedSeats.includes(seat);
+          html += `<label class='seat-checkbox' style='display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border-radius: 8px; background: ${isAvailable ? '#fffbe6' : isBlocked ? '#fee2e2' : '#e5e7eb'}; border: 2px solid ${isAvailable ? '#fbbf24' : isBlocked ? '#ef4444' : '#9ca3af'}; cursor: ${isAvailable ? 'pointer' : 'not-allowed'}; transition: all 0.2s ease; margin-bottom: 2px;'>` +
+            `<input type='checkbox' name='seat_numbers' value='${seat}' style='width: 1rem; height: 1rem; accent-color: #f59e0b;' ${isAvailable ? '' : 'disabled'}>` +
+            `<span style='font-weight: 600; color: ${isAvailable ? '#b45309' : isBlocked ? '#b91c1c' : '#6b7280'};'>${seat}</span>` +
+            `</label>`;
+        }
+        seatMap.innerHTML = html;
+      })
+      .catch(() => {
+        seatMap.innerHTML = '<span style="color: #b91c1c;">Error loading seat data.</span>';
+      });
+  }
+
+  function addMinutes(time, mins) {
+    const [h, m] = time.split(':').map(Number);
+    const total = h * 60 + m + mins;
+    const nh = Math.floor(total / 60);
+    const nm = total % 60;
+    return `${nh.toString().padStart(2, '0')}:${nm.toString().padStart(2, '0')}`;
+  }
+
+  labSelect.addEventListener('change', fetchAndRenderAvailableSlots);
+  dateInput.addEventListener('change', fetchAndRenderAvailableSlots);
+  timeSelect.addEventListener('change', updateSeatMap);
+  // Initial load if all fields are pre-filled
+  if (labSelect.value && dateInput.value) {
+    fetchAndRenderAvailableSlots();
+  }
+});
+
+// Form validation
+document.getElementById('reserveForm').addEventListener('submit', function(e) {
+  const laboratory = document.getElementById('laboratory').value;
+  const date = document.getElementById('reservation_date').value;
+  const time = document.getElementById('time').value;
+  const seatNumbers = document.querySelectorAll('input[name="seat_numbers"]:checked');
+  
+  if (!laboratory || !date || !time) {
+    e.preventDefault();
+    alert('Please fill in all required fields.');
+    return false;
+  }
+  
+  if (seatNumbers.length === 0) {
+    e.preventDefault();
+    alert('Please select at least one seat.');
+    return false;
+  }
+  
+  // Show loading state
+  const submitBtn = this.querySelector('.btn-create-reservation');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+  submitBtn.disabled = true;
+  
+  // Re-enable after 3 seconds if form doesn't submit
+  setTimeout(() => {
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }, 3000);
+});
+</script>

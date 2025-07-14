@@ -1,76 +1,132 @@
 const express = require('express');
-const { UserProfile } = require('../models/User');
 const router = express.Router();
+const { UserProfile } = require('../models/User');
 
-router.post('/user-login', async (req, res) => {
-    
-    try {
-        const {email, password} = req.body;
-        // Check if user exists 
-        const user = await UserProfile.findOne({email, password});
-
-        // if user exists, redirect to the proper page depending on user type
-        if (user){
-            if (user.user_type === 'faculty'){
-                return res.redirect(`/technician?userId=${user._id}`);
-            } else {
-                return res.redirect(`/student?userId=${user._id}`);
-            }
-        }
-        res.redirect('/user-login?error=invalid_credentials');
-    } catch (error) {
-        res.status(500).send("Server error");
-    }
-    
+// Register user - handle both endpoints
+router.post('/user-registration', async (req, res) => {
+    return await handleRegistration(req, res);
 });
 
+router.post('/user-register', async (req, res) => {
+    return await handleRegistration(req, res);
+});
 
+async function handleRegistration(req, res) {
+    const { first, last, email, password, user_type } = req.body;
 
-router.post('/user-registration', async (req, res) => {
-    // Registration logic
-    const { first_name, last_name, email, password, user_type } = req.body;
-    
     try {
-        // check if the email is a valid dlsu email
-        const email_regex = /^[a-z]+_[a-z]+@dlsu\.edu\.ph$/;
-        if (!email_regex.test(email)){
-            return res.render('new-register', {
-                // display error if not
-                error: 'Invalid DLSU email format. Use: firstname_lastname@dlsu.edu.ph'
-            });
+        // Validate input
+        if (!first || !last || !email || !password || !user_type) {
+            return res.redirect('/user-registration?error=All fields are required');
         }
 
-        // check the database if the email already exists
-        const is_existing_user = await UserProfile.findOne({ email });
-        if (is_existing_user){
-            return res.render('new-register', {
-                error: 'Email is already registered.'
-            });
+        // Validate email format
+        const emailRegex = /^[a-z]+_[a-z]+@dlsu\.edu\.ph$/;
+        if (!emailRegex.test(email.toLowerCase())) {
+            return res.redirect('/user-registration?error=Invalid DLSU email format (e.g., juan_dela@dlsu.edu.ph)');
         }
 
-        // create the user object with the given values from the body
-        const new_user = new UserProfile({
+        // Validate password length
+        if (password.length < 8) {
+            return res.redirect('/user-registration?error=Password must be at least 8 characters long');
+        }
+
+        // Validate user type
+        const validUserTypes = ['student', 'technician'];
+        if (!validUserTypes.includes(user_type)) {
+            return res.redirect('/user-registration?error=Invalid user type. Must be student or technician');
+        }
+
+        // Check if user already exists (case-insensitive)
+        const existingUser = await UserProfile.findOne({ email: email.toLowerCase() });
+        if (existingUser) {
+            return res.redirect('/user-registration?error=User with this email already exists');
+        }
+
+        // Store password as plain text (for this phase only)
+        const newUser = new UserProfile({
+            email: email.toLowerCase(),
+            password: password,
+            user_type,
             name: {
-                first: first_name, 
-                last: last_name
-            }, 
-            email, 
-            password, 
-            user_type, 
-            university: 'De La Salle University ' + user_type
+                first: first.trim(),
+                last: last.trim()
+            },
+            profile_description: '',
+            current_reservations: []
         });
 
-        // save the user, and redirect to the login page
-        await new_user.save();
-        res.redirect('/user-login?success=Registration successful.');
+        await newUser.save();
+        return res.redirect('/user-login?success=Registration successful. Please log in.');
+    } catch (err) {
+        console.error('[Registration Error]', err);
+        if (err.code === 11000) {
+            return res.redirect('/user-registration?error=User with this email already exists');
+        }
+        return res.redirect('/user-registration?error=Registration failed. Please try again.');
+    }
+}
 
-    } catch (error){ // show error if there's an error in registration
-        res.render('new-register', {error: 'Registration failure.'})
+// Login user
+router.post('/user-login', async (req, res) => {
+    const { email, password, remember_me } = req.body;
+
+    try {
+        // Validate input
+        if (!email || !password) {
+            return res.redirect('/user-login?error=Please provide both email and password');
+        }
+
+        // Find user by email (case-insensitive)
+        const user = await UserProfile.findOne({ email: email.toLowerCase() });
+        if (!user) {
+            return res.redirect('/user-login?error=Invalid email or password');
+        }
+
+        // Plain text password comparison
+        if (user.password !== password) {
+            return res.redirect('/user-login?error=Invalid email or password');
+        }
+
+        // Handle "Remember Me" functionality
+        if (remember_me === 'on') {
+            // Set expiry to 3 weeks from now
+            const threeWeeksFromNow = new Date();
+            threeWeeksFromNow.setDate(threeWeeksFromNow.getDate() + 21);
+            user.remember_me_expiry = threeWeeksFromNow;
+            await user.save();
+        } else {
+            // Clear remember me if not checked
+            user.remember_me_expiry = null;
+            await user.save();
+        }
+
+        // Store user ID in session
+        req.session.userId = user._id;
+        req.session.userType = user.user_type;
+
+        // Redirect based on user type (no userId in URL)
+        let rolePath;
+        if (user.user_type === 'student') {
+            rolePath = '/student';
+        } else if (user.user_type === 'technician') {
+            rolePath = '/technician';
+        } else {
+            return res.redirect('/user-login?error=Invalid user type');
+        }
+        
+        return res.redirect(rolePath);
+    } catch (err) {
+        console.error('[Login Error]', err);
+        return res.redirect('/user-login?error=Login failed. Please try again.');
     }
 });
 
+// Logout user (destroy session)
 router.get('/logout', (req, res) => {
-    res.redirect('/');
+    req.session.destroy(() => {
+        res.redirect('/user-login');
+    });
 });
 
 module.exports = router;

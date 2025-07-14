@@ -1,192 +1,122 @@
 const mongoose = require('mongoose');
+const { UserProfile } = require('./models/User');
+const { Reservation } = require('./models/Reservation');
 
-const {UserProfile} = require('./models/User');
-const {Reservation} = require('./models/Reservation');
-
-// Connect to the database
-mongoose.connect('mongodb://localhost:27017/ReserveALabDB', {
+const connectDB = async () => {
+  try {
+    await mongoose.connect('mongodb://localhost/ReserveALabDB', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-})  .then(() => console.log("MongoDB connected"))
-    .catch(err => console.log("MongoDB error:", err));
+    });
+    console.log('✅ MongoDB connected for seeding');
+  } catch (error) {
+    console.error('❌ MongoDB connection failed:', error.message);
+    process.exit(1);
+  }
+};
 
-// Sample data for users
-const sampleUsers = [
-    {   name: {first: 'Andre', last: 'Chu'}, 
-        email: 'andre_chu@dlsu.edu.ph', 
-        password: 'hello123', 
-        user_type: 'student', 
-        university: 'De La Salle University Undergraduate',
-        profile_description: 'Interested in Game Development',
-        current_reservations: [
-            {
-                laboratory: 'G302', 
-                reservation_date: new Date('2025-07-09'), 
-                time_slot: '08:00-08:30', 
-                seat_number: 3, 
-                is_anonymous: false, 
-            },
-            {
-                laboratory: 'G301', 
-                reservation_date: new Date('2025-07-21'), 
-                time_slot: '11:30-12:00', 
-                seat_number: 5, 
-                is_anonymous: true, 
-            }
-        ] 
-    },
-    {
-        name: {first: 'Joaquin', last: 'Tin'}, 
-        email: 'joaquin_tin@dlsu.edu.ph', 
-        password: 'gaming123', 
-        user_type: 'student', 
-        university: 'De La Salle University Undergraduate',
-        profile_description: 'Interested in hosting video segments', 
-        current_reservations: [
-            {
-                laboratory: 'G305', 
-                reservation_date: new Date('2025-07-18'), 
-                time_slot: '11:00-11:30', 
-                seat_number:11, 
-                is_anonymous: true, 
-            
-            }
+const seedDatabase = async () => {
+  try {
+    // Clear existing data
+    await UserProfile.deleteMany({});
+    await Reservation.deleteMany({});
+    console.log('🗑️  Cleared existing data');
 
-        ]
-    },
+    // Create test users
+    const testUsers = [
     {
-        name: {first: 'Jesus', last: 'Planta'}, 
-        email: 'jesus_planta@dlsu.edu.ph', 
-        password: 'coding123', 
+        name: { first: 'Juan', last: 'Dela Cruz' },
+        email: 'juan_dela@dlsu.edu.ph',
+        password: 'password123',
         user_type: 'student', 
-        university: 'De La Salle University Undergraduate',
-        profile_description: 'Interested in software engineering', 
-        current_reservations: [
-            {
-                laboratory: 'G304', 
-                reservation_date: new Date('2025-07-11'), 
-                time_slot: '01:00-01:30', 
-                seat_number: 21, 
-                is_anonymous: false, 
-            },
-            {
-                laboratory: 'G303', 
-                reservation_date: new Date('2025-07-14'), 
-                time_slot: '10:00-10:30', 
-                seat_number: 10, 
-                is_anonymous: false, 
-            },
-        ] 
+        profile_description: 'Computer Science student interested in web development'
     },
     {
-        name: {first: 'Luis', last: 'Biacora'}, 
-        email: 'luis_biacora@dlsu.edu.ph', 
-        password: 'cybersec456', 
-        user_type: 'faculty', 
-        university: 'UP Diliman Graduate',
-        profile_description: 'Interested in Cybersecurity', 
-        current_reservations: []
+        name: { first: 'Maria', last: 'Santos' },
+        email: 'maria_santos@dlsu.edu.ph',
+        password: 'password123',
+        user_type: 'student',
+        profile_description: 'Information Technology student'
     },
     {
-        name: {first: 'Ramon', last: 'Alcaide'}, 
-        email: 'ramon_alcaide@dlsu.edu.ph', 
-        password: 'eleceng789', 
-        user_type: 'faculty', 
-        university: 'UP Diliman Graduate',
-        profile_description: 'Interested in Electrical Engineering', 
-        current_reservations: []
-    }    
-];
+        name: { first: 'Pedro', last: 'Garcia' },
+        email: 'pedro_garcia@dlsu.edu.ph',
+        password: 'password123',
+        user_type: 'technician',
+        profile_description: 'Lab technician with 5 years of experience'
+      }
+    ];
 
-// Sample data for reservations
+    const createdUsers = await UserProfile.insertMany(testUsers);
+    console.log('👥 Created test users');
+
+    // Create some sample reservations
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
 const sampleReservations = [
     {
-        user_id: new mongoose.Types.ObjectId(),
-        email: 'andre_chu@dlsu.edu.ph',
-        laboratory: 'G302', 
-        reservation_date: new Date('2025-07-09'), 
-        time_slot: '08:00-08:30', 
-        seat_number: 3, 
+        user_id: createdUsers[0]._id, // Juan
+        laboratory: 'G301',
+        reservation_date: tomorrow,
+        time_slot: '09:00',
+        end_time: '09:30',
+        seat_number: 5,
         is_anonymous: false, 
         status: 'active', 
-        created_by: new mongoose.Types.ObjectId(),
-        walk_in_reservation: false
+        purpose: 'Programming assignment'
     },
     {
-        user_id: new mongoose.Types.ObjectId(),
-        email: 'andre_chu@dlsu.edu.ph',
-        laboratory: 'G301', 
-        reservation_date: new Date('2025-07-21'), 
-        time_slot: '11:30-12:00', 
-        seat_number: 5, 
+        user_id: createdUsers[1]._id, // Maria
+        laboratory: 'G302',
+        reservation_date: tomorrow,
+        time_slot: '10:00',
+        end_time: '10:30',
+        seat_number: 12,
+        is_anonymous: false,
+        status: 'active', 
+        purpose: 'Database project'
+    },
+    {
+        user_id: createdUsers[0]._id, // Juan
+        laboratory: 'G301',
+        reservation_date: tomorrow,
+        time_slot: '14:00',
+        end_time: '14:30',
+        seat_number: 8,
         is_anonymous: true, 
         status: 'active', 
-        created_by: new mongoose.Types.ObjectId(),
-        walk_in_reservation: false
-    },
-    {
-        user_id: new mongoose.Types.ObjectId(),
-        email: 'jesus_planta@dlsu.edu.ph',
-        laboratory: 'G304', 
-        reservation_date: new Date('2025-07-11'), 
-        time_slot: '01:00-01:30', 
-        seat_number: 21, 
-        is_anonymous: false, 
-        status: 'late', 
-        created_by: new mongoose.Types.ObjectId(),
-        walk_in_reservation: true
-    },
-    {
-        user_id: new mongoose.Types.ObjectId(),
-        email: 'jesus_planta@dlsu.edu.ph',
-        laboratory: 'G303', 
-        reservation_date: new Date('2025-07-14'), 
-        time_slot: '10:00-10:30', 
-        seat_number: 10, 
-        is_anonymous: false, 
-        status: 'cancelled', 
-        created_by: new mongoose.Types.ObjectId(),
-        walk_in_reservation: false
-    },
-    {
-        user_id: new mongoose.Types.ObjectId(),
-        email: 'joaquin_tin@dlsu.edu.ph',
-        laboratory: 'G305', 
-        reservation_date: new Date('2025-07-18'), 
-        time_slot: '11:00-11:30', 
-        seat_number:11, 
-        is_anonymous: true, 
-        status: 'active', 
-        created_by: new mongoose.Types.ObjectId(),
-        walk_in_reservation: true
+        purpose: 'Study session'
     }    
 ];
 
+    const createdReservations = await Reservation.insertMany(sampleReservations);
+    console.log('📅 Created sample reservations');
 
-async function seedTheDatabase(){
-    try {
+    // Update users with their reservations
+    await UserProfile.findByIdAndUpdate(createdUsers[0]._id, {
+      current_reservations: [createdReservations[0]._id, createdReservations[2]._id]
+    });
+    await UserProfile.findByIdAndUpdate(createdUsers[1]._id, {
+      current_reservations: [createdReservations[1]._id]
+    });
 
-        //Clear existing data
-        await UserProfile.deleteMany({});
-        await Reservation.deleteMany({});
+    console.log('✅ Database seeded successfully!');
+    console.log('\n📋 Test Accounts:');
+    console.log('Student 1: juan_dela@dlsu.edu.ph / password123');
+    console.log('Student 2: maria_santos@dlsu.edu.ph / password123');
+    console.log('Technician: pedro_garcia@dlsu.edu.ph / password123');
+    console.log('\n🚀 You can now start the server with: npm start');
 
-        //Put all sample users
-        const user = await UserProfile.insertMany(sampleUsers);
-        console.log(`Inserted ${user.length} users`);
-        
-        //Put all sample reservations
-        const reserve = await Reservation.insertMany(sampleReservations);
-        console.log(`Inserted ${reserve.length} reservations`);
-
-        // Exit the connection
-        console.log('Database has been seeded.');
-        process.exit(0);
-
-    } catch (error){
-        console.error('Error seeding the database: ', error);
-        process.exit(1);
+  } catch (error) {
+    console.error('❌ Seeding failed:', error);
+  } finally {
+    await mongoose.disconnect();
+    console.log('🔌 Disconnected from MongoDB');
     }
-}
+};
 
-seedTheDatabase();
+// Run the seeding
+connectDB().then(seedDatabase);
 

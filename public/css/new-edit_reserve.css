@@ -194,6 +194,135 @@ input[type="date"], input[type="number"], input[type="email"], select {
     font-weight: bold;
 }
 
+.hero-title {
+    text-align: center;
+}
+
+.modal-content {
+      color: #333; 
+}
+
+.modal-body .form-group label {
+      color: #333; 
+      font-weight: bold;
+}
+
+.reservation-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+
+.form-group {
+  padding: 0 10px;
+  flex: 1 0 300px;
+  margin-bottom: 20px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.reservation-container {
+  padding: 30px;
+  margin: 20px auto;
+  max-width: 95%;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.reservation-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.reservation-row {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.reservation-table th {
+  padding: 15px 10px;
+  font-size: 16px;
+}
+
+.reservation-table td {
+  padding: 15px 10px;
+  vertical-align: middle;
+}
+
+.btn.btn-edit {
+  background-color: #36b53d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s;
+  min-width: 100px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn.btn-edit:hover {
+  background-color: #2a8d30;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.modal-content {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.modal-header {
+  background-color: #36b53d;
+  color: white;
+  border-bottom: none;
+  padding: 15px 20px;
+}
+
+.modal-title {
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  border-top: 1px solid #eee;
+  padding: 15px 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+
 /*Responsive adjusments when screen size is adjusted*/
 @media (max-width: 768px){
     .side-panel{
@@ -233,6 +362,31 @@ input[type="date"], input[type="number"], input[type="email"], select {
         opacity: 1;
         transform: translateX(0);
     }
+}
+
+/* --- Reservation Deletion Visual Feedback --- */
+.reservation-item.deleting {
+  opacity: 0.5;
+  background: #fbeaea !important;
+  text-decoration: line-through;
+  transition: opacity 0.4s, background 0.4s, text-decoration 0.4s;
+}
+
+/* Ensure seat number is bold and visible in reservation details */
+.reservation-details .detail-item span:last-child {
+  font-weight: 700;
+  color: #2563eb;
+  font-size: 1rem;
+}
+
+/* Animate removal of reservation item */
+.reservation-item.removed {
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  transition: opacity 0.4s, height 0.4s, margin 0.4s, padding 0.4s;
 }
 
 

@@ -1,117 +1,464 @@
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Student Reserve Page</title>
-        <link rel="stylesheet" href="/css/new-reserve.css"/>
-        <!-- Student reservation page-->
+{{!-- Modern New Reservation Page --}}
+<div class="reservation-container" style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 1.5rem;">
+  <!-- Modern Top Navigation Bar -->
+  <nav class="navbar" style="margin-bottom: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+    <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; max-width: 1200px; width: 100%; margin: 0 auto;">
+      <div class="nav-brand" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.25rem; color: #2563eb;">
+        <i class="fas fa-university" style="font-size: 1.5rem;"></i>
+        <span>ReserveALab</span>
+      </div>
+      <div class="nav-user" style="display: flex; gap: 1rem;">
+        <a href="/student?userId={{userId}}" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(37, 99, 235, 0.1);">
+          <i class="fas fa-home"></i>
+          Dashboard
+        </a>
+        <a href="/student/profile?userId={{userId}}" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(16, 185, 129, 0.1);">
+          <i class="fas fa-user-circle"></i>
+          Profile
+        </a>
+        <a href="/user-login" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(239, 68, 68, 0.1);">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+            </a>
+          </div>
+    </div>
+          </nav>
 
-        <!-- Import Bootstrap-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    </head>
+  <div class="reservation-content" style="width: 100%; max-width: 1000px; margin: 0 auto; padding: 2rem;">
+    <!-- Header -->
+    <div class="reservation-header text-center mb-4" style="margin-bottom: 2rem;">
+      <h1 class="reservation-title" style="font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <i class="fas fa-calendar-plus" style="color: #fbbf24; margin-right: 0.5rem;"></i>
+        New Reservation
+      </h1>
+      <p class="reservation-subtitle" style="color: rgba(255, 255, 255, 0.9); font-size: 1.125rem; margin: 0;">Book your laboratory session</p>
+    </div>
 
-    <body>
-        <div class="container-fluid p-0">
-            <div class="row g-0">
-
-                <!--Side Panel Content containing navigation links and user account buttons-->
-                <div class="col-lg-3 col-md-4">
-
-                    <div class="side-panel">
-                        <h1 class="side-panel-title">ReserveALab</h1>
-
-                        <div class="user-account-buttons">
-                            <a href="new-login.html" >
-                                <button type="button" class="btn btn-custom"> Logout </button>
-                            </a>
-                            <a href="/view-slots" >
-                                <button type="button" class="btn btn-custom"> View Availabile Slots </button>
-                            </a>
-                        </div>
-
-
-                        <nav>
-                            <!-- Will update links later -->
-                            <ul class="nav-links">
-                                <li><a href="/student?userId={{userId}}"> Student Homepage </a></li>
-                                <li><a href="/student/profile?userId={{userId}}"> Profile </a></li>
-                            </ul>
-                        </nav>
-
-                    </div>
-                </div>
-
-                <!-- Main Content -->
-
-                <div class="col-lg-9 col-md-8">
-
-                    <div class="hero-container">
-
-                        <div class="card">
-
-                            <h2 class="container-title">Reserve for a Slot</h2>
-
-                            <form id="student-reservation-form" method="POST" action="/student-reserve">
-                            
-                              <div class="form-group">
-                                  <label for="email">DLSU Email</label>
-                                  <input type="email" id="email" placeholder="name@dlsu.edu.ph" required>
-                              </div>
-                            
-                            
-                              <div class="form-group">
-                                <label for="lab">Laboratory</label>
-                                <select id="lab">
-                                    <option>G301</option>
-                                    <option>G302</option>
-                                    <option>G303</option>
-                                    <option>G304</option>
-                                    <option>G305</option>
-                                </select>
-                              </div>
-                            
-                              <div class="form-group">
-                                    <label for="date">Date</label>
-                                    <input type="date" id="date">
-                              </div>
-                            
-                              <div class="form-group">
-                                <label for="time">Time Slot</label>
-                                <select id="time">
-                                    <option value="08:00">08:00 - 08:30</option>
-                                    <option value="08:30">08:30 - 09:00</option>
-                                    <option value="09:00">09:00 - 09:30</option>
-                                    <option value="09:30">09:30 - 10:00</option>
-                                    <option value="10:00">10:00 - 10:30</option>
-                                    <option value="10:30">10:30 - 11:00</option>
-                                    <option value="11:00">11:00 - 11:30</option>
-                                    <option value="11:30">11:30 - 12:00</option>
-                                    <option value="12:00">12:00 - 12:30</option>
-                                    <option value="12:30">12:30 - 01:00</option>
-                                    <option value="01:00">01:00 - 01:30</option>
-                                </select>
-                              </div>
-                            
-                              <div class="form-group">
-                                <label for="seat">Seat Number</label>
-                                <input type="number" id="seat" min="1" max="35">
-                              </div>
-                            
-                              <button type="submit" class="btn btn-primary">Submit Reservation</button>
-
-                            </form>
-                        
-                        </div>
-
-                    </div>
-                </div>
-                
-            </div>
+    <!-- Error/Success Messages -->
+    {{#if error}}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: rgba(254, 226, 226, 0.95); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2); margin-bottom: 1.5rem;">
+        <i class="fas fa-exclamation-circle"></i>
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        
-    </body>
+    {{/if}}
 
+    {{#if success}}
+      <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: rgba(209, 250, 229, 0.95); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); margin-bottom: 1.5rem;">
+        <i class="fas fa-check-circle"></i>
+        {{success}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {{/if}}
 
-</html>
+    <div class="reservation-layout" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+      <!-- Reservation Form Card -->
+      <div class="reservation-form-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+        <div class="card-header" style="margin-bottom: 1.5rem;">
+          <h5 style="font-size: 1.25rem; font-weight: 700; color: #1f2937; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-edit" style="color: #667eea;"></i>
+            Reservation Details
+          </h5>
+        </div>
+
+        <form method="POST" action="/student/reserve" class="reservation-form" id="reservationForm">
+            <input type="hidden" name="userId" value="{{userId}}" />
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label for="laboratory" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-building" style="color: #667eea;"></i>
+                Laboratory
+              </label>
+              <select class="form-select" id="laboratory" name="laboratory" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+                <option value="">Select Laboratory</option>
+                <option value="G301" {{#ifEquals selectedLab "G301"}}selected{{/ifEquals}}>G301</option>
+                <option value="G302" {{#ifEquals selectedLab "G302"}}selected{{/ifEquals}}>G302</option>
+                <option value="G303" {{#ifEquals selectedLab "G303"}}selected{{/ifEquals}}>G303</option>
+                <option value="G304" {{#ifEquals selectedLab "G304"}}selected{{/ifEquals}}>G304</option>
+                <option value="G305" {{#ifEquals selectedLab "G305"}}selected{{/ifEquals}}>G305</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="reservation_date" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-calendar" style="color: #667eea;"></i>
+                Date
+              </label>
+              <input 
+                type="date" 
+                class="form-control" 
+                id="reservation_date" 
+                name="reservation_date" 
+                required
+                min="{{today}}"
+                value="{{selectedDate}}"
+                style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;"
+              >
+            </div>
+          </div>
+
+          <!-- Available Slots Display -->
+          {{#if availableSlots.length}}
+            <div class="available-slots-section" style="background: rgba(16, 185, 129, 0.1); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid rgba(16, 185, 129, 0.2);">
+              <h6 style="font-weight: 700; color: #059669; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-check-circle"></i>
+                Available Slots for {{selectedLab}} on {{selectedDate}}
+              </h6>
+              <div class="slots-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                {{#each availableSlots}}
+                  <div class="slot-card" style="background: white; border-radius: 8px; padding: 1rem; border: 1px solid rgba(0, 0, 0, 0.05);">
+                    <div class="slot-time" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem;">{{timeSlot}} - {{addMinutes timeSlot 30}}</div>
+                    <div class="slot-availability" style="font-size: 0.875rem; color: #6b7280;">
+                      <span style="color: #10b981;">{{availableCount}} seats available</span>
+                      <span style="color: #ef4444; margin-left: 0.5rem;">{{takenCount}} taken</span>
+                    </div>
+                    <div class="available-seats" style="margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.25rem;">
+                      {{#each availableSeats}}
+                        <span class="seat-badge" style="padding: 0.25rem 0.5rem; background: rgba(16, 185, 129, 0.1); color: #059669; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">{{this}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            </div>
+          {{/if}}
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label for="time_slot" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-clock" style="color: #667eea;"></i>
+                Time Slot
+              </label>
+              <select class="form-select" id="time_slot" name="time_slot" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+                <option value="">Select Time Slot</option>
+                  {{#each timeSlots}}
+                  <option value="{{this}}">{{this}} - {{addMinutes this 30}}</option>
+                  {{/each}}
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="seat_number" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-chair" style="color: #667eea;"></i>
+                Seat Number
+              </label>
+              <select class="form-select" id="seat_number" name="seat_number" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+                <option value="">Select Seat</option>
+                {{#range 1 35}}
+                  <option value="{{this}}">Seat {{this}}</option>
+                {{/range}}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="purpose" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas fa-tasks" style="color: #667eea;"></i>
+              Purpose
+            </label>
+            <select class="form-select" id="purpose" name="purpose" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+              <option value="">Select Purpose</option>
+              <option value="lab_work">Lab Work</option>
+              <option value="research">Research</option>
+              <option value="study">Study</option>
+              <option value="project">Project</option>
+              <option value="other">Other</option>
+            </select>
+            </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="description" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas fa-comment" style="color: #667eea;"></i>
+              Description (Optional)
+                  </label>
+            <textarea 
+              class="form-control" 
+              id="description" 
+              name="description" 
+              rows="3" 
+              placeholder="Brief description of your lab session..."
+              maxlength="200"
+              style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white; resize: vertical;"
+            ></textarea>
+            <div class="form-text" style="color: #6b7280; font-size: 0.875rem; margin-top: 0.5rem;">Maximum 200 characters</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 2rem;">
+            <div class="form-check" style="display: flex; align-items: center; gap: 0.75rem;">
+              <input type="checkbox" class="form-check-input" id="is_anonymous" name="is_anonymous" style="width: 1.25rem; height: 1.25rem; border: 2px solid #e5e7eb; border-radius: 6px;">
+              <label class="form-check-label" for="is_anonymous" style="font-weight: 500; color: #374151; margin: 0;">
+                Make this reservation anonymous
+              </label>
+              </div>
+            </div>
+
+          <div class="form-actions" style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn-create-reservation" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+              <i class="fas fa-calendar-plus"></i>
+              Create Reservation
+            </button>
+            <a href="/student?userId={{userId}}" class="btn-cancel" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; font-weight: 600; transition: all 0.2s ease; text-decoration: none;">
+              <i class="fas fa-times"></i>
+              Cancel
+            </a>
+          </div>
+          </form>
+      </div>
+
+      <!-- Quick Info Sidebar -->
+      <div class="info-sidebar" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Reservation Policy -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Reservation Policy</h6>
+          </div>
+          <p style="color: #6b7280; font-size: 0.875rem; line-height: 1.5; margin: 0;">Each session is 30 minutes long. You can book up to 2 sessions per day.</p>
+        </div>
+
+        <!-- Operating Hours -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Operating Hours</h6>
+          </div>
+          <div style="color: #6b7280; font-size: 0.875rem; line-height: 1.5;">
+            <p style="margin: 0 0 0.5rem 0;"><strong>Monday - Friday:</strong> 8:00 AM - 6:00 PM</p>
+            <p style="margin: 0 0 0.5rem 0;"><strong>Saturday:</strong> 9:00 AM - 5:00 PM</p>
+            <p style="margin: 0;"><strong>Sunday:</strong> Closed</p>
+          </div>
+        </div>
+
+        <!-- Available Labs -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-flask"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Available Labs</h6>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+            <span style="padding: 0.25rem 0.5rem; background: rgba(102, 126, 234, 0.1); color: #667eea; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-align: center;">G301</span>
+            <span style="padding: 0.25rem 0.5rem; background: rgba(102, 126, 234, 0.1); color: #667eea; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-align: center;">G302</span>
+            <span style="padding: 0.25rem 0.5rem; background: rgba(102, 126, 234, 0.1); color: #667eea; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-align: center;">G303</span>
+            <span style="padding: 0.25rem 0.5rem; background: rgba(102, 126, 234, 0.1); color: #667eea; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-align: center;">G304</span>
+            <span style="padding: 0.25rem 0.5rem; background: rgba(102, 126, 234, 0.1); color: #667eea; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-align: center;">G305</span>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Quick Actions</h6>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a href="/view-slots" class="quick-action-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(102, 126, 234, 0.1); color: #667eea; border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: all 0.2s ease;">
+              <i class="fas fa-search"></i>
+              Check Availability
+            </a>
+            <a href="/student?userId={{userId}}" class="quick-action-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: all 0.2s ease;">
+              <i class="fas fa-home"></i>
+              Back to Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Hover effects */
+.nav-link:hover {
+  background: rgba(37, 99, 235, 0.2) !important;
+  color: #2563eb !important;
+  transform: translateY(-1px);
+}
+
+.btn-create-reservation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+}
+
+.btn-cancel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.quick-action-link:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* Form focus effects */
+.form-control:focus, .form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  outline: none;
+}
+
+.form-check-input:checked {
+  background-color: #667eea;
+  border-color: #667eea;
+}
+
+/* Character counter animation */
+.form-text {
+  transition: color 0.2s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .reservation-content {
+    padding: 1rem;
+  }
+  
+  .reservation-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .info-sidebar {
+    order: -1;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const laboratorySelect = document.getElementById('laboratory');
+  const dateInput = document.getElementById('reservation_date');
+  const timeSlotSelect = document.getElementById('time_slot');
+  const seatNumberSelect = document.getElementById('seat_number');
+
+  async function fetchAvailability() {
+    const laboratory = laboratorySelect.value;
+    const date = dateInput.value;
+    if (!laboratory || !date) {
+      timeSlotSelect.innerHTML = '<option value="">Select Time Slot</option>';
+      seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+      return;
+    }
+    try {
+      const res = await fetch(`/student/availability?laboratory=${encodeURIComponent(laboratory)}&date=${encodeURIComponent(date)}`);
+      const data = await res.json();
+      // Populate time slots
+      timeSlotSelect.innerHTML = '<option value="">Select Time Slot</option>';
+      data.availableSlots.forEach(slot => {
+        const opt = document.createElement('option');
+        opt.value = slot.timeSlot;
+        opt.textContent = `${slot.timeSlot} - ${slot.endTime}`;
+        timeSlotSelect.appendChild(opt);
+      });
+      // Clear seats until a time slot is chosen
+      seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+    } catch (err) {
+      timeSlotSelect.innerHTML = '<option value="">Select Time Slot</option>';
+      seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+    }
+  }
+
+  async function fetchSeats() {
+    const laboratory = laboratorySelect.value;
+    const date = dateInput.value;
+    const timeSlot = timeSlotSelect.value;
+    if (!laboratory || !date || !timeSlot) {
+      seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+      return;
+    }
+    try {
+      const res = await fetch(`/student/availability?laboratory=${encodeURIComponent(laboratory)}&date=${encodeURIComponent(date)}&timeSlot=${encodeURIComponent(timeSlot)}`);
+      const data = await res.json();
+      seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+      (data.availableSeats || []).forEach(seat => {
+        const opt = document.createElement('option');
+        opt.value = seat;
+        opt.textContent = `Seat ${seat}`;
+        seatNumberSelect.appendChild(opt);
+      });
+    } catch (err) {
+      seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+    }
+  }
+
+  laboratorySelect.addEventListener('change', fetchAvailability);
+  dateInput.addEventListener('change', fetchAvailability);
+  timeSlotSelect.addEventListener('change', fetchSeats);
+});
+
+// Character counter for description
+document.getElementById('description').addEventListener('input', function() {
+  const maxLength = 200;
+  const currentLength = this.value.length;
+  const remaining = maxLength - currentLength;
+  
+  // Update form text
+  const formText = this.parentNode.querySelector('.form-text');
+  if (formText) {
+    formText.textContent = `${remaining} characters remaining`;
+    
+    if (remaining < 50) {
+      formText.style.color = '#ef4444';
+    } else if (remaining < 100) {
+      formText.style.color = '#f59e0b';
+    } else {
+      formText.style.color = '#6b7280';
+    }
+  }
+});
+
+// Form validation
+document.getElementById('reservationForm').addEventListener('submit', function(e) {
+  const laboratory = document.getElementById('laboratory').value;
+  const date = document.getElementById('reservation_date').value;
+  const timeSlot = document.getElementById('time_slot').value;
+  const seatNumber = document.getElementById('seat_number').value;
+  const purpose = document.getElementById('purpose').value;
+  
+  if (!laboratory || !date || !timeSlot || !seatNumber || !purpose) {
+    e.preventDefault();
+    alert('Please fill in all required fields.');
+    return false;
+  }
+  
+  // Show loading state
+  const submitBtn = this.querySelector('.btn-create-reservation');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+  submitBtn.disabled = true;
+  
+  // Re-enable after 3 seconds if form doesn't submit
+  setTimeout(() => {
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }, 3000);
+});
+</script>

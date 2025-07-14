@@ -1,264 +1,237 @@
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{{!-- Modern Lab Technician Remove Reservations Page --}}
+<div class="technician-remove-container" style="min-height: 100vh; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 1.5rem;">
+  <!-- Modern Top Navigation Bar -->
+  <nav class="navbar" style="margin-bottom: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+    <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; max-width: 1200px; width: 100%; margin: 0 auto;">
+      <div class="nav-brand" style="display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.25rem; color: #d97706;">
+        <i class="fas fa-university" style="font-size: 1.5rem;"></i>
+        <span>ReserveALab - Technician</span>
+      </div>
+      <div class="nav-user" style="display: flex; gap: 1rem;">
+        <a href="/technician?techId={{techId}}" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(245, 158, 11, 0.1);">
+          <i class="fas fa-home"></i>
+          Dashboard
+        </a>
+        <a href="/view-slots" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(16, 185, 129, 0.1);">
+          <i class="fas fa-search"></i>
+          View Slots
+        </a>
+        <a href="/user-login" class="nav-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; background: rgba(239, 68, 68, 0.1);">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </a>
+      </div>
+    </div>
+  </nav>
 
-        <!-- Removal page for the technician-->
-        <title>Lab Technician Removal Page</title>
-        <link rel="stylesheet" href="/css/lab_technician_remove_design.css"/>
+  <div class="remove-content" style="width: 100%; max-width: 1000px; margin: 0 auto; padding: 2rem;">
+    <!-- Header -->
+    <div class="remove-header text-center mb-4" style="margin-bottom: 2rem;">
+      <h1 class="remove-title" style="font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <i class="fas fa-trash" style="color: #ef4444; margin-right: 0.5rem;"></i>
+        Remove Reservation
+      </h1>
+      <p class="remove-subtitle" style="color: rgba(255, 255, 255, 0.9); font-size: 1.125rem; margin: 0;">Delete existing reservations from the system</p>
+    </div>
 
-        <!-- Import Bootstrap-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    </head>
+    <!-- Error/Success Messages -->
+    {{#if error}}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: rgba(254, 226, 226, 0.95); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2); margin-bottom: 1.5rem;">
+        <i class="fas fa-exclamation-circle"></i>
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {{/if}}
 
-    <body>
-        <div class="container-fluid p-0">
-            <div class="row g-0">
+    {{#if success}}
+      <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: rgba(209, 250, 229, 0.95); backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); margin-bottom: 1.5rem;">
+        <i class="fas fa-check-circle"></i>
+        {{success}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {{/if}}
 
-                <!--Side Panel Content containing navigation links and user account buttons-->
-                <div class="col-lg-3 col-md-4">
+    <div class="remove-layout" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+      <!-- Remove Form Card -->
+      <div class="remove-form-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+        <div class="card-header" style="margin-bottom: 1.5rem;">
+          <h5 style="font-size: 1.25rem; font-weight: 700; color: #1f2937; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-trash" style="color: #ef4444;"></i>
+            Delete Reservation
+          </h5>
+        </div>
+        
+        <form method="POST" action="/technician/remove" class="remove-form" id="removeForm">
+          <input type="hidden" name="techId" value="{{techId}}">
+          
+          <div class="form-group" style="margin-bottom: 2rem;">
+            <label for="reservationId" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas fa-hashtag" style="color: #ef4444;"></i>
+              Reservation ID
+            </label>
+            <input type="text" class="form-control" id="reservationId" name="reservationId" placeholder="Enter reservation ID to delete" required style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white;">
+            <div class="form-text" style="color: #6b7280; font-size: 0.875rem; margin-top: 0.5rem;">Enter the exact reservation ID you want to remove</div>
+          </div>
 
-                    <div class="side-panel">
-                        <h1 class="side-panel-title">ReserveALab</h1>
+          <div class="form-actions" style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn-delete-reservation" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+              <i class="fas fa-trash"></i>
+              Delete Reservation
+            </button>
+            <a href="/technician?techId={{techId}}" class="btn-cancel" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; font-weight: 600; transition: all 0.2s ease; text-decoration: none;">
+              <i class="fas fa-times"></i>
+              Cancel
+            </a>
+          </div>
+        </form>
+          </div>
 
-                        <div class="user-account-buttons">
-                            <a href="new-login.html" >
-                                <button type="button" class="btn btn-custom"> Logout </button>
-                            </a>
-
-                            <a href="/view-slots" >
-                                <button type="button" class="btn btn-custom"> View Availabile Slots </button>
-                            </a>
-                        </div>
-
-                        <nav>
-                            <!-- Will update links later -->
-                            <ul class="nav-links">
-                                <li><a href="/technician?userId={{userId}}">Technician Homepage </a></li>
-                            </ul>
-                        </nav>
-
-                    </div>
-                </div>
-
-                <!-- Main Content -->
-
-                <div class="col-lg-9 col-md-8">
-
-                    <div class="hero-container">
-
-                        <div class="card">
-
-                            <h2 class="container-title">Remove a Reservation</h2>
-
-                            <form id="remove-reservation-form" method="POST" action="/remove-reservation">
-                            
-                                <div class="form-group">
-                                    <label for="email" class="label-email">DLSU Email</label>
-                                    <input type="email" id="email" placeholder="name@dlsu.edu.ph" required>
-                                    <button type="button" class="btn btn-custom1" id="btn-search">Search Reservations</button>
-                                </div>
-
-                                <!-- Reservations Display Containers-->
-
-                                <div id="reservationsContainer" class="reservations-container">
-                                    <h4>Existing Reservations</h4>
-                                    <div id="reservations-list"></div>
-
-                                    <div id="selectedReservationInfo" class="selected-reservations-info">
-                                        <h5>Selected Reservation Details:</h5>
-                                        <div id="selectedDetails"></div>
-                                        <button type="submit" class="btn btn-custom1" id="btn-remove"> Remove Selected Reservation</button>
-                                    </div>
-                                </div>
-                            
-
-                            </form>
-
-                        </div>
-
-                    </div>
-                </div>
+      <!-- Info Sidebar -->
+      <div class="info-sidebar" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Warning Guidelines -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-exclamation-triangle"></i>
             </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">⚠️ Warning</h6>
+          </div>
+          <div style="color: #6b7280; font-size: 0.875rem; line-height: 1.5;">
+            <p style="margin: 0 0 0.5rem 0;">• This action cannot be undone</p>
+            <p style="margin: 0 0 0.5rem 0;">• Reservation will be permanently deleted</p>
+            <p style="margin: 0;">• Make sure you have the correct ID</p>
+          </div>
         </div>
 
+        <!-- How to Find ID -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-info-circle"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">How to Find ID</h6>
+          </div>
+          <div style="color: #6b7280; font-size: 0.875rem; line-height: 1.5;">
+            <p style="margin: 0 0 0.5rem 0;">• Check the reservation list in dashboard</p>
+            <p style="margin: 0 0 0.5rem 0;">• Look for the reservation ID field</p>
+            <p style="margin: 0;">• Or contact the system administrator</p>
+        </div>
+      </div>
 
-        <script>
+        <!-- Quick Actions -->
+        <div class="info-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div class="info-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="info-icon" style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white;">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h6 style="font-weight: 700; color: #1f2937; margin: 0;">Quick Actions</h6>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a href="/technician?techId={{techId}}" class="quick-action-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: all 0.2s ease;">
+              <i class="fas fa-home"></i>
+              Back to Dashboard
+            </a>
+            <a href="/technician/edit?techId={{techId}}" class="quick-action-link" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(59, 130, 246, 0.1); color: #3b82f6; border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: all 0.2s ease;">
+              <i class="fas fa-edit"></i>
+              Edit Reservations
+            </a>
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-            // hard coded data for MCO1
-            const reservationsData = {
-                'andre_chu@dlsu.edu.ph':[
-                    {
-                        id: 1,
-                        lab: 'G301', 
-                        seat: 20,
-                        date: '06-26-2025',
-                        time: '8:30 AM - 9:00 AM',
-                        status:'upcoming'
-                    }, 
-                    {
-                        id: 2,
-                        lab: 'G302', 
-                        seat: 5,
-                        date: '06-23-2025',
-                        time: '9:00 AM - 9:30 AM',
-                        status:'upcoming'
-                    }
-                ], 
+<style>
+/* Hover effects */
+.nav-link:hover {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #d97706 !important;
+  transform: translateY(-1px);
+}
 
-                'joaquin_tin@dlsu.edu.ph':[
-                    {
-                        id: 3,
-                        lab: 'G302', 
-                        seat: 7,
-                        date: '06-27-2025',
-                        time: '9:30 AM - 10:00 AM',
-                        status:'upcoming'
-                    }, 
-                    {
-                        id: 4,
-                        lab: 'G303', 
-                        seat: 2,
-                        date: '06-13-2025',
-                        time: '9:30 AM - 10:00 AM',
-                        status:'late'
-                    }
-                ], 
+.btn-delete-reservation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
 
-            
-            
-            
-            }
+.btn-cancel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
 
-            let selectedReservation = null;
+.quick-action-link:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-            // Seacrh for reservations when the button is clicked
-            document.getElementById('btn-search').addEventListener('click', function() {
-                const email = document.getElementById('email').value.trim();
-                const container = document.getElementById('reservationsContainer');
-                const list = document.getElementById('reservations-list');
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
 
-                //Alert if not a proper email
-                if (!email){
-                    alert('Please enter a proper email address');
-                    return
-                }
+/* Form focus effects */
+.form-control:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  outline: none;
+}
 
-                // clear previous results
-                list.innerHTML = '';
-                selectedReservation = null;
-                document.getElementById('selectedReservationInfo').style.display = 'none';
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .remove-content {
+    padding: 1rem;
+  }
+  
+  .remove-layout {
+    grid-template-columns: 1fr;
+  }
+}
 
-                // Check if the email currently exists in the current data
-                if(reservationsData[email]){
-                    const reservations = reservationsData[email];
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .info-sidebar {
+    order: -1;
+  }
+}
+</style>
 
-                    // Create a div element for each reservation done by the student
-                    reservations.forEach(reservation => {
-                        const div_reservation = document.createElement('div');
-                        div_reservation.className = 'reservation-item';
-                        div_reservation.dataset.reservationId = reservation.id;
-
-                        div_reservation.innerHTML = 
-                        `
-                        <div class="student-reservation-details">
-                            <div class="reservation-info">
-                                <h4> ${reservation.lab} - Seat ${reservation.seat}</h4>
-                                <p> Date - ${reservation.date} </p>
-                                <p> Time - ${reservation.time} </p>
-                            </div>
-
-                            <div class="reservation-status status-${reservation.status}">
-                                ${reservation.status.toUpperCase()}
-                            </div>
-
-                        </div>
-                        `;
-
-                        div_reservation.addEventListener('click', function(){
-                            selectReservation(reservation, div_reservation);
-                        });
-
-                        list.appendChild(div_reservation);
-
-                    });
-
-                    container.style.display = 'block';
-
-                } else {
-                    //No reservations were made by the student 
-                    list.innerHTML = '<div class="no-reservations">No reservations for this account</div>';
-                    container.style.display = 'block';
-                }
-
-            });
-
-
-            // Display the current selected reservation in another block of the page
-            function selectReservation(reservation, div_elem){
-                // Remove previous selections
-                document.querySelectorAll('.reservation-item').forEach(item => {
-                    item.classList.remove('selected');
-                })
-
-                // Add the selected item
-                div_elem.classList.add('selected');
-                selectedReservation = reservation;
-
-                // Create the div element to display
-                const div_details = document.getElementById('selectedDetails');
-                div_details.innerHTML = 
-                `
-                <p> Lab: ${reservation.lab}</p>
-                <p> Seat: ${reservation.seat}</p>                
-                <p> Date: ${reservation.date}</p>                
-                <p> Time: ${reservation.time}</p>                
-                <p> Status: ${reservation.status.toUpperCase()}</p>                    
-                
-                `;
-
-                document.getElementById('selectedReservationInfo').style.display = 'block';
-
-            }
-
-            // Handling reservation removal (not permanent)
-            document.getElementById('btn-remove').addEventListener('click', function(){
-                if(selectedReservation){
-                    const removal_confirmation = confirm(`Remove the reservation for ${selectedReservation.lab}
-                                        \n - Seat ${selectedReservation.seat} on ${selectedReservation.date}?`);
-
-                    if(removal_confirmation){
-                    
-                        alert('Reservation removed!');
-
-                        // Refresh the search to show updated reservations
-                        const email = document.getElementById('email').value.trim();
-                        if (reservationsData[email]){
-                            //Shows a filtered version without the selected reservation
-                            reservationsData[email] = reservationsData[email].filter(r => r.id !== selectedReservation.id);
-
-                            //Trigger the search button for refreshing the display
-                            document.getElementById('btn-search').click();
-                        }
-                    }
-                }
-
-                
-            });
-
-            //Trigger search again to refresh the display
-            document.getElementById('email').addEventListener('keypress', function(e){
-                if(e.key === 'Enter'){
-                    e.preventDefault();
-                    document.getElementById('btn-search').click();
-                }
-            });
-
-        </script>
-        
-    </body>
-
-
-</html>
+<script>
+// Form validation
+document.getElementById('removeForm').addEventListener('submit', function(e) {
+  const reservationId = document.getElementById('reservationId').value.trim();
+  
+  if (!reservationId) {
+    e.preventDefault();
+    alert('Please enter a reservation ID.');
+    return false;
+  }
+  
+  // Confirm deletion
+  if (!confirm('Are you sure you want to delete this reservation? This action cannot be undone.')) {
+    e.preventDefault();
+    return false;
+  }
+  
+  // Show loading state
+  const submitBtn = this.querySelector('.btn-delete-reservation');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+  submitBtn.disabled = true;
+  
+  // Re-enable after 3 seconds if form doesn't submit
+  setTimeout(() => {
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }, 3000);
+});
+</script>
