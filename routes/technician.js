@@ -716,4 +716,7 @@ router.get('/technician/availability', async (req, res) => {
   }
 });
 
+router.post('/technician/profile/delete', userController.deleteAccount);
+
+
 module.exports = router;
