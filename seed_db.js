@@ -130,6 +130,28 @@ async function seedDatabase() {
         is_anonymous: false,
         purpose: 'Mobile app development',
         status: 'active'
+      }, 
+      {
+        user_id: createdUsers[1]._id, // Maria
+        laboratory: 'G305',
+        reservation_date: new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000), // Day after tomorrow
+        time_slot: '17:30',
+        end_time: '18:00',
+        seat_number: 21,
+        is_anonymous: true,
+        purpose: 'Programming assignment work',
+        status: 'active'
+      }, 
+      {
+        user_id: createdUsers[2]._id, // Pedro
+        laboratory: 'G302',
+        reservation_date: new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000), // Day after tomorrow
+        time_slot: '15:30',
+        end_time: '16:00',
+        seat_number: 17,
+        is_anonymous: false,
+        purpose: 'Programming assignment work',
+        status: 'active'
       }
     ];
 
