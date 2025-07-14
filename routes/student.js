@@ -645,7 +645,7 @@ router.get('/student/availability', async (req, res) => {
   }
 });
 
-
+router.post('/student/profile/delete', userController.deleteAccount);
 
 
 // Debug route to test database connection
