@@ -82,17 +82,21 @@
           {{/if}}
         </div>
 
-        <!-- Danger Zone -->
+        <!-- Danger Zone 
         <div class="danger-zone" style="border-top: 1px solid rgba(0, 0, 0, 0.1); padding-top: 1.5rem;">
           <h6 style="font-weight: 700; color: #ef4444; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
             <i class="fas fa-exclamation-triangle"></i>
             Danger Zone
           </h6>
+
           <button class="btn-delete-account" onclick="deleteAccount()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
             <i class="fas fa-trash"></i>
             Delete Account
           </button>
-        </div>
+
+        </div> -->
+
+
       </div>
 
       <!-- Main Content -->
@@ -174,8 +178,44 @@
         </div>
       </div>
     </div>
+
+  <div class="account-actions" style="margin-top: 2rem; text-align: center;">
+      <button class="btn-delete-account" onclick="showDeleteModal()" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+        <i class="fas fa-trash"></i>
+        Delete Account
+      </button>
+    </div>
+
   </div>
 </div>
+
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);">
+      <div class="modal-header" style="border-bottom: 1px solid #e5e7eb; padding: 1.5rem;">
+        <h5 class="modal-title" style="display: flex; align-items: center; gap: 0.75rem; color: #dc2626; font-weight: 700;">
+          <i class="fas fa-exclamation-triangle"></i>
+          Delete Account
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        <p style="color: #374151; margin-bottom: 1rem;">Are you sure you want to delete your account? This action cannot be undone.</p>
+        <p style="color: #dc2626; font-weight: 600; margin: 0;"><strong>All your data and reservations will be permanently deleted.</strong></p>
+      </div>
+      <div class="modal-footer" style="border-top: 1px solid #e5e7eb; padding: 1.5rem; gap: 1rem;">
+        <button type="button" class="btn-cancel-modal" data-bs-dismiss="modal" style="padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; font-weight: 600; transition: all 0.2s ease;">Cancel</button>
+        <form method="POST" action="/technician/profile/delete" style="display: inline;">
+          <button type="submit" class="btn-confirm-delete" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease;">
+            <i class="fas fa-trash"></i>
+            Delete Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <style>
 /* Hover effects */
@@ -258,6 +298,12 @@ textarea:focus {
 </style>
 
 <script>
+
+function showDeleteModal() {
+  const modal = new bootstrap.Modal(document.getElementById('deleteAccountModal'));
+  modal.show();
+}
+
 function deleteAccount() {
   if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
     // Show loading state
