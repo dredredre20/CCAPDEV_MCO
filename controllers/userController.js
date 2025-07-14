@@ -1,5 +1,6 @@
 const { UserProfile } = require('../models/User');
-const Reservation = require('../models/Reservation');
+const { Reservation } = require('../models/Reservation');
+const { ReservationSlot } = require('../models/ReservationSlot');
 
 // GET: Student or Technician Homepage
 exports.getHomePage = async (req, res) => {
@@ -79,9 +80,32 @@ exports.deleteAccount = async (req, res) => {
   try {
     const userId = req.session.userId;
     if (!userId) return res.redirect('/user-login?error=User not found');
-    await UserProfile.findByIdAndDelete(userId);
+    
+    // Delete all reservations associated with this user
+    await Reservation.deleteMany({ user_id: userId });
+    
+    // Release all reservation slots reserved by this user
+    await ReservationSlot.updateMany(
+      { reserved_by: userId },
+      {
+        $set: {
+          is_available: true,
+          reserved_by: null,
+          reservation_id: null
+        }
+      }
+    );
+    
+    // Delete the user account
+    const deletedUser = await UserProfile.findByIdAndDelete(userId);
+    
+    if (!deletedUser) {
+      return res.redirect('/user-login?error=User not found');
+    }
+    
+    // Destroy session after successful deletion
     req.session.destroy(() => {
-      res.redirect('/user-login');
+      res.redirect('/user-login?success=Account deleted successfully');
     });
   } catch (err) {
     console.error(err);
