@@ -5,95 +5,288 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>ReserveALab Homepage</title>
 
-        <!-- This is the main homepage of the MCO-->
-        <link rel="stylesheet" href="/css/lab_reservation_design.css"/>
-
         <!-- Import Bootstrap-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        
+        <style>
+        :root {
+            --primary-color: #667eea;
+            --primary-dark: #764ba2;
+            --dark-color: #2d3748;
+            --secondary-color: #718096;
+            --success-color: #36b53d;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .homepage-container {
+            padding: 2.5rem 1rem;
+        }
+
+        .homepage-content {
+            background-color: #7e92ee;
+            max-width: 1800px;
+            margin: 0 auto;
+            min-height: 70vh;
+            border-radius: 15px;
+        }
+
+        .homepage-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 1.5rem;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .homepage-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .homepage-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto 1rem;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .homepage-title {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .homepage-subtitle {
+            color: var(--dark-color);
+            font-size: 2.5rem;
+            margin-bottom: 0;
+        }
+
+        .side-panel {
+            padding: 1.5rem;
+            border-radius: 15px;
+        }
+
+        .side-panel-title {
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .btn-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 60%;
+            margin: 0 auto 1rem auto; 
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .hero-section {
+            padding: 2rem;
+            border-radius: 15px;
+            height: 100%;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-sub-info {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .user-info {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-info i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info p {
+            margin: 0;
+            color: var(--dark-color);
+        }
+        
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .homepage-card {
+                padding: 1.5rem;
+            }
+            
+            .homepage-title {
+                font-size: 1.75rem;
+            }
+            
+            .homepage-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-sub-info {
+                font-size: 1rem;
+            }
+        }
+        </style>
     </head>
 
     <body>
-
-        <div class="homepage-container" style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 2.5rem;">
-            <div class="container-fluid" style="max-width: 900px;">
-                <div class="row justify-content-center">
-                    <div class="col-12">
-                        <!-- Header -->
-                        <div class="homepage-header text-center mb-3" style="margin-bottom: 1.2rem;">
-                            <h1 class="homepage-title">
-                                <i class="fas fa-university text-primary"></i>
-                                ReserveALab
-                            </h1>
-                            <p class="homepage-subtitle">Welcome to the Laboratory Reservation System</p>
-                        </div>
-
-            <div class="row g-0">
-
-                <!--Side Panel Content containing navigation links and user account buttons-->
-                <div class="col-lg-3 col-md-4">
-
-                    <div class="side-panel">
-                        <h2 class="side-panel-title">ReserveALab</h2>
-
-                        <div class="user-account-buttons">
-                                        {{#if userId}}
-                                            <!-- User is logged in - show user info and logout -->
-                                            <div class="user-info" style="margin-bottom: 1rem; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 10px; text-align: center;">
-                                                <i class="fas fa-user-circle" style="font-size: 2rem; color: white; margin-bottom: 0.5rem;"></i>
-                                                <p style="color: white; margin: 0; font-weight: 600;">Welcome!</p>
-                                                <p style="color: rgba(255, 255, 255, 0.8); margin: 0; font-size: 0.875rem;">You are logged in</p>
-                                            </div>
-                                            <a href="/view-slots">
-                                                <button type="button" class="btn btn-custom"> View Available Slots </button>
-                                            </a>
-                                            <a href="/user-login">
-                                                <button type="button" class="btn btn-custom"> Logout </button>
-                                            </a>
-                                        {{else}}
-                                            <!-- User is not logged in - show login and register -->
-                            <a href="/user-login">
-                            <button type="button" class="btn btn-custom"> Login </button>
-                            </a>
-                            <a href="/user-registration">
-                            <button type="button" class="btn btn-custom"> Register </button>
-                            </a>
-                                            <a href="/view-slots">
-                                                <button type="button" class="btn btn-custom"> View Available Slots </button>
-                            </a>
-                                        {{/if}}
-                        </div>
-
+        <div class="homepage-container">
+            <div class="homepage-content">
+                <!-- Header -->
+                <div class="homepage-header">
+                    <div class="homepage-logo">
+                        <i class="fas fa-university"></i>
                     </div>
+                    <h1 class="homepage-title">ReserveALab</h1>
+                    <p class="homepage-subtitle">Laboratory Reservation System</p>
                 </div>
 
-                <!-- Main Content -->
-                <div class="col-lg-9 col-md-8">
+                <div class="row g-4">
+                    <!-- Side Panel -->
+                    <div class="col-lg-3 col-md-4">
+                        <div class="homepage-card side-panel">
+                            <h2 class="side-panel-title">
+                                <i class="fas fa-bars me-2"></i>
+                                ReserveALab Menu
+                            </h2>
 
-                    <section class="hero-section">
-                        <div class="hero-container">
-
-                            <div class="hero-content">
-
-                                <h1 class="hero-title">Reserve a Lab Space with Easy Access</h1>
-                                <p class="hero-sub-info">
-                                                {{#if userId}}
-                                                    Welcome back! You can now make reservations, view your bookings, and manage your profile.
-                                                {{else}}
-                                    Tired of missing out on spaces for study sessions and projects? 
-                                    Book a computer lab seat with us in advance to guarantee a spot!
-                                    Login first or register your account to reserve with us!
-                                                {{/if}}
-                                </p>
-
+                            <div class="user-account-buttons">
+                                {{#if userId}}
+                                    <!-- User is logged in -->
+                                    <div class="user-info">
+                                        <i class="fas fa-user-circle"></i>
+                                        <p style="font-weight: 600;">Welcome!</p>
+                                        <p style="color: var(--secondary-color); font-size: 0.875rem;">
+                                            You are logged in
+                                        </p>
+                                    </div>
+                                    <a href="/view-slots">
+                                        <button type="button" class="btn btn-custom">
+                                            <i class="fas fa-calendar-check me-2"></i>
+                                            View Available Slots
+                                        </button>
+                                    </a>
+                                    <a href="/user-login">
+                                        <button type="button" class="btn btn-custom">
+                                            <i class="fas fa-sign-out-alt me-2"></i>
+                                            Logout
+                                        </button>
+                                    </a>
+                                {{else}}
+                                    <!-- User is not logged in -->
+                                    <a href="/user-login">
+                                        <button type="button" class="btn btn-custom">
+                                            <i class="fas fa-sign-in-alt me-2"></i>
+                                            Login
+                                        </button>
+                                    </a>
+                                    <a href="/user-registration">
+                                        <button type="button" class="btn btn-custom">
+                                            <i class="fas fa-user-plus me-2"></i>
+                                            Register
+                                        </button>
+                                    </a>
+                                    <a href="/view-slots">
+                                        <button type="button" class="btn btn-custom">
+                                            <i class="fas fa-calendar-check me-2"></i>
+                                            View Available Slots
+                                        </button>
+                                    </a>
+                                {{/if}}
                             </div>
-
                         </div>
-                    </section>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="col-lg-9 col-md-8">
+                        <div class="homepage-card hero-section">
+                            <div class="hero-content">
+                                <h1 class="hero-title">
+                                    <i class="fas fa-flask me-3"></i>
+                                    Reserve a Lab Space with Easy Access
+                                </h1>
+                                <p class="hero-sub-info">
+                                    {{#if userId}}
+                                        Welcome back! You can now make reservations, view your bookings, and manage your profile.
+                                    {{else}}
+                                        Tired of missing out on spaces for study sessions and projects? 
+                                        Book a computer lab seat with us in advance to guarantee a spot!
+                                        Login first or register your account to reserve with us!
+                                    {{/if}}
+                                </p>
+                                
+                                <div class="mt-5 text-center">
+                                    <p class="text-muted">
+                                        <i class="fas fa-shield-alt me-2"></i>
+                                        Secure reservations powered by De La Salle University
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -101,4 +294,6 @@
             </div>
         </div>
     </body>
+
+    
 </html>

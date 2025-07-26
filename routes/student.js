@@ -677,4 +677,7 @@ router.get('/student/debug', async (req, res) => {
   }
 });
 
+router.post('/student/profile/delete', userController.deleteAccount);
+
+
 module.exports = router;

@@ -163,8 +163,9 @@
         Delete Account
       </button>
     </div>
-              </div>
-            </div>
+  
+  </div>
+</div>
 
 <!-- Delete Account Modal -->
 <div class="modal fade" id="deleteAccountModal" tabindex="-1">
@@ -183,13 +184,17 @@
         </div>
       <div class="modal-footer" style="border-top: 1px solid #e5e7eb; padding: 1.5rem; gap: 1rem;">
         <button type="button" class="btn-cancel-modal" data-bs-dismiss="modal" style="padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.8); color: #374151; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 12px; font-weight: 600; transition: all 0.2s ease;">Cancel</button>
-        <form method="POST" action="/student/profile/delete" style="display: inline;">
-          <input type="hidden" name="userId" value="{{user._id}}" />
-          <button type="submit" class="btn-confirm-delete" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease;">
-            <i class="fas fa-trash"></i>
-            Delete Account
-          </button>
-        </form>
+        
+        
+      <!-- Change the form to this: -->
+      <form method="POST" action="/student/profile/delete" style="display: inline;">
+        <button type="submit" class="btn-confirm-delete" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease;">
+          <i class="fas fa-trash"></i>
+          Delete Account
+        </button>
+      </form>
+
+
       </div>
     </div>
   </div>

@@ -12,7 +12,8 @@ router.post('/user-register', async (req, res) => {
 });
 
 async function handleRegistration(req, res) {
-    const { first, last, email, password, user_type } = req.body;
+    let { first, last, email, password, user_type } = req.body;
+    email = email.trim().toLowerCase();
 
     try {
         // Validate input
@@ -22,7 +23,7 @@ async function handleRegistration(req, res) {
 
         // Validate email format
         const emailRegex = /^[a-z]+_[a-z]+@dlsu\.edu\.ph$/;
-        if (!emailRegex.test(email.toLowerCase())) {
+        if (!emailRegex.test(email)) {
             return res.redirect('/user-registration?error=Invalid DLSU email format (e.g., juan_dela@dlsu.edu.ph)');
         }
 
