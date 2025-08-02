@@ -108,6 +108,12 @@ exports.reserveSlot = async (req, res) => {
     res.redirect(`/student?userId=${userId}&success=Reservation created successfully`);
   } catch (err) {
     console.error('Error creating reservation:', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.redirect(`/student/reserve?userId=${req.query.userId || req.body.userId}&error=Error creating reservation`);
   }
 };
@@ -140,6 +146,12 @@ exports.viewReservations = async (req, res) => {
     });
   } catch (err) {
     console.error('Error retrieving reservations:', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.status(500).send('Error retrieving reservations');
   }
 };
@@ -236,6 +248,12 @@ exports.editReservation = async (req, res) => {
     res.redirect(`/student?userId=${userId}&success=Reservation updated successfully`);
   } catch (err) {
     console.error('Error editing reservation:', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.redirect(`/student/edit-reservation?userId=${req.query.userId || req.body.userId}&error=Error updating reservation`);
   }
 };
@@ -306,6 +324,12 @@ exports.removeReservation = async (req, res) => {
     res.redirect(`/${user.user_type}?userId=${userId}&success=Reservation removed successfully`);
   } catch (err) {
     console.error('Error removing reservation:', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.redirect(`/${req.query.userType || 'student'}?userId=${req.query.userId || req.body.userId}&error=Error removing reservation`);
   }
 };
@@ -471,6 +495,12 @@ exports.viewAvailability = async (req, res) => {
     });
   } catch (err) {
     console.error('Error viewing availability:', err.message, err.stack);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.status(500).send('Error viewing availability');
   }
 };
@@ -566,6 +596,12 @@ exports.reserveForStudent = async (req, res) => {
     res.redirect(`/technician?userId=${technicianId}&success=Reservation created for student successfully`);
   } catch (err) {
     console.error('Error creating reservation for student:', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.redirect(`/technician/reserve?userId=${req.query.userId || req.body.userId}&error=Error creating reservation for student`);
   }
 };
@@ -619,6 +655,12 @@ exports.blockTimeSlot = async (req, res) => {
     res.redirect(`/technician?userId=${technicianId}&success=Time slot blocked successfully`);
   } catch (err) {
     console.error('Error blocking time slot:', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.redirect(`/technician?userId=${req.query.userId || req.body.userId}&error=Error blocking time slot`);
   }
 };
@@ -680,6 +722,12 @@ exports.searchUsersAndSlots = async (req, res) => {
       });
     } catch (err) {
       console.error('Search error:', err);
+
+      await logError(err, {
+        route: req.originalUrl, 
+        userId : req.session.userId
+      });
+
       res.status(500).send('Search error');
     }
 }
@@ -707,6 +755,12 @@ exports.viewUserProfile = async (req, res) => {
     });
   } catch (err) {
     console.error('Profile view error:', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.status(500).send('Profile view error');
   }
 
@@ -755,6 +809,12 @@ exports.deleteUserAccount = async (req, res) => {
     res.redirect('/user-login?success=Account deleted successfully');
   } catch (err) {
     console.error('Delete account error:', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.redirect(`/student/profile?userId=${req.body.userId}&error=Error deleting account`);
   }
 

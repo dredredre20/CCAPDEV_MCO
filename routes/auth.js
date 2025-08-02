@@ -64,6 +64,12 @@ async function handleRegistration(req, res) {
         if (err.code === 11000) {
             return res.redirect('/user-registration?error=User with this email already exists');
         }
+
+        await logError(err, {
+            route: req.originalUrl, 
+            userId : null
+        });
+
         return res.redirect('/user-registration?error=Registration failed. Please try again.');
     }
 }
@@ -119,6 +125,12 @@ router.post('/user-login', async (req, res) => {
         return res.redirect(rolePath);
     } catch (err) {
         console.error('[Login Error]', err);
+
+        await logError(err, {
+            route: req.originalUrl, 
+            userId : req.session.userId
+        });
+
         return res.redirect('/user-login?error=Login failed. Please try again.');
     }
 });

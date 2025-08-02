@@ -68,6 +68,12 @@ exports.technicianHompage = async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.status(500).send('Error loading technician dashboard');
     }
 };
@@ -99,6 +105,12 @@ exports.technicianProfile = async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician/profile]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.status(500).send('Error loading profile');
     }
 
@@ -214,6 +226,12 @@ exports.getTechnicianReserve = async (req, res) => {
     } catch (err) {
         console.error('[GET /technician/reserve]', err);
         if (isAjax) return res.status(500).json({ error: 'Server error', availableSlots: [] });
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.status(500).send('Error loading reserve page');
     }
 
@@ -349,6 +367,12 @@ exports.createTechnicianReserve = async (req, res) => {
         res.redirect(`/technician/reserve?success=Reservation(s) created successfully`);
     } catch (err) {
         console.error('[POST /technician/reserve]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            }); 
+
         res.redirect(`/technician/reserve?error=Error creating reservation`);
     }
 };
@@ -386,6 +410,12 @@ exports.blockSlotTechnician = async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician/block]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.status(500).send('Error loading block page');
     }
 };
@@ -431,6 +461,12 @@ exports.getRemovePage = async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician/remove]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.status(500).send('Error loading remove page');
     }
 };
@@ -478,6 +514,12 @@ exports.removeReservation = async (req, res) => {
         res.redirect(`/technician/remove?success=Reservation removed successfully`);
     } catch (err) {
         console.error('[POST /technician/remove]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.redirect(`/technician/remove?error=Error removing reservation`);
     }
 
@@ -502,6 +544,12 @@ exports.editProfile = async (req, res) => {
         res.redirect(`/technician/profile?success=Profile updated successfully`);
     } catch (err) {
         console.error('[POST /technician/profile/edit]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.redirect(`/technician/profile?error=Error updating profile`);
     }
 
@@ -537,6 +585,12 @@ exports.checkAllReservations = async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician/reservations]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.status(500).send('Error loading reservations');
     }
 
@@ -572,6 +626,12 @@ exports.getEditReservePage = async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician/edit]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.status(500).send('Error loading technician edit reservation page');
     }
     
@@ -631,6 +691,12 @@ exports.editReservation = async (req, res) => {
         res.redirect(`/technician/edit?success=Reservation updated successfully`);
     } catch (err) {
         console.error('[POST /technician/edit]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.redirect(`/technician/edit?error=Error updating reservation`);
     }
 
@@ -674,6 +740,12 @@ exports.deleteReservation = async (req, res) => {
         res.redirect(`/technician/edit?success=Reservation cancelled successfully`);
     } catch (err) {
         console.error('[POST /technician/delete-reservation]', err);
+
+        await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
         res.redirect(`/technician/edit?error=Error cancelling reservation`);
     }
 
@@ -766,6 +838,11 @@ exports.viewSlotsAvailable = async (req, res) => {
     return res.json({ availableSeats, blockedSeats });
   } catch (err) {
     res.json({ availableSlots: [], availableSeats: [] });
+
+    await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
   }
 
 };
@@ -803,6 +880,12 @@ exports.deleteAccount = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
+
+    await logError(err, {
+              route: req.originalUrl, 
+              userId : req.session.userId
+            });
+
     res.status(500).send('Error deleting account');
   }
 };

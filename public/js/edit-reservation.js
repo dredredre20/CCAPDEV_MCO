@@ -89,6 +89,14 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     } catch (error) {
       console.error('Error fetching seats:', error);
+
+      await logError(error, {
+        route: req.originalUrl, 
+        userId : req.session.userId
+      });
+
+
+
     }
   }
 

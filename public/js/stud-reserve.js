@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (err) {
       timeSlotSelect.innerHTML = '<option value="">Select Time Slot</option>';
       seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+
+
+      await logError(err, {
+        route: req.originalUrl, 
+        userId : req.session.userId
+      });
     }
   }
 
@@ -79,6 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     } catch (err) {
       seatNumberSelect.innerHTML = '<option value="">Select Seat</option>';
+
+      await logError(err, {
+        route: req.originalUrl, 
+        userId : req.session.userId
+      });
     }
   }
 

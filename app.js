@@ -28,6 +28,12 @@ const app = express();
     }
   } catch (error) {
     console.error('❌ MongoDB connection failed:', error.message);
+
+    await logError(error, {
+      route: 'Database Connection', 
+      userId : 'System'
+    });
+
     process.exit(1);
   }
 })();
@@ -125,8 +131,8 @@ app.use('/', technicianRoutes);
 app.use('/reservations', reservationRoutes);
 
 // For profile edit with picture
-const userController = require('./controllers/userController');
-app.post('/student/profile/edit', upload.single('profile_picture'), userController.updateProfile);
+const studentController = require('./controllers/studentController');
+app.post('/student/profile/edit', upload.single('profile_picture'), studentController.updateProfile);
 
 // 5. Error handling middleware
 app.use((err, req, res, next) => {

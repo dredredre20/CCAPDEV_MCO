@@ -52,6 +52,12 @@ router.get('/view-slots', async (req, res) => {
         });
     } catch (error) {
         console.error('View slots error:', error);
+
+        await logError(error, {
+            route: req.originalUrl, 
+            userId : req.session.userId
+        });
+
         res.status(500).send('Server error');
     }
 });
@@ -138,6 +144,12 @@ router.get('/student', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /student]', err);
+
+        await logError(err, {
+            route: req.originalUrl, 
+            userId : req.session.userId
+        });
+
         res.status(500).send('Error loading student dashboard');
     }
 });
@@ -167,6 +179,12 @@ router.get('/student/profile', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /student/profile]', err);
+
+        await logError(err, {
+            route: req.originalUrl, 
+            userId : req.session.userId
+        });
+    
         res.status(500).send('Error loading profile page');
     }
 });
@@ -216,6 +234,12 @@ router.get('/student/edit-reservation', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /student/edit-reservation]', err);
+
+        await logError(err, {
+            route: req.originalUrl, 
+            userId : req.session.userId
+        });
+
         res.status(500).send('Error loading edit reservation page');
     }
 });
@@ -284,6 +308,12 @@ router.get('/technician', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician]', err);
+
+        await logError(err, {
+            route: req.originalUrl, 
+            userId : req.session.userId
+        });
+        
         res.render('lab_technician_page', {
             title: 'Technician Dashboard',
             style: 'lab_technician_page_design.css',
@@ -359,6 +389,12 @@ router.get('/technician/profile', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician/profile]', err);
+
+        await logError(err, {
+            route: req.originalUrl, 
+            userId : req.session.userId
+        });
+
         res.render('labTech_profile', {
             title: 'Technician Profile',
             style: 'labTech_profile.css',

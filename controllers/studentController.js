@@ -1,6 +1,7 @@
 const { UserProfile } = require('../models/User');
 const { Reservation } = require('../models/Reservation');
 const { ReservationSlot } = require('../models/ReservationSlot');
+const logError = require('../utilities/errorLogger');
 
 // Utility function to add minutes to a time string (e.g., '08:00' + 30 = '08:30')
 function addMinutes(time, mins) {
@@ -69,6 +70,13 @@ exports.studentHompage = async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /student]', err);
+
+        // added
+        await logError(err, {
+          route: req.originalUrl, 
+          userId : req.session.userId
+        });
+
         res.status(500).send('Error loading student dashboard');
     }
 };
@@ -151,6 +159,12 @@ exports.reservePage = async (req, res) => {
     });
   } catch (err) {
     console.error('[GET /student/reserve]', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.status(500).send('Error loading reserve page');
   }
 };
@@ -273,6 +287,12 @@ exports.createStudentReservation = async (req, res) => {
     res.redirect(`/student?userId=${userId}&success=Reservation created successfully`);
   } catch (err) {
     console.error('[POST /student/reserve]', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.redirect(`/student/reserve?userId=${req.body.userId}&error=Failed to create reservation. Please try again.`);
   }
 
@@ -318,6 +338,12 @@ exports.getEditReservation = async (req, res) => {
     });
   } catch (err) {
     console.error('[GET /student/edit-reservation]', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.status(500).send('Error loading edit reservation page');
   }
 };
@@ -455,6 +481,12 @@ exports.createEditedReservation = async (req, res) => {
     res.redirect(`/student/edit-reservation?userId=${userId}&success=Reservation updated successfully`);
   } catch (err) {
     console.error('[POST /student/edit-reservation]', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.redirect(`/student/edit-reservation?userId=${req.body.userId}&error=Failed to update reservation. Please try again.`);
   }
 };
@@ -490,6 +522,12 @@ exports.getProfilePage = async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /student/profile]', err);
+
+        await logError(err, {
+          route: req.originalUrl, 
+          userId : req.session.userId
+        });
+
         res.status(500).send('Error loading profile');
     }
 };
@@ -519,6 +557,12 @@ exports.viewPublicProfile = async (req, res) => {
     });
   } catch (err) {
     console.error('[GET /user/:userId/profile]', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.status(500).send('Error loading public profile');
   }
 };
@@ -617,8 +661,47 @@ exports.viewSlotsAvailable = async (req, res) => {
     return res.json({ availableSeats });
   } catch (err) {
     res.json({ availableSlots: [], availableSeats: [] });
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
+
   }
 
+};
+
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { description } = req.body;
+    if (!userId) {
+      return res.status(400).send('User ID is required');
+    }
+    const user = await UserProfile.findById(userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    user.profile_description = description || '';
+    await user.save();
+    // Redirect based on user type
+    if (user.user_type === 'technician') {
+      res.redirect(`/technician/profile?success=Profile updated successfully`);
+    } else {
+      res.redirect(`/student/profile?success=Profile updated successfully`);
+    }
+  } catch (err) {
+    console.error('Profile update error:', err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
+    res.status(500).send('Error updating profile');
+  }
 };
 
 exports.deleteAccount = async (req, res) => {
@@ -654,6 +737,12 @@ exports.deleteAccount = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
+
+    await logError(err, {
+      route: req.originalUrl, 
+      userId : req.session.userId
+    });
+
     res.status(500).send('Error deleting account');
   }
 };

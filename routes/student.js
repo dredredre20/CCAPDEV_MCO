@@ -39,5 +39,7 @@ router.get('/student/debug', studentController.debug)
 
 router.post('/student/profile/delete', studentController.deleteAccount);
 
+router.post('/student/profile/edit', studentController.updateProfile);
+
 
 module.exports = router;

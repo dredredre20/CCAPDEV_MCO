@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { UserProfile } = require('./models/User');
 const { Reservation } = require('./models/Reservation');
+const bcrypt = require('bcrypt');
 
 const connectDB = async () => {
   try {
@@ -47,7 +48,18 @@ const seedDatabase = async () => {
       }
     ];
 
-    const createdUsers = await UserProfile.insertMany(testUsers);
+    const hashedUsers = await Promise.all(testUsers.map(async (user) => {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(user.password, salt);
+
+      return {
+        ...user,
+        password: hashedPassword
+      };
+
+    }));
+
+    const createdUsers = await UserProfile.insertMany(hashedUsers);
     console.log('👥 Created test users');
 
     // Create some sample reservations
