@@ -1,10 +1,11 @@
 const { UserProfile } = require('../models/User');
-const {Reservation} = require('../models/Reservation');
+const { Reservation } = require('../models/Reservation');
 const { ReservationSlot } = require('../models/ReservationSlot');
 
 
 // GET: Student or Technician Homepage
 exports.getHomePage = async (req, res) => {
+
   try {
     const userId = req.session.userId;
     if (!userId || typeof userId !== 'string' || userId.length !== 24) {
@@ -18,6 +19,8 @@ exports.getHomePage = async (req, res) => {
     console.error(err);
     res.status(500).send('Error loading homepage');
   }
+
+
 };
 
 // GET: View Profile (student or technician)
