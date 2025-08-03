@@ -165,6 +165,7 @@ exports.reservePage = async (req, res) => {
       userId : req.session.userId
     });
 
+    // res.redirect(`/student/profile?success=Profile updated successfully`);
     res.status(500).send('Error loading reserve page');
   }
 };
@@ -699,7 +700,7 @@ exports.updateProfile = async (req, res) => {
       route: req.originalUrl, 
       userId : req.session.userId
     });
-
+    
     res.status(500).send('Error updating profile');
   }
 };

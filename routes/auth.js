@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { UserProfile } = require('../models/User');
+const bcrypt = require('bcrypt');
 
 // Register user - handle both endpoints
 router.post('/user-registration', async (req, res) => {
@@ -86,14 +87,21 @@ router.post('/user-login', async (req, res) => {
 
         // Find user by email (case-insensitive)
         const user = await UserProfile.findOne({ email: email.toLowerCase() });
+
         if (!user) {
             return res.redirect('/user-login?error=Invalid email or password');
         }
 
-        // Plain text password comparison
-        if (user.password !== password) {
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch){
             return res.redirect('/user-login?error=Invalid email or password');
         }
+
+        // Plain text password comparison
+        // if (user.password !== password) {
+        //     return res.redirect('/user-login?error=Invalid email or password');
+        // }
 
         // Handle "Remember Me" functionality
         if (remember_me === 'on') {
