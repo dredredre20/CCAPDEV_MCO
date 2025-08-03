@@ -111,7 +111,7 @@ exports.reserveSlot = async (req, res) => {
 
     await logError(err, {
       route: req.originalUrl, 
-      userId : req.session.userId
+      userId : req.session?.userId || req.query.userId || req.body.userId
     });
 
     res.redirect(`/student/reserve?userId=${req.query.userId || req.body.userId}&error=Error creating reservation`);
@@ -149,7 +149,7 @@ exports.viewReservations = async (req, res) => {
 
     await logError(err, {
       route: req.originalUrl, 
-      userId : req.session.userId
+      userId : req.session?.userId || req.query.userId || req.body.userId
     });
 
     res.status(500).send('Error retrieving reservations');
@@ -251,7 +251,7 @@ exports.editReservation = async (req, res) => {
 
     await logError(err, {
       route: req.originalUrl, 
-      userId : req.session.userId
+      userId : req.session?.userId || req.query.userId || req.body.userId
     });
 
     res.redirect(`/student/edit-reservation?userId=${req.query.userId || req.body.userId}&error=Error updating reservation`);
@@ -327,7 +327,7 @@ exports.removeReservation = async (req, res) => {
 
     await logError(err, {
       route: req.originalUrl, 
-      userId : req.session.userId
+      userId : req.session?.userId || req.query.userId || req.body.userId
     });
 
     res.redirect(`/${req.query.userType || 'student'}?userId=${req.query.userId || req.body.userId}&error=Error removing reservation`);
@@ -599,7 +599,7 @@ exports.reserveForStudent = async (req, res) => {
 
     await logError(err, {
       route: req.originalUrl, 
-      userId : req.session.userId
+      userId : req.session?.userId || req.query.userId || req.body.userId
     });
 
     res.redirect(`/technician/reserve?userId=${req.query.userId || req.body.userId}&error=Error creating reservation for student`);
@@ -658,7 +658,7 @@ exports.blockTimeSlot = async (req, res) => {
 
     await logError(err, {
       route: req.originalUrl, 
-      userId : req.session.userId
+      userId : req.session?.userId || req.query.userId || req.body.userId
     });
 
     res.redirect(`/technician?userId=${req.query.userId || req.body.userId}&error=Error blocking time slot`);
@@ -725,7 +725,7 @@ exports.searchUsersAndSlots = async (req, res) => {
 
       await logError(err, {
         route: req.originalUrl, 
-        userId : req.session.userId
+        userId : req.session?.userId || req.query.userId || req.body.userId
       });
 
       res.status(500).send('Search error');
@@ -758,7 +758,7 @@ exports.viewUserProfile = async (req, res) => {
 
     await logError(err, {
       route: req.originalUrl, 
-      userId : req.session.userId
+      userId : req.session?.userId || req.query.userId || req.body.userId
     });
 
     res.status(500).send('Profile view error');
@@ -812,7 +812,7 @@ exports.deleteUserAccount = async (req, res) => {
 
     await logError(err, {
       route: req.originalUrl, 
-      userId : req.session.userId
+      userId : req.session?.userId || req.query.userId || req.body.userId
     });
 
     res.redirect(`/student/profile?userId=${req.body.userId}&error=Error deleting account`);

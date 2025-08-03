@@ -8,7 +8,7 @@
     "dev": "nodemon app.js",
     "seed": "node seed_db.js",
     "check": "node check_db.js",
-    "test": "node test_reservation.js",
+    "test": "jest",
     "test-reservation": "node test_reservation.js"
   },
   "author": "",
@@ -26,6 +26,15 @@
     "multer": "^2.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.0"
-  }
+    "chai": "^5.2.1",
+    "jest": "^30.0.5",
+    "mocha": "^11.7.1",
+    "nodemon": "^3.0.0",
+    "sinon": "^21.0.0",
+    "supertest": "^7.1.4"
+  },
+  "overrides": {
+    "glob": "^10.4.5"
+  }, 
+  "test": "mocha unit_tests/**/*.test.js"
 }
