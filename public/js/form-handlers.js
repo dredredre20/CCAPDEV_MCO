@@ -346,11 +346,20 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("[Technician Reservation] fetchTimeSlots: missing lab or date");
             return;
         }
-        const url = `/technician/reserve?ajax=1&laboratory=${encodeURIComponent(labSelect.value)}&date=${encodeURIComponent(dateInput.value)}`;
+        const url = `/technician/availability-ajax?laboratory=${encodeURIComponent(labSelect.value)}&date=${encodeURIComponent(dateInput.value)}`;
         console.log("[Technician Reservation] Fetching time slots from:", url);
+        
+        // Add loading indicator
+        if (timeSlotSelect) {
+            timeSlotSelect.innerHTML = '<option value="">Loading...</option>';
+        }
+        
         fetch(url)
             .then(res => {
                 console.log("[Technician Reservation] Raw time slot response:", res);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
                 return res.json();
             })
             .then(data => {
@@ -367,8 +376,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const opt = document.createElement('option');
                     opt.value = slotTime;
                     opt.textContent = slotTime;
-                    if (slot && slot.availableCount !== undefined) {
-                        opt.textContent += ` (${slot.availableCount} available)`;
+                    if (slot && slot.availableSeats !== undefined) {
+                        opt.textContent += ` (${slot.availableSeats.length} available)`;
                     }
                     timeSlotSelect.appendChild(opt);
                 });
@@ -378,6 +387,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error("[Technician Reservation] Error fetching time slots:", err);
                 clearTimeSlots();
                 clearSeatMap();
+                // Show error in UI
+                if (timeSlotSelect) {
+                    timeSlotSelect.innerHTML = '<option value="">Error loading slots</option>';
+                }
             });
     }
 
@@ -387,11 +400,20 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("[Technician Reservation] fetchSeatMap: missing lab, date, or time slot");
             return;
         }
-        const url = `/technician/availability?laboratory=${encodeURIComponent(labSelect.value)}&date=${encodeURIComponent(dateInput.value)}&timeSlot=${encodeURIComponent(timeSlotSelect.value)}`;
+        const url = `/technician/availability-ajax?laboratory=${encodeURIComponent(labSelect.value)}&date=${encodeURIComponent(dateInput.value)}&timeSlot=${encodeURIComponent(timeSlotSelect.value)}`;
         console.log("[Technician Reservation] Fetching seat map from:", url);
+        
+        // Add loading indicator
+        if (seatMapContainer) {
+            seatMapContainer.innerHTML = '<span style="color: #6b7280;">Loading seat map...</span>';
+        }
+        
         fetch(url)
             .then(res => {
                 console.log("[Technician Reservation] Raw seat map response:", res);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
                 return res.json();
             })
             .then(data => {
@@ -444,4 +466,4 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error("[Technician Reservation] One or more required elements not found.");
     }
-}); 
+});

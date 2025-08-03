@@ -15,6 +15,21 @@ const app = express();
   try {
     await connectDB();
     
+    // Create unique index to prevent duplicate reservations for the same seat at the same time
+    try {
+      await Reservation.collection.createIndex(
+        { laboratory: 1, reservation_date: 1, time_slot: 1, seat_number: 1 },
+        { 
+          unique: true, 
+          name: 'unique_lab_date_time_seat',
+          partialFilterExpression: { status: 'active' }
+        }
+      );
+      console.log('✅ Unique index for reservations created successfully');
+    } catch (indexError) {
+      console.log('⚠️  Index already exists or error creating index:', indexError.message);
+    }
+    
     // Check if we have any data
     const userCount = await UserProfile.countDocuments();
     const reservationCount = await Reservation.countDocuments();
@@ -125,8 +140,8 @@ app.use('/', technicianRoutes);
 app.use('/reservations', reservationRoutes);
 
 // For profile edit with picture
-const userController = require('./controllers/userController');
-app.post('/student/profile/edit', upload.single('profile_picture'), userController.updateProfile);
+// const userController = require('./controllers/userController');
+// app.post('/student/profile/edit', upload.single('profile_picture'), userController.updateProfile);
 
 // 5. Error handling middleware
 app.use((err, req, res, next) => {

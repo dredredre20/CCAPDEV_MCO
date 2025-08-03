@@ -46,9 +46,10 @@ const userProfileSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
+  // Andre Marker
   profile_picture: {
-    type: String,
-    default: null
+    data: Buffer, 
+    contentType: String
   },
   current_reservations: [{
     type: mongoose.Schema.Types.ObjectId,

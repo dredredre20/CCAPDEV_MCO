@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const { authenticateUser, authorizeStudent, authorizeTechnician } = require('../middleware/auth');
+const { logErrorAsync } = require('../middleware/errorLogger');
 
 // Homepage
 router.get('/', (req, res) => {
@@ -52,6 +54,7 @@ router.get('/view-slots', async (req, res) => {
         });
     } catch (error) {
         console.error('View slots error:', error);
+        await logErrorAsync(error, req);
         res.status(500).send('Server error');
     }
 });
@@ -94,11 +97,8 @@ router.get('/user-register', (req, res) => {
 });
 
 // Student pages
-router.get('/student', async (req, res) => {
+router.get('/student', authenticateUser, authorizeStudent, async (req, res) => {
     const userId = req.session.userId;
-    if (!userId || typeof userId !== 'string' || userId.length !== 24) {
-        return res.redirect('/user-login?error=Please log in to access your dashboard');
-    }
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
@@ -138,15 +138,13 @@ router.get('/student', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /student]', err);
+        await logErrorAsync(err, req);
         res.status(500).send('Error loading student dashboard');
     }
 });
 
-router.get('/student/profile', async (req, res) => {
+router.get('/student/profile', authenticateUser, authorizeStudent, async (req, res) => {
     const userId = req.session.userId;
-    if (!userId || typeof userId !== 'string' || userId.length !== 24) {
-        return res.redirect('/user-login?error=Please log in to view your profile');
-    }
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
@@ -167,6 +165,7 @@ router.get('/student/profile', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /student/profile]', err);
+        await logErrorAsync(err, req);
         res.status(500).send('Error loading profile page');
     }
 });
@@ -179,11 +178,8 @@ router.get('/student/reserve', (req, res) => {
     });
 });
 
-router.get('/student/edit-reservation', async (req, res) => {
+router.get('/student/edit-reservation', authenticateUser, authorizeStudent, async (req, res) => {
     const userId = req.session.userId;
-    if (!userId || typeof userId !== 'string' || userId.length !== 24) {
-        return res.redirect('/user-login?error=Please log in to edit your reservations');
-    }
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
@@ -216,26 +212,14 @@ router.get('/student/edit-reservation', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /student/edit-reservation]', err);
+        await logErrorAsync(err, req);
         res.status(500).send('Error loading edit reservation page');
     }
 });
 
 // Technician pages
-router.get('/technician', async (req, res) => {
+router.get('/technician', authenticateUser, authorizeTechnician, async (req, res) => {
     const userId = req.session.userId;
-    if (!userId || typeof userId !== 'string' || userId.length !== 24) {
-        return res.render('lab_technician_page', {
-            title: 'Technician Dashboard',
-            style: 'lab_technician_page_design.css',
-            techId: '',
-            totalReservations: 0,
-            activeUsers: 0,
-            availableLabs: 0,
-            todayBookings: 0,
-            recentActivity: [],
-            error: 'Please log in as a technician'
-        });
-    }
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
@@ -284,6 +268,7 @@ router.get('/technician', async (req, res) => {
         });
     } catch (err) {
         console.error('[GET /technician]', err);
+        await logErrorAsync(err, req);
         res.render('lab_technician_page', {
             title: 'Technician Dashboard',
             style: 'lab_technician_page_design.css',
@@ -322,17 +307,8 @@ router.get('/technician/reserve', (req, res) => {
     });
 });
 
-router.get('/technician/profile', async (req, res) => {
+router.get('/technician/profile', authenticateUser, authorizeTechnician, async (req, res) => {
     const userId = req.session.userId;
-    if (!userId || typeof userId !== 'string' || userId.length !== 24) {
-        return res.render('labTech_profile', {
-            title: 'Technician Profile',
-            style: 'labTech_profile.css',
-            techId: '',
-            reservations: [],
-            error: 'Please log in as a technician'
-        });
-    }
     try {
         const { Reservation } = require('../models/Reservation');
         const { UserProfile } = require('../models/User');
@@ -347,25 +323,20 @@ router.get('/technician/profile', async (req, res) => {
             });
         }
         const reservations = await Reservation.find({ user_id: userId });
+
         res.render('labTech_profile', {
             title: 'Technician Profile',
             style: 'labTech_profile.css',
             user,
             tech: user,
             reservations,
-            techId: userId,
+            userId,
             error: req.query.error,
             success: req.query.success
         });
     } catch (err) {
         console.error('[GET /technician/profile]', err);
-        res.render('labTech_profile', {
-            title: 'Technician Profile',
-            style: 'labTech_profile.css',
-            techId: '',
-            reservations: [],
-            error: 'Error loading profile'
-        });
+        res.status(500).send('Error loading profile');
     }
 });
 

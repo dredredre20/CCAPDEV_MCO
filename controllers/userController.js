@@ -1,6 +1,9 @@
 const { UserProfile } = require('../models/User');
 const {Reservation} = require('../models/Reservation');
 const { ReservationSlot } = require('../models/ReservationSlot');
+const multer = require('multer');
+const sharp = require('sharp');
+const upload = multer({ storage: multer.memoryStorage() });
 
 
 // GET: Student or Technician Homepage
@@ -51,29 +54,43 @@ exports.getProfile = async (req, res) => {
 };
 
 // POST: Update profile description (student or technician)
+// Andre Marker
 exports.updateProfile = async (req, res) => {
+
+
   try {
-    const userId = req.session.userId;
-    const { description } = req.body;
-    if (!userId) {
-      return res.status(400).send('User ID is required');
-    }
+    const userId = req.body.userId;
+    const { first, last, description } = req.body;
+
     const user = await UserProfile.findById(userId);
     if (!user) {
       return res.status(404).send('User not found');
     }
+
+    // Update name
+    user.name.first = first;
+    user.name.last = last;
+    
+    // Update description
     user.profile_description = description || '';
-    await user.save();
-    // Redirect based on user type
-    if (user.user_type === 'technician') {
-      res.redirect(`/technician/profile?success=Profile updated successfully`);
-    } else {
-      res.redirect(`/student/profile?success=Profile updated successfully`);
+    
+    // Update profile picture if uploaded
+    if (req.file) {
+      user.profile_picture.data = await sharp(req.file.buffer)
+        .resize(300) // Width 300px, height auto
+        .toBuffer();
+      user.profile_picture.contentType = req.file.mimetype;
     }
+
+    await user.save();
+    
+    res.redirect(`/student/profile?success=Profile updated successfully`);
   } catch (err) {
     console.error('Profile update error:', err);
     res.status(500).send('Error updating profile');
   }
+
+
 };
 
 // POST: Delete user account

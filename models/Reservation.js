@@ -64,6 +64,11 @@ reservationSchema.index({ laboratory: 1, reservation_date: 1, time_slot: 1 });
 reservationSchema.index({ laboratory: 1, reservation_date: 1, seat_number: 1 });
 reservationSchema.index({ status: 1 });
 
+// Create the unique index to prevent duplicate reservations for the same seat at the same time
+// This index will be created in the database to prevent race conditions
+// Note: This index will be created programmatically in the app.js or a separate initialization file
+// reservationSchema.index({ laboratory: 1, reservation_date: 1, time_slot: 1, seat_number: 1 }, { unique: true, partialFilterExpression: { status: 'active' } });
+
 // Virtual for checking if reservation is in the past
 reservationSchema.virtual('isPast').get(function() {
   const now = new Date();

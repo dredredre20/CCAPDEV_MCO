@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Reservation } = require('../models/Reservation');
+const { Reservation } = require('../models/reservation');
 
 // GET /view-availability?lab=G301&date=2025-07-10&time=8:00AM-10:00AM
 router.get('/view-availability', async (req, res) => {

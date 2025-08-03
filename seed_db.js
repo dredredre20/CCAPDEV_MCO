@@ -106,6 +106,9 @@ const sampleReservations = [
     console.log('\n📋 Test Accounts:');
     console.log('Student 1: juan_dela@dlsu.edu.ph / password123');
     console.log('Student 2: maria_santos@dlsu.edu.ph / password123');
+    console.log('Student 3: jesus_planta@dlsu.edu.ph / password123');
+    console.log('Student 4: david_brian@dlsu.edu.ph / password123');
+    console.log('Student 5: first_last@dlsu.edu.ph / password123');
     console.log('Technician: pedro_garcia@dlsu.edu.ph / password123');
     console.log('\n🚀 You can now start the server with: npm start');
 

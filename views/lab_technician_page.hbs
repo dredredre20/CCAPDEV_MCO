@@ -205,7 +205,7 @@
             </a>
           </div>
         {{/if}}
-    </div>
+      </div>
     </main>
   </div>
 </div>
@@ -234,6 +234,16 @@
 
 .btn-create:hover {
   transform: translateY(-2px);
+}
+
+.btn-edit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-delete:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 /* Responsive Design */
@@ -269,3 +279,124 @@
   }
 }
 </style>
+
+<script>
+// Function to fetch updated reservations data
+async function fetchUpdatedReservations() {
+  try {
+    const response = await fetch(`/technician/dashboard-data`);
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Update stats
+      document.querySelector('.stat-card:nth-child(1) h3').textContent = data.totalReservations;
+      document.querySelector('.stat-card:nth-child(2) h3').textContent = data.activeUsers;
+      document.querySelector('.stat-card:nth-child(3) h3').textContent = data.availableLabs;
+      document.querySelector('.stat-card:nth-child(4) h3').textContent = data.todayBookings;
+      
+      // Update recent activity
+      const recentActivityContainer = document.querySelector('.recent-activity .activity-list');
+      if (data.recentActivity.length > 0) {
+        recentActivityContainer.innerHTML = data.recentActivity.map(activity => `
+          <div class="activity-card" style="background: rgba(255, 255, 255, 0.8); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 0, 0, 0.05); transition: transform 0.2s ease;">
+            <div class="activity-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <div class="activity-type" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-${activity.activityIcon}" style="color: #f59e0b; font-size: 1.25rem;"></i>
+                <span class="activity-title" style="font-weight: 600; color: #1f2937;">${activity.activityType}</span>
+              </div>
+              <div class="activity-time">
+                <span class="time-badge" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600; background: rgba(245, 158, 11, 0.1); color: #d97706;">${new Date(activity.timestamp).toLocaleDateString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+            </div>
+            
+            <div class="activity-details">
+              <p style="color: #374151; margin-bottom: 0.5rem;">${activity.description}</p>
+              ${activity.user ? `<small style="color: #6b7280; font-size: 0.875rem;">User: ${activity.user.name.first} ${activity.user.name.last}</small>` : ''}
+            </div>
+          </div>
+        `).join('');
+      } else {
+        recentActivityContainer.innerHTML = `
+          <div class="empty-state" style="text-align: center; padding: 3rem 2rem;">
+            <i class="fas fa-clipboard-list" style="font-size: 4rem; color: #d1d5db; margin-bottom: 1rem;"></i>
+            <h3 style="color: #6b7280; margin-bottom: 0.5rem;">No Recent Activity</h3>
+            <p style="color: #9ca3af; margin-bottom: 2rem;">No recent reservations or modifications have been made.</p>
+            <a href="/technician/reserve" class="btn-create" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: transform 0.2s ease;">
+              <i class="fas fa-plus"></i>
+              Create First Reservation
+            </a>
+          </div>
+        `;
+      }
+      
+      // Update all reservations
+      const allReservationsContainer = document.querySelector('.all-reservations .reservations-list');
+      if (data.allReservations.length > 0) {
+        allReservationsContainer.innerHTML = data.allReservations.map(reservation => `
+          <div class="reservation-card" style="background: rgba(255, 255, 255, 0.8); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 0, 0, 0.05); transition: transform 0.2s ease;">
+            <div class="reservation-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <div class="lab-info" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-building" style="color: #f59e0b; font-size: 1.25rem;"></i>
+                <span class="lab-name" style="font-weight: 600; color: #1f2937;">${reservation.laboratory}</span>
+              </div>
+              <div class="reservation-status">
+                <span class="status-badge active" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600; text-transform: capitalize; background: #d1fae5; color: #065f46;">Active</span>
+              </div>
+            </div>
+
+            <div class="reservation-details" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+              <div class="detail-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-calendar" style="color: #6b7280; width: 16px;"></i>
+                <span style="color: #374151;">${new Date(reservation.reservation_date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}</span>
+              </div>
+              <div class="detail-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-clock" style="color: #6b7280; width: 16px;"></i>
+                <span style="color: #374151;">${reservation.time_slot}</span>
+              </div>
+              <div class="detail-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-chair" style="color: #6b7280; width: 16px;"></i>
+                <span style="color: #374151;">Seat ${reservation.seat_number}</span>
+              </div>
+              <div class="detail-item" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-user" style="color: #6b7280; width: 16px;"></i>
+                <span style="color: #374151;">${reservation.user_id.name.first} ${reservation.user_id.name.last}</span>
+              </div>
+            </div>
+
+            <div class="reservation-actions" style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+              <a href="/technician/edit" class="btn-edit" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; text-decoration: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; transition: transform 0.2s ease;">
+                <i class="fas fa-edit"></i>
+                Edit
+              </a>
+              <a href="/technician/remove" class="btn-delete" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; text-decoration: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; transition: transform 0.2s ease;">
+                <i class="fas fa-trash"></i>
+                Delete
+              </a>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        allReservationsContainer.innerHTML = `
+          <div class="empty-state" style="text-align: center; padding: 3rem 2rem;">
+            <i class="fas fa-calendar-times" style="font-size: 4rem; color: #d1d5db; margin-bottom: 1rem;"></i>
+            <h3 style="color: #6b7280; margin-bottom: 0.5rem;">No Active Reservations</h3>
+            <p style="color: #9ca3af; margin-bottom: 2rem;">There are currently no active reservations in the system.</p>
+            <a href="/technician/reserve" class="btn-create" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: transform 0.2s ease;">
+              <i class="fas fa-plus"></i>
+              Create First Reservation
+            </a>
+          </div>
+        `;
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching updated reservations:', error);
+  }
+}
+
+// Fetch updated reservations every 30 seconds
+setInterval(fetchUpdatedReservations, 30000);
+
+// Fetch updated reservations when the page loads
+document.addEventListener('DOMContentLoaded', fetchUpdatedReservations);
+</script>

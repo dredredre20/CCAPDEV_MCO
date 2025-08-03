@@ -3,7 +3,7 @@ const { Reservation } = require('../models/Reservation');
 const { ReservationSlot } = require('../models/ReservationSlot');
 const mongoose = require('mongoose');
 
-// ✅ Create/Reserve Lab Slot
+// Creates/Reserves Lab Slot
 exports.reserveSlot = async (req, res) => {
   try {
     const { laboratory, reservation_date, time_slot, seat_number, is_anonymous, purpose } = req.body;
@@ -23,12 +23,12 @@ exports.reserveSlot = async (req, res) => {
       return res.redirect(`/${user.user_type}?userId=${userId}&error=Only students can make reservations through this form`);
     }
 
-    // Validate required fields
+    // Validates required fields
     if (!laboratory || !reservation_date || !time_slot || !seat_number) {
       return res.redirect(`/student/reserve?userId=${userId}&error=All required fields must be filled`);
     }
 
-    // Check if reservation date is in the past
+    // Checks if reservation date is in the past
     const reservationDateTime = new Date(reservation_date);
     reservationDateTime.setHours(parseInt(time_slot.split(':')[0]));
     reservationDateTime.setMinutes(parseInt(time_slot.split(':')[1]));
@@ -37,7 +37,7 @@ exports.reserveSlot = async (req, res) => {
       return res.redirect(`/student/reserve?userId=${userId}&error=Cannot make reservations for past dates`);
     }
 
-    // Check if slot is available using ReservationSlot
+    // Checks if slot is available using ReservationSlot
     let slot = await ReservationSlot.findOne({
       laboratory,
       date: new Date(reservation_date),
@@ -57,12 +57,12 @@ exports.reserveSlot = async (req, res) => {
     });
     }
 
-    // Check if slot can be reserved
+    // Checks if slot can be reserved
     if (!slot.canBeReserved()) {
       return res.redirect(`/student/reserve?userId=${userId}&error=Slot is not available`);
     }
 
-    // Check if user already has a reservation for this time slot
+    // Checks if user already has a reservation for this time slot
     const existingReservation = await Reservation.findOne({
       user_id: userId,
       laboratory,
@@ -75,12 +75,12 @@ exports.reserveSlot = async (req, res) => {
       return res.redirect(`/student/reserve?userId=${userId}&error=You already have a reservation for this time slot`);
     }
 
-    // Calculate end time (30 minutes later)
+    // Calculates end time (30 minutes later)
     const [hours, minutes] = time_slot.split(':').map(Number);
     const endTime = new Date(new Date(reservation_date).setHours(hours, minutes + 30));
     const endTimeString = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
 
-    // Create reservation
+    // Creates reservation
     const reservation = new Reservation({
       user_id: userId,
       laboratory,
@@ -93,12 +93,20 @@ exports.reserveSlot = async (req, res) => {
       status: 'active'
     });
 
-    await reservation.save();
+    try {
+      await reservation.save();
+    } catch (saveError) {
+      // Handle duplicate key error
+      if (saveError.code === 11000) {
+        return res.redirect(`/student/reserve?userId=${userId}&error=This seat has just been reserved by another student. Please choose a different seat.`);
+      }
+      throw saveError; // Re-throw other errors
+    }
 
-    // Update slot
+    // Updates slot
     await slot.reserve(userId, reservation._id);
 
-    // Update user's current reservations
+    // Updates user's current reservations
     if (!user.current_reservations) {
       user.current_reservations = [];
     }
@@ -112,7 +120,7 @@ exports.reserveSlot = async (req, res) => {
   }
 };
 
-// ✅ View All Reservations
+// View All Reservations
 exports.viewReservations = async (req, res) => {
   try {
     const userId = req.query.userId;
@@ -622,3 +630,141 @@ exports.blockTimeSlot = async (req, res) => {
     res.redirect(`/technician?userId=${req.query.userId || req.body.userId}&error=Error blocking time slot`);
   }
 };
+
+exports.searchUsersAndSlots = async (req, res) => {
+
+  try {
+    const { query, type } = req.query;
+    
+    if (!query) {
+      return res.render('view-availability', {
+        title: 'Search Results',
+        style: 'view-availability-design.css',
+        results: [],
+        searchQuery: '',
+        searchType: type || 'slots'
+      });
+    }
+
+    let results = [];
+    
+    if (type === 'users') {
+      // Search for users
+      const users = await UserProfile.find({
+        $or: [
+          { 'name.first': { $regex: query, $options: 'i' } },
+          { 'name.last': { $regex: query, $options: 'i' } },
+          { email: { $regex: query, $options: 'i' } }
+        ]
+      }).select('name email user_type profile_description');
+
+      results = users.map(user => ({
+        type: 'user',
+        data: user
+      }));
+    } else {
+      // Search for available slots
+      const slots = await ReservationSlot.find({
+        is_available: true,
+        is_blocked: false,
+        $or: [
+          { laboratory: { $regex: query, $options: 'i' } },
+          { time_slot: { $regex: query, $options: 'i' } }
+        ]
+      }).populate('reserved_by', 'name email');
+
+      results = slots.map(slot => ({
+        type: 'slot',
+        data: slot
+      }));
+    }
+
+    res.render('view-availability', {
+      title: 'Search Results',
+      style: 'view-availability-design.css',
+      results,
+      searchQuery: query,
+      searchType: type || 'slots'
+    });
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).send('Search error');
+  }
+
+};
+
+exports.viewUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const currentUserId = req.query.currentUserId;
+
+    const user = await UserProfile.findById(userId).populate('current_reservations');
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Check if current user can edit this profile
+    const canEdit = currentUserId && currentUserId === userId;
+
+    res.render('new-profile', {
+      title: `${user.name.first} ${user.name.last}'s Profile`,
+      style: 'new-profile.css',
+      user,
+      canEdit,
+      currentUserId
+    });
+  } catch (err) {
+    console.error('Profile view error:', err);
+    res.status(500).send('Profile view error');
+  }
+};
+
+exports.deleteAccount = async (req, res) => {
+
+  try {
+    const { userId, password } = req.body;
+
+    const user = await UserProfile.findById(userId);
+    if (!user) {
+      return res.redirect('/user-login?error=User not found');
+    }
+
+    // Plain text password comparison
+    if (user.password !== password) {
+      return res.redirect(`/student/profile?userId=${userId}&error=Incorrect password`);
+    }
+
+    // Cancel all pending reservations
+    const reservations = await Reservation.find({ user_id: userId, status: 'active' });
+    for (const reservation of reservations) {
+      // Release slots
+      const slot = await ReservationSlot.findOne({
+        laboratory: reservation.laboratory,
+        date: reservation.reservation_date,
+        time_slot: reservation.time_slot,
+        seat_number: reservation.seat_number,
+        reservation_id: reservation._id
+      });
+
+      if (slot) {
+        await slot.release();
+      }
+
+      // Mark reservation as cancelled
+      reservation.status = 'cancelled';
+      await reservation.save();
+    }
+
+    // Delete user account
+    await UserProfile.findByIdAndDelete(userId);
+
+    res.redirect('/user-login?success=Account deleted successfully');
+  } catch (err) {
+    console.error('Delete account error:', err);
+    res.redirect(`/student/profile?userId=${req.body.userId}&error=Error deleting account`);
+  }
+  
+};
+
+
+

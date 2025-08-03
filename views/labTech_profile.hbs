@@ -82,21 +82,6 @@
           {{/if}}
         </div>
 
-        <!-- Danger Zone 
-        <div class="danger-zone" style="border-top: 1px solid rgba(0, 0, 0, 0.1); padding-top: 1.5rem;">
-          <h6 style="font-weight: 700; color: #ef4444; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-            <i class="fas fa-exclamation-triangle"></i>
-            Danger Zone
-          </h6>
-
-          <button class="btn-delete-account" onclick="deleteAccount()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
-            <i class="fas fa-trash"></i>
-            Delete Account
-          </button>
-
-        </div> -->
-
-
       </div>
 
       <!-- Main Content -->
@@ -110,7 +95,41 @@
             </h5>
           </div>
           
-          <form method="POST" action="/technician/profile/edit" class="edit-form" id="editForm">
+          <form method="POST" action="/technician/profile/edit" enctype="multipart/form-data" class="edit-form" id="editForm">
+            <!-- Profile Picture Section -->
+            <div class="profile-picture-container" style="text-align: center; margin-bottom: 1.5rem;">
+              {{#if tech.profile_picture}}
+                <img 
+                  id="currentProfileImage"
+                  src="/user/profile-picture/{{tech._id}}" 
+                  alt="Profile Picture" 
+                  style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #f59e0b; margin-bottom: 1rem;"
+                >
+              {{else}}
+                <div style="width: 150px; height: 150px; border-radius: 50%; background: #e5e7eb; border: 3px solid #f59e0b; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                  <i class="fas fa-user" style="font-size: 3rem; color: #9ca3af;"></i>
+                </div>
+              {{/if}}
+              <div class="form-text" style="margin-top: 0.5rem;">Current Profile Picture</div>
+            </div>
+
+            <!-- File Input -->
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label for="profile_picture" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-camera" style="color: #f59e0b;"></i>
+                Update Profile Picture
+              </label>
+              <input 
+                type="file" 
+                class="form-control" 
+                id="profile_picture" 
+                name="profile_picture" 
+                accept="image/*" 
+                style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 0.75rem 1rem; font-size: 1rem; transition: all 0.2s ease; background: white; width: 100%;"
+              >
+              <div class="form-text" style="color: #6b7280; font-size: 0.875rem; margin-top: 0.5rem;">Select an image file to update your profile picture</div>
+            </div>
+
             <div class="form-group" style="margin-bottom: 1.5rem;">
               <label for="description" class="form-label" style="font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                 <i class="fas fa-comment" style="color: #f59e0b;"></i>
@@ -137,41 +156,62 @@
         <div class="reservations-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);">
           <div class="card-header" style="margin-bottom: 1.5rem;">
             <h5 style="font-size: 1.25rem; font-weight: 700; color: #1f2937; margin: 0; display: flex; align-items: center; gap: 0.75rem;">
-              <i class="fas fa-calendar-check" style="color: #f59e0b;"></i>
-              Current Reservations
+              <i class="fas fa-history" style="color: #667eea;"></i>
+              All Reservations (Students & Technicians)
             </h5>
           </div>
           
           {{#if reservations.length}}
-            <div class="reservations-list" style="display: grid; gap: 1rem;">
+            <div class="reservations-list" style="max-height: 400px; overflow-y: auto;">
               {{#each reservations}}
-                <div class="reservation-item" style="background: rgba(255, 255, 255, 0.8); border-radius: 12px; padding: 1rem; border: 1px solid rgba(0, 0, 0, 0.05); transition: transform 0.2s ease;">
+                <div class="reservation-item" style="background: rgba(102, 126, 234, 0.05); border: 1px solid rgba(102, 126, 234, 0.1); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; transition: all 0.2s ease;">
                   <div class="reservation-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <div class="reservation-info" style="display: flex; align-items: center; gap: 0.75rem;">
-                      <i class="fas fa-flask" style="color: #f59e0b; font-size: 1.125rem;"></i>
-                      <span style="font-weight: 600; color: #1f2937;">{{laboratory}}</span>
+                    <span class="reservation-id" style="font-weight: 600; color: #667eea; font-size: 0.875rem;">ID: {{_id}}</span>
+                    <span class="reservation-status" style="padding: 0.25rem 0.5rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; 
+                      {{#ifEquals status 'active'}}
+                        background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;
+                      {{else ifEquals status 'cancelled'}}
+                        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;
+                      {{else}}
+                        background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%); color: white;
+                      {{/ifEquals}}
+                      ">
+                      {{status}}
+                    </span>
+                  </div>
+                  <div class="reservation-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.875rem;">
+                    <div class="detail-item">
+                      <span style="color: #6b7280; font-weight: 500;">Lab:</span>
+                      <span style="color: #1f2937; font-weight: 600;">{{laboratory}}</span>
                     </div>
-                    <span class="reservation-date" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600; background: rgba(245, 158, 11, 0.1); color: #d97706;">{{formatDate reservation_date}}</span>
+                    <div class="detail-item">
+                      <span style="color: #6b7280; font-weight: 500;">Date:</span>
+                      <span style="color: #1f2937; font-weight: 600;">{{formatDate reservation_date 'YYYY-MM-DD'}}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span style="color: #6b7280; font-weight: 500;">Time:</span>
+                      <span style="color: #1f2937; font-weight: 600;">{{time_slot}}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span style="color: #6b7280; font-weight: 500;">Seat:</span>
+                      <span style="color: #1f2937; font-weight: 600;">{{seat_number}}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span style="color: #6b7280; font-weight: 500;">User:</span>
+                      <span style="color: #1f2937; font-weight: 600;">{{#if user_id.name.first}}{{user_id.name.first}} {{user_id.name.last}}{{else}}Unknown{{/if}}</span>
+                    </div>
                   </div>
-                  <div class="reservation-details" style="display: flex; gap: 1rem; font-size: 0.875rem; color: #6b7280;">
-                    <span><i class="fas fa-chair"></i> Seat {{seat_number}}</span>
-                    <span><i class="fas fa-clock"></i> {{time_slot}}</span>
-                  </div>
-                  <a href="/reservations/availability?lab={{laboratory}}&date={{formatDate reservation_date 'YYYY-MM-DD'}}" class="view-details-link" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; color: #f59e0b; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: color 0.2s ease;">
-                    <i class="fas fa-external-link-alt"></i>
-                    View Details
-                  </a>
                 </div>
               {{/each}}
             </div>
           {{else}}
-            <div class="empty-state" style="text-align: center; padding: 3rem 2rem;">
-              <i class="fas fa-calendar-times" style="font-size: 4rem; color: #d1d5db; margin-bottom: 1rem;"></i>
-              <h3 style="color: #6b7280; margin-bottom: 0.5rem;">No Reservations</h3>
-              <p style="color: #9ca3af; margin-bottom: 2rem;">You don't have any current reservations.</p>
-              <a href="/technician/reserve" class="btn-create-reservation" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: transform 0.2s ease;">
+            <div class="empty-reservations" style="text-align: center; padding: 2rem; color: #6b7280;">
+              <i class="fas fa-calendar-times" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+              <h6 style="margin-bottom: 0.5rem; color: #9ca3af;">No Reservations Found</h6>
+              <p style="margin: 0; font-size: 0.875rem;">There are currently no reservations in the system.</p>
+              <a href="/technician/reserve" class="btn-create-reservation" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.875rem; text-decoration: none; transition: all 0.2s ease;">
                 <i class="fas fa-plus"></i>
-                Create Reservation
+                Create First Reservation
               </a>
             </div>
           {{/if}}
@@ -217,87 +257,83 @@
 </div>
 
 
-<style>
-/* Hover effects */
-.nav-link:hover {
-  background: rgba(245, 158, 11, 0.2) !important;
-  color: #d97706 !important;
-  transform: translateY(-1px);
-}
+<link rel="stylesheet" href="/css/labTech_profile.css">
 
-.btn-save-changes:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-}
-
-.btn-reset:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.btn-delete-account:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
-}
-
-.reservation-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.view-details-link:hover {
-  color: #d97706;
-}
-
-.profile-info-card:hover,
-.edit-profile-card:hover,
-.reservations-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-}
-
-/* Form focus effects */
-textarea:focus {
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-  outline: none;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .profile-content {
-    padding: 1rem;
-  }
-  
-  .profile-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .nav-container {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  .profile-info-card {
-    order: -1;
-  }
-  
-  .reservation-header {
-    flex-direction: column;
-    align-items: flex-start !important;
-    gap: 0.5rem;
-  }
-}
-</style>
 
 <script>
+// Function to fetch updated reservations data
+async function fetchUpdatedReservations() {
+  try {
+    const response = await fetch(`/technician/dashboard-data`);
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Update reservations list
+      const reservationsList = document.querySelector('.reservations-list');
+      if (reservationsList) {
+        if (data.allReservations.length > 0) {
+          reservationsList.innerHTML = data.allReservations.map(reservation => `
+            <div class="reservation-item" style="background: rgba(102, 126, 234, 0.05); border: 1px solid rgba(102, 126, 234, 0.1); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; transition: all 0.2s ease;">
+              <div class="reservation-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span class="reservation-id" style="font-weight: 600; color: #667eea; font-size: 0.875rem;">ID: ${reservation._id}</span>
+                <span class="reservation-status" style="padding: 0.25rem 0.5rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; 
+                  ${reservation.status === 'active' ? 'background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;' : 
+                    reservation.status === 'cancelled' ? 'background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;' : 
+                    'background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%); color: white;'}
+                  ">
+                  ${reservation.status}
+                </span>
+              </div>
+              <div class="reservation-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.875rem;">
+                <div class="detail-item">
+                  <span style="color: #6b7280; font-weight: 500;">Lab:</span>
+                  <span style="color: #1f2937; font-weight: 600;">${reservation.laboratory}</span>
+                </div>
+                <div class="detail-item">
+                  <span style="color: #6b7280; font-weight: 500;">Date:</span>
+                  <span style="color: #1f2937; font-weight: 600;">${new Date(reservation.reservation_date).toISOString().split('T')[0]}</span>
+                </div>
+                <div class="detail-item">
+                  <span style="color: #6b7280; font-weight: 500;">Time:</span>
+                  <span style="color: #1f2937; font-weight: 600;">${reservation.time_slot}</span>
+                </div>
+                <div class="detail-item">
+                  <span style="color: #6b7280; font-weight: 500;">Seat:</span>
+                  <span style="color: #1f2937; font-weight: 600;">${reservation.seat_number}</span>
+                </div>
+                <div class="detail-item">
+                  <span style="color: #6b7280; font-weight: 500;">User:</span>
+                  <span style="color: #1f2937; font-weight: 600;">${reservation.user_id && reservation.user_id.name ? 
+                    reservation.user_id.name.first + ' ' + reservation.user_id.name.last : 'Unknown'}</span>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          reservationsList.innerHTML = `
+            <div class="empty-reservations" style="text-align: center; padding: 2rem; color: #6b7280;">
+              <i class="fas fa-calendar-times" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+              <h6 style="margin-bottom: 0.5rem; color: #9ca3af;">No Reservations Found</h6>
+              <p style="margin: 0; font-size: 0.875rem;">There are currently no reservations in the system.</p>
+              <a href="/technician/reserve" class="btn-create-reservation" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.875rem; text-decoration: none; transition: all 0.2s ease;">
+                <i class="fas fa-plus"></i>
+                Create First Reservation
+              </a>
+            </div>
+          `;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching updated reservations:', error);
+  }
+}
+
+// Fetch updated reservations every 30 seconds
+setInterval(fetchUpdatedReservations, 30000);
+
+// Fetch updated reservations when the page loads
+document.addEventListener('DOMContentLoaded', fetchUpdatedReservations);
 
 function showDeleteModal() {
   const modal = new bootstrap.Modal(document.getElementById('deleteAccountModal'));
@@ -360,6 +396,18 @@ document.getElementById('description').addEventListener('input', function() {
     } else {
       formText.style.color = '#6b7280';
     }
+  }
+});
+
+// Profile picture preview
+document.getElementById('profile_picture').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('currentProfileImage').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 });
 </script>

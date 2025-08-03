@@ -1,187 +1,225 @@
-:root{
-    --primary-green: #36b53d;
-    --beige-bg: #F9F5EB;
-    --text-color: black;
-}
+        :root {
+            --primary-color: #667eea;
+            --primary-dark: #764ba2;
+            --dark-color: #2d3748;
+            --secondary-color: #718096;
+            --success-color: #36b53d;
+            --border-color: #e2e8f0;
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
 
-body{
-    background-color: var(--beige-bg);
-    color: var(--text-color);
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-}
+        .homepage-container {
+            padding: 2.5rem 1rem;
+        }
 
-.container-fluid.p-0{
-    padding: 0;
-}
+        .homepage-content {
+            background-color: #7e92ee;
+            max-width: 1800px;
+            margin: 0 auto;
+            min-height: 70vh;
+            border-radius: 15px;
+        }
 
-.row.g-0{
-    margin-left: 0;
-    margin-right: 0;
-}
+        .homepage-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 1.5rem;
+            animation: slideUp 0.6s ease-out;
+        }
 
-.row.g-0 > [class*="col-"]{
-    padding-left: 0;
-    padding-right: 0;
-}
+        .homepage-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-.hero-section{
-    background: linear-gradient(135deg, var(--primary-green) 0%, #219227 100%) ;
-    color: white;
-    display: flex;
-    padding: 10px;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    flex: 1;
-}
+        .homepage-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto 1rem;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
 
-.hero-content{
-    text-align: center;
-    padding: 3rem 2rem;
-}
+        .homepage-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
 
-.hero-title{
-    font-size: 6rem;
-    font-weight: bold;
-    margin-bottom: 2.5rem;
-    text-shadow: 1px 1px rgb(22, 21, 21);
-}
+        .homepage-subtitle {
+            color: var(--dark-color);
+            font-size: 1.5rem;
+            margin-bottom: 0;
+        }
 
-.hero-sub-info{
-    width: 70%;
-    font-size: 2.7rem;
-    text-align: center;
-    margin-bottom: 2rem;
-    display: block;
-    margin: auto;
-}
+        .side-panel {
+            padding: 1.5rem;
+            border-radius: 15px;
+        }
 
+        .side-panel-title {
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
 
-.side-panel{
-    background-color: var(--beige-bg);
-    min-height: 100vh;
-    padding: 2.5rem 1rem;
-    border-right: 2.5px solid var(--primary-green);
+        .btn-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 60%;
+            margin: 0 auto 1rem auto; 
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+        }
 
-}
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
 
-.side-panel-title{
-    color: var(--primary-green);
-    font-size: 3rem;
-    font-weight: bold;
-    margin-bottom: 2.5rem;
-    text-align: center;
-}
+        .hero-section {
+            padding: 2rem;
+            border-radius: 15px;
+            height: 100%;
+        }
 
-.user-account-buttons{
-    margin-bottom: 2.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-}
+        .hero-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 1.5rem;
+        }
 
-/*buttons for side panel*/
-.btn.btn-custom{
-    background-color: white;
-    color: var(--primary-green);
-    border: 2.5px solid var(--primary-green);
-    border-radius: 10px;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    text-align: center;
-    width: 60%;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 1rem 1rem;
-    font-size: 14px;
-    display: block;
-    margin: auto;
-    gap: 1rem;
-    margin-top: 2rem;
+        .hero-sub-info {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
 
-}
+        .user-info {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
 
-.btn.btn-custom:hover{
-    background-color: var(--beige-bg);
-    color: var(--primary-green);
-    transform: translateY(-2px);
-    border: 2.5px solid var(--primary-green);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);   
-}
+        .user-info i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
 
-.btn.btn-custom:focus{
+        .user-info p {
+            margin: 0;
+            color: var(--dark-color);
+        }
+        
 
-    background-color: var(--beige-bg);
-    color: black;
-    border: 2.5px solid var(--primary-green);
-    font-weight: bold;
-    outline: none;
-    box-shadow: none;
-}
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-/*Responsive adjusments when screen size is adjusted*/
-@media (max-width: 768px){
-    .hero-title{
-        font-size: 2rem;
-    }
+        @media (max-width: 768px) {
+            .homepage-card {
+                padding: 1.5rem;
+            }
+            
+            .homepage-title {
+                font-size: 1.75rem;
+            }
+            
+            .homepage-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .hero-title {
+                font-size: 1.5rem;
+            }
+            
+            .hero-sub-info {
+                font-size: 1rem;
+            }
+        }
 
-    .hero-subtitle{
-        font-size: 1.5rem;
-    }
-
-    .side-panel{
-        min-height: auto;
-        border-right: none;
-        border-bottom: 2px solid var(--primary-green);
-    }
-
-}
-
-.hero-content{
-        animation: fadeInDown 1.5s ease-out;
-    }
-
-.side-panel{
-        animation: slideInLeft 1.5s ease-out;
-    }
-
-
-@keyframes fadeInDown{
-    from{
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translate(0);
-    }
-}
-
-@keyframes slideInLeft{
-    from {
-        opacity: 0;
-        transform: translateX(-30px);
-    }
-     to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-
-
-
-
-
-
-
-
-
+        @media (max-width: 576px) {
+            .homepage-container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .homepage-content {
+                border-radius: 10px;
+            }
+            
+            .homepage-card {
+                padding: 1rem;
+                border-radius: 15px;
+            }
+            
+            .homepage-title {
+                font-size: 1.5rem;
+            }
+            
+            .homepage-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .homepage-logo {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .hero-title {
+                font-size: 1.25rem;
+            }
+            
+            .hero-sub-info {
+                font-size: 0.9rem;
+            }
+            
+            .side-panel-title {
+                font-size: 1.25rem;
+            }
+            
+            .btn-custom {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+                width: 80%;
+            }
+        }

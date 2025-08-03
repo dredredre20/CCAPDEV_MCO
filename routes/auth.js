@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { UserProfile } = require('../models/User');
+const { logErrorAsync } = require('../middleware/errorLogger');
 
 // Register user - handle both endpoints
 router.post('/user-registration', async (req, res) => {
@@ -32,10 +33,9 @@ async function handleRegistration(req, res) {
             return res.redirect('/user-registration?error=Password must be at least 8 characters long');
         }
 
-        // Validate user type
-        const validUserTypes = ['student', 'technician'];
-        if (!validUserTypes.includes(user_type)) {
-            return res.redirect('/user-registration?error=Invalid user type. Must be student or technician');
+        // Validate user type - only students can register
+        if (user_type !== 'student') {
+            return res.redirect('/user-registration?error=Only students can register. Technicians must be created by admin.');
         }
 
         // Check if user already exists (case-insensitive)
@@ -61,6 +61,7 @@ async function handleRegistration(req, res) {
         return res.redirect('/user-login?success=Registration successful. Please log in.');
     } catch (err) {
         console.error('[Registration Error]', err);
+        await logErrorAsync(err, req);
         if (err.code === 11000) {
             return res.redirect('/user-registration?error=User with this email already exists');
         }
@@ -119,6 +120,7 @@ router.post('/user-login', async (req, res) => {
         return res.redirect(rolePath);
     } catch (err) {
         console.error('[Login Error]', err);
+        await logErrorAsync(err, req);
         return res.redirect('/user-login?error=Login failed. Please try again.');
     }
 });
